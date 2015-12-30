@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>查找碎片</title>
+	<style>
+		.model_ul{height: 90%;overflow: auto;}
+		.model_ul li{height: 32px;line-height: 32px;padding-left: 20px;cursor: pointer;position: relative;border-top: 1px solid #c8c8c8;}
+	</style>
+</head>
+<body>
+
+    <ul class="model_ul">
+    	{@each list as it}
+    	<li>${it.content} &nbsp;&nbsp;&nbsp;</li>
+    	{@/each}
+    	
+    </ul>
+</body>
+</html>
