@@ -10,7 +10,8 @@ function CMS(){
 	this.urls = {
 		layout_query : '/layout/query',
 		layout_query_content_by_id : '/layout/layout_query_content_by_id',
-		blocks_save_orders : '/blocks/blocks_save_orders'
+		blocks_save_orders : '/blocks/blocks_save_orders',
+		block_save_orders : '/block/block_save_orders'
 	},
 	this.o = {
 		$root : $('#back')
@@ -73,6 +74,44 @@ CMS.prototype = {
 							'</div>'+
 						'</div>'+
 					'</div>';
+		},
+		getBlockGroupMoveBtns : function(index,total){
+			var result = '';
+			if(index==0){//第一个,返回向右移动
+				return 	'<div class="block_mask">'+
+							'<div class="bg5"></div>'+
+							'<div class="btn_group">'+
+								'<div class="choseBtn block_btn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn right">向右移动</div>'+
+								'</div>'+
+							'</div>'+
+						'</div>'
+			}else if(index == total-1){//最后一个,返回向左移动
+				return 	'<div class="block_mask">'+
+							'<div class="bg5"></div>'+
+							'<div class="btn_group">'+
+								'<div class="choseBtn block_btn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn left">向左移动</div>'+
+								'</div>'+
+							'</div>'+
+						'</div>'
+			}else{//返回左右移动
+				return 	'<div class="block_mask">'+
+							'<div class="bg5"></div>'+
+							'<div class="btn_group">'+
+								'<div class="choseBtn block_btn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn right">向右移动</div>'+
+								'</div>'+
+								'<div class="choseBtn block_btn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn left">向左移动</div>'+
+								'</div>'+
+							'</div>'+
+						'</div>'
+			}
 		},
 		getBlockGroupsMoveBtns : function(index,total){
 			var result = '';
@@ -284,14 +323,14 @@ CMS.prototype = {
 
 		this.o.$root.delegate('#blockGroup_move_btn','click',function(){
 			$(this).parent().find('.fixbtn').removeClass('active');
-			$(this).addClass('active');
-			_this.move_unit.blockGroup_move();
+			//$(this).addClass('active');
+			_this.move_unit.blockGroup_move($(this));
 		});
 
 		this.o.$root.delegate('#block_move_btn','click',function(){
 			$(this).parent().find('.fixbtn').removeClass('active');
-			$(this).addClass('active');
-			_this.move_unit.block_move();
+			//$(this).addClass('active');
+			_this.move_unit.block_move($(this));
 		});
 
 		this.move_unit.event();//与移动相关的事件
@@ -316,15 +355,63 @@ CMS.prototype = {
 		return {
 			blockGroups_move : function($fixbtn){
 
-				this.to_absolute($fixbtn);
+				this.bs_to_absolute($fixbtn);
 			},
-			blockGroup_move : function(){
-
+			blockGroup_move : function($fixbtn){
+				this.b_to_absolute($fixbtn);
 			},
 			block_move : function(){
 
 			},
-			to_absolute : function($fixbtn){
+			b_to_absolute : function($fixbtn){
+				var $this = $('#content');
+				$this.find('.clear_rx.blocks_move').each(function(){
+					var $this = $(this);
+					var b_height = $this.height();
+					var b_width = $this.width();
+					if(!b_height || !b_width){
+						console.log('clear_rx类所在元素的宽或高不能为0，样式错误，请修正...');
+					}
+					$this.height(b_height);
+					$this.width(b_width);//宽高固化
+
+					var block_length = $this.find('.c_block').length;
+					for(var i = block_length - 1;i >= 0;i--){
+						var $cur_block = $this.find('.c_block:eq('+i+')');
+						//content_height += $cur_block.height();
+						var top = $cur_block.position().top;
+						var left = $cur_block.position().left;
+						var width = $cur_block.width();
+
+						$cur_block.css({
+							position:'absolute',
+							top:top,
+							left:left,
+							width:width,
+							height:b_height//与父元素高度一致
+						});
+
+						var $mask = $cur_block.find('.block_mask');
+						if($mask.length){
+							var is_hide = $mask.is(':hidden');
+							if(is_hide){
+								$mask.show();
+								$fixbtn.addClass('active');
+							}else{
+								$mask.hide();
+								$fixbtn.removeClass('active');
+							}
+						}else{
+							$fixbtn.addClass('active');
+							var html = _this.html.getBlockGroupMoveBtns(i,block_length);
+							$cur_block.append(html);
+						}
+					}
+
+				});
+
+			},
+			bs_to_absolute : function($fixbtn){
 
 				var $this = $('#content');
 				var blocks_length = $this.find('.blocks_move').length;
@@ -362,6 +449,16 @@ CMS.prototype = {
 				$this.height(content_height);
 
 			},
+			b_update_btn : function($clear_rx_blocks_move){
+				var $this = $clear_rx_blocks_move;
+				var block_length = $this.find('.c_block').length;
+				for(var i = 0;i < block_length;i++){
+					var html = _this.html.getBlockGroupMoveBtns(i,block_length);
+					var $cur_block = $this.find('.c_block:eq('+i+')');
+					$cur_block.find('.block_mask').remove();
+					$cur_block.append(html);
+				}
+			},
 			bs_update_btn : function(){
 				var $this = $('#content');
 				var blocks_length = $this.find('.blocks_move').length;
@@ -372,7 +469,38 @@ CMS.prototype = {
 					$cur_blocks.append(html);
 				}
 			},
-			move : function($current_blocks,$target_blocks,direct,fn){
+			move_left_right : function($current_block,$target_block,direct,fn){
+				var that = this;
+				var current_left = $current_block.position().left;
+				var target_left = $target_block.position().left;
+				var current_width = $current_block.width();
+				var target_width = $target_block.width();
+
+				$current_block.find('.block_mask').hide();
+				$target_block.find('.block_mask').hide();
+
+				var x = 1;
+				if(direct=='right'){
+					x = -1;
+				}
+
+				var cur_end_left = current_left-x*target_width;
+				var tar_end_left = target_left+x*current_width;
+
+				$current_block.animate({left:cur_end_left},1000);
+				setTimeout(function(){
+					$target_block.animate({left:tar_end_left},1000,function(){
+						if(direct=='left'){
+							$current_block.after($target_block);
+						}else{
+							$current_block.before($target_block);
+						}
+						fn&&fn();
+						that.b_update_btn($current_block.parents('.clear_rx.blocks_move'));
+					});
+				},200);
+			},
+			move_top_down : function($current_blocks,$target_blocks,direct,fn){
 				var that = this;
 				var current_top = $current_blocks.position().top;
 				var target_top = $target_blocks.position().top;
@@ -383,12 +511,12 @@ CMS.prototype = {
 				$target_blocks.find('.blocks_mask').hide();
 
 				var x = 1;
-				if(direct!='up'){
+				if(direct=='down'){
 					x = -1;
 				}
 
 				var cur_end_top = current_top-x*target_height;
-				var tar_end_top = target_top+x*current_height
+				var tar_end_top = target_top+x*current_height;
 
 				$current_blocks.animate({top:cur_end_top},1000);
 				setTimeout(function(){
@@ -402,15 +530,24 @@ CMS.prototype = {
 						that.bs_update_btn();
 					});
 				},200);
+					
 			},
 			event : function(){
 				var that = this;
-				_this.o.$root.delegate('.blocks_btn .up','click',function(){
+				_this.o.$root.delegate('.blocks_btn .up, .blocks_btn .down','click',function(){
 					//先去调用后台，成功后再去移动页面元素,这里还要考虑，元素在运行中时要把这些移动按钮先隐藏起来
-					console.log('向上移动...');
 					var $this = $(this);
 					var $current_blocks = $this.parents('.blocks_move');
-					var $target_blocks = $current_blocks.prev('.blocks_move');
+					var $target_blocks = null;
+					var direct = '';
+					if($this.hasClass('up')){
+						$target_blocks = $current_blocks.prev('.blocks_move');
+						direct = 'up';
+					}else{
+						$target_blocks = $current_blocks.next('.blocks_move');
+						direct = 'down';
+					}
+					
 
 					var current_blocks_order = $current_blocks.attr('cb_order');
 					var target_blocks_order = $target_blocks.attr('cb_order');
@@ -418,7 +555,7 @@ CMS.prototype = {
 					_this.ajax.common({
 						url : _this.urls.blocks_save_orders,
 						successFn : function(msg){
-							that.move($current_blocks,$target_blocks,'up',function(){
+							that.move_top_down($current_blocks,$target_blocks,direct,function(){
 								$current_blocks.attr('cb_order',target_blocks_order);
 								$target_blocks.attr('cb_order',current_blocks_order);
 							});
@@ -428,6 +565,40 @@ CMS.prototype = {
 							target_blocks_id : $target_blocks.attr('id'),
 							current_blocks_order : current_blocks_order,
 							target_blocks_order : target_blocks_order
+						}
+					});
+				});
+
+				_this.o.$root.delegate('.block_btn .right, .block_btn .left','click',function(){
+					//先去调用后台，成功后再去移动页面元素,这里还要考虑，元素在运行中时要把这些移动按钮先隐藏起来
+					var $this = $(this);
+					var $current_block = $this.parents('.c_block');
+					var $target_block = null;
+					var direct = '';
+					if($this.hasClass('left')){
+						$target_block = $current_block.prev('.c_block');
+						direct = 'left';
+					}else{
+						$target_block = $current_block.next('.c_block');
+						direct = 'right';
+					}
+					
+
+					var current_block_order = $current_block.attr('b_order');
+					var target_block_order = $target_block.attr('b_order');
+					_this.ajax.common({
+						url : _this.urls.block_save_orders,
+						successFn : function(msg){
+							that.move_left_right($current_block,$target_block,direct,function(){
+								$current_block.attr('b_order',target_block_order);
+								$target_block.attr('b_order',current_block_order);
+							});
+						},
+						data : { 
+							current_block_id : $current_block.attr('id'),
+							target_block_id : $target_block.attr('id'),
+							current_block_order : current_block_order,
+							target_block_order : target_block_order
 						}
 					});
 				});

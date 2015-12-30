@@ -11,6 +11,7 @@ var fs = require('fs');
 var routes = require('./routes/index');
 var layout_manager = require('./routes/layout_manager');
 var blocks_manager = require('./routes/blocks_manager');
+var block_manager = require('./routes/block_manager');
 var fkmodel = require('./routes/fkmodel');
 
 var app = express();
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/layout', layout_manager);
 app.use('/blocks', blocks_manager);
+app.use('/block', block_manager);
 app.use('/findmodels', fkmodel);
 
 // catch 404 and forward to error handler

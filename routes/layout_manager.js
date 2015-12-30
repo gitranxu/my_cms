@@ -14,12 +14,12 @@ router.get('/query', function(req, res, next) {
 router.get('/layout_query_content_by_id', function(req, res, next) {
 
 	var dataid = req.query.dataid;
-	var sql = " SELECT l.content lc,cb.content cbc,cb.order cborder,cb.id cbid,b.content bc,b.order border "+
+	var sql = " SELECT l.content lc,cb.content cbc,cb.order cborder,cb.id cbid,b.content bc,b.order border,b.id bid "+
 			" FROM c_layout l,c_blocks cb,c_block b "+
 			" WHERE l.id = cb.layout_id "+
 			" AND cb.id = b.c_blocks_id "+
-			" AND l.id = "+dataid+
-			" ORDER BY cb.order ASC,b.order ASC ";
+			" AND l.id = '"+dataid+
+			"' ORDER BY cb.order ASC,b.order ASC ";
 	
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
@@ -32,7 +32,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 				var cb_content = rows[i].cbc;
 				var cbid = rows[i].cbid;
-				
+
 				if(cb_content){
 
 					
@@ -40,11 +40,15 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					$2('.blocks_move').attr('id',cbid).attr('cb_order',rows[i].cborder);
 					var cb_appended_length = $('.cntr').find('#'+cbid).length;
 
+					var $3 = cheerio.load(rows[i].bc);
+					$3('.c_block').attr('id',rows[i].bid).attr('b_order',rows[i].border);
+
 					if(!cb_appended_length){//如果不存在，加入
-						$2('.blocks_move').append(rows[i].bc);//加入之前先把b_content加入
+						
+						$2('.blocks_move').append($3.html());//加入之前先把b_content加入
 						$('.cntr').append($2.html());
 					}else{//如果存在的话，则将b_content直接加入bc中
-						$('#'+cbid).append(rows[i].bc);
+						$('#'+cbid).append($3.html());
 					}
 				}else{
 					var $2 = cheerio.load(rows[i].bc);
