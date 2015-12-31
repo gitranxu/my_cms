@@ -35,13 +35,13 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 				if(cb_content){
 
-					
 					var $2 = cheerio.load(cb_content);
 					$2('.blocks_move').attr('id',cbid).attr('cb_order',rows[i].cborder);
-					var cb_appended_length = $('.cntr').find('#'+cbid).length;
 
 					var $3 = cheerio.load(rows[i].bc);
 					$3('.c_block').attr('id',rows[i].bid).attr('b_order',rows[i].border);
+
+					var cb_appended_length = $('.cntr').find('#'+cbid).length;
 
 					if(!cb_appended_length){//如果不存在，加入
 						

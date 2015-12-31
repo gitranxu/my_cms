@@ -9,9 +9,10 @@ router.get('/blocks_save_orders', function(req, res, next) {
 	var target_blocks_id = req.query.target_blocks_id;
 	var current_blocks_order = req.query.current_blocks_order;
 	var target_blocks_order = req.query.target_blocks_order;
-	var sql = " UPDATE c_blocks cb SET cb.order = CASE cb.id WHEN "+current_blocks_id+" THEN "+target_blocks_order+
-			" WHEN "+target_blocks_id+" THEN "+current_blocks_order+
+	var sql = " UPDATE c_blocks cb SET cb.order = CASE cb.id WHEN '"+current_blocks_id+"' THEN "+target_blocks_order+
+			" WHEN '"+target_blocks_id+"' THEN "+current_blocks_order+
 			" ELSE cb.order END";
+	console.log(sql+'-----------bb');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;

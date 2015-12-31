@@ -7,9 +7,26 @@
 4.块级元素都必须有c_block类,
 
 
+在块级元素上只有增加楼层按钮(每次增加都只是在最后一层添加，然后可以通过楼层的上下移动按钮自己去调整最佳位置)
+增加楼层时，可以设置增加一个什么类型的楼层（轮播，普通，通用等）
+在楼层元素上只有选择模板，上下移动按钮（没有增加楼层按钮）
 
 
 将来查数据时，分为几个阶段
 首先查布局，块级，块信息
 再根据块信息去查楼层信息，根据楼层信息去查模板信息，再根据模板信息去查具体数据
 块id,甚至楼层id是全站唯一的，所以只需要根据楼层id及模板id去查询具体数据,也就是说相同的模板因楼层id的不同所体现出来的数据也不同
+
+
+c_layout	布局表
+id		name		content		create_time
+
+c_blocks	块组表
+id		order		content		layout_id		
+
+c_block		块表
+id		order		content		c_blocks_id
+
+c_floor		楼层表
+id		order		content		c_block_id
+
