@@ -551,6 +551,12 @@ CMS.prototype = {
 
 					var current_blocks_order = $current_blocks.attr('cb_order');
 					var target_blocks_order = $target_blocks.attr('cb_order');
+					var current_blocks_id = $current_blocks.attr('id');
+					var target_blocks_id = $target_blocks.attr('id');
+					if(!(current_blocks_id&&target_blocks_id&&current_blocks_order&&target_blocks_order)){
+						console.log('current_blocks_id:'+current_blocks_id+',target_blocks_id:'+target_blocks_id+',current_blocks_order:'+current_blocks_order+',target_blocks_order:'+target_blocks_order+',排序用到的四个参数中有值为假的参数，请检查...');
+						return;
+					}
 
 					_this.ajax.common({
 						url : _this.urls.blocks_save_orders,
@@ -561,8 +567,8 @@ CMS.prototype = {
 							});
 						},
 						data : { 
-							current_blocks_id : $current_blocks.attr('id'),
-							target_blocks_id : $target_blocks.attr('id'),
+							current_blocks_id : current_blocks_id,
+							target_blocks_id : target_blocks_id,
 							current_blocks_order : current_blocks_order,
 							target_blocks_order : target_blocks_order
 						}
@@ -586,6 +592,13 @@ CMS.prototype = {
 
 					var current_block_order = $current_block.attr('b_order');
 					var target_block_order = $target_block.attr('b_order');
+					var current_block_id = $current_block.attr('id');
+					var target_block_id = $target_block.attr('id');
+					if(!(target_block_id&&target_block_id&&current_block_order&&target_block_order)){
+						console.log('current_block_id:'+current_block_id+',target_block_id:'+target_block_id+',current_block_order:'+current_block_order+',target_block_order:'+target_block_order+',排序用到的四个参数中有值为假的参数，请检查...');
+						return;
+					}
+
 					_this.ajax.common({
 						url : _this.urls.block_save_orders,
 						successFn : function(msg){
@@ -595,8 +608,8 @@ CMS.prototype = {
 							});
 						},
 						data : { 
-							current_block_id : $current_block.attr('id'),
-							target_block_id : $target_block.attr('id'),
+							current_block_id : current_block_id,
+							target_block_id : target_block_id,
 							current_block_order : current_block_order,
 							target_block_order : target_block_order
 						}
