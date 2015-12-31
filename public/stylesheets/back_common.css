@@ -33,6 +33,7 @@
 .prev_view img{width: 100%;height: auto;border: none;}
 /*选择布局弹出窗口结束*/
 
+.c_block_btn_group{position: absolute;top: 0;left: 0;z-index: 1000;background: rgba(123,32,151,.4);}
 .choseBtn{float:right;position: relative;border-radius:4px;overflow: hidden;margin-right: 10px;margin-bottom: 6px;}
 .choseBtn:hover .bg{opacity: .5;filter:alpha(opacity=50);}
 .btn_ctn{position: relative;height: 20px;width: 80px;padding: 4px;text-align: center;color: #ffffff;cursor: pointer;z-index: 2;font-size: 12px;line-height: 20px;}
