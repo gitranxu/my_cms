@@ -18,6 +18,12 @@
 再根据块信息去查楼层信息，根据楼层信息去查模板信息，再根据模板信息去查具体数据
 块id,甚至楼层id是全站唯一的，所以只需要根据楼层id及模板id去查询具体数据,也就是说相同的模板因楼层id的不同所体现出来的数据也不同
 
+一个页面的最初始最简单的结构
+<div id="back">
+	<div id="content"></div>
+	<div id="config"></div>
+</div>
+
 
 c_layout	布局表
 id		name		content		create_time

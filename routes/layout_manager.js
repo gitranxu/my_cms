@@ -31,7 +31,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				 " ON a.bid = f.`c_block_id`) b LEFT JOIN c_model cm "+
 				 " ON b.fid = cm.c_floor_id "+
 				 " ORDER BY b.bsorder ASC,b.border ASC,b.forder ASC";
-		console.log(sql+'-----sql');
+		//console.log(sql+'-----sql');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
@@ -68,11 +68,11 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				}else{//如果bs_content不存在
 					var $2 = cheerio.load(rows[i].bc);
 					$2('.blocks_move').attr('id',bsid).attr('bid',rows[i].bid).attr('bs_order',rows[i].bsorder);
-					block_append_floor($2('.c_block'),rows[i]);
 					$('.cntr').append($2.html());
+
+					block_append_floor($2('.c_block[bid="'+bid+'"]'),rows[i]);
 				}
 			}
-
 			res.status(200).send($.html());
 		}else{
 			res.send('');
@@ -87,9 +87,16 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 function block_append_floor($obj,row_obj){
 	if(row_obj.fid){
-		$obj.append(row_obj.fc).find('.c_floor').attr('fid',row_obj.fid);
+		$obj.append(row_obj.fc).find('.c_floor').not('[fid]').attr('fid',row_obj.fid);
+		floor_append_model($obj.find('.c_floor[fid="'+row_obj.fid+'"]'),row_obj);
 	}
 	
+}
+
+function floor_append_model($obj,row_obj){
+	if(row_obj.mid){
+		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid);
+	}
 }
 
 module.exports = router;

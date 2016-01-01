@@ -10,6 +10,19 @@
 	</div>
 </div>
 
+function block_append_floor($obj,row_obj){
+	if(row_obj.fid){
+		$obj.append(row_obj.fc).find('.c_floor').attr('fid',row_obj.fid);
+		floor_append_model($obj.find('.c_floor[fid="'+row_obj.fid+'"]'),row_obj);
+	}
+	
+}
+
+function floor_append_model($obj,row_obj){
+	if(row_obj.mid){
+		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid);
+	}
+}
 
 
 SELECT a.lc,a.cbc,a.cborder,a.cbid,a.bc,a.border,a.bid,f.`content` fc,f.id fid,f.order forder FROM (

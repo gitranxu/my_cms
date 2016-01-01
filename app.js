@@ -5,27 +5,19 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var juicer = require('juicer');
+//var juicer = require('juicer');
 var fs = require('fs');
 
-var routes = require('./routes/index');
+var file_manager = require('./routes/file_manager');
 var layout_manager = require('./routes/layout_manager');
 var blocks_manager = require('./routes/blocks_manager');
 var block_manager = require('./routes/block_manager');
-var fkmodel = require('./routes/fkmodel');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
-app.engine('html',function(path,options,fn){
-  fs.readFile(path,'utf8',function(err,str){
-    if(err) return fn(err);
-    str = juicer(str,options);
-    fn(null,str);
-  });
-});
+app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -35,11 +27,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+
 app.use('/layout', layout_manager);
 app.use('/blocks', blocks_manager);
 app.use('/block', block_manager);
-app.use('/findmodels', fkmodel);
+app.use('/file', file_manager);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

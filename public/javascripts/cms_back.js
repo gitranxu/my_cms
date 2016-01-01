@@ -11,10 +11,13 @@ function CMS(){
 		layout_query : '/layout/query',
 		layout_query_content_by_id : '/layout/layout_query_content_by_id',
 		blocks_save_orders : '/blocks/blocks_save_orders',
-		block_save_orders : '/block/block_save_orders'
+		block_save_orders : '/block/block_save_orders',
+		creat_tmp : '/file/creat_tmp'
 	},
 	this.o = {
-		$root : $('#back')
+		$root : $('#back'),
+		$content : $('#content'),
+		$config : $('#config')
 	}
 }
 CMS.prototype = {
@@ -169,19 +172,19 @@ CMS.prototype = {
 				//加入生成静态页按钮
 				var tmp = '';
 				tmp = _this.html.getGenerateFixBtn();
-				_this.o.$root.append(tmp);
+				_this.o.$config.append(tmp);
 
 				//加入预览按钮
 				tmp = _this.html.getPrevViewFixBtn();
-				_this.o.$root.append(tmp);
+				_this.o.$config.append(tmp);
 
 				if(_this.setting.is_chose_layout_btn_show){
 					//加入选择布局按钮
 					tmp = _this.html.getChoseLayoutFixBtn();
-					_this.o.$root.append(tmp);
+					_this.o.$config.append(tmp);
 				}
 
-				_this.o.$root.append('<div id="move_btns"></div>');
+				_this.o.$config.append('<div id="move_btns"></div>');
 				var $move_btns = $('#move_btns');
 
 				if(_this.setting.can_blockGroups_move){
@@ -304,9 +307,9 @@ CMS.prototype = {
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
 						$('#chose_layouts_cntr').hide();
 						if(msg){
-							$('#content').empty().append(msg);
+							_this.o.$content.empty().append(msg);
 							_this.parseHtml.parse();
-							$('#content .cntr').show();
+							_this.o.$content.find('.cntr').show();
 						}else{
 							alert('没有数据...');
 						}
@@ -336,6 +339,20 @@ CMS.prototype = {
 			_this.move_unit.block_move($(this));
 		});
 
+		this.o.$root.delegate('#prev_view_btn','click',function(){
+			var head = $(document.head).html();
+			var body = $(document.body).html();
+			_this.ajax.common({
+				url : _this.urls.creat_tmp,
+				method : 'POST',
+				data : {head:head,body:body},
+				successFn : function(msg){
+					console.log('成功...');
+					window.open(msg.prev_view_page_url);
+				}
+			});
+		});
+
 		this.move_unit.event();//与移动相关的事件
 	},
 	parseHtml : function(){
@@ -343,9 +360,13 @@ CMS.prototype = {
 		//2.如果c_floor元素下面有c_model元素，则去掉c_floor元素的默认高度
 		var _this = this;
 		return {
+			json : function(){
+				//得到解析模板用的json数据，然后再解析model时进行解析
+				
+			},
 			parse : function(){
 				var that = this;
-				$('#content .cntr').find('.c_block').each(function(){
+				_this.o.$content.find('.cntr').find('.c_block').each(function(){
 					var $c_block = $(this);
 					that.parse_c_block($c_block);
 				});
@@ -370,6 +391,9 @@ CMS.prototype = {
 				}else if($c_models.length > 1){
 					console.log('一个楼层内，只能有一个c_model元素，即一个楼层只能套一个模板');
 				}
+			},
+			parse_c_model : function(){
+
 			}
 		}
 			
@@ -414,7 +438,7 @@ CMS.prototype = {
 
 			},
 			b_to_absolute : function($fixbtn){
-				var $this = $('#content');
+				var $this = _this.o.$content;
 				$this.find('.clear_rx.blocks_move').each(function(){
 					var $this = $(this);
 					var b_height = $this.height();
@@ -463,7 +487,7 @@ CMS.prototype = {
 			},
 			bs_to_absolute : function($fixbtn){
 
-				var $this = $('#content');
+				var $this = _this.o.$content;
 				var blocks_length = $this.find('.blocks_move').length;
 				var content_height = 0;
 				for(var i = blocks_length - 1;i >= 0;i--){
@@ -510,7 +534,7 @@ CMS.prototype = {
 				}
 			},
 			bs_update_btn : function(){
-				var $this = $('#content');
+				var $this = _this.o.$content;
 				var blocks_length = $this.find('.blocks_move').length;
 				for(var i = 0;i < blocks_length;i++){
 					var html = _this.html.getBlockGroupsMoveBtns(i,blocks_length);

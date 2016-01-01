@@ -15,7 +15,6 @@ router.get('/block_save_orders', function(req, res, next) {
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
-		//console.log(rows);
 		res.json({changedRows:rows.changedRows});
 	});
 
