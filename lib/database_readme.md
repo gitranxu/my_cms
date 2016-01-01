@@ -21,6 +21,7 @@
 
 c_layout	布局表
 id		name		content		create_time
+												#布局表中的数据，都有hid_rx样式，即一开始都是隐藏状态
 
 c_blocks	块组表
 id		order		content		layout_id		
@@ -31,3 +32,8 @@ id		order		content		c_blocks_id
 c_floor		楼层表
 id		order		content		c_block_id
 
+c_model		模板表(juicer) 						#模板表中含有区域属性zone(1,2,3)【例如八宫格模板】,zone(all)【轮播图】
+id		content		
+
+c_data		数据表								#不同楼层(id唯一)不同模板的数据不一样
+id		c_model_id		zone_i		c_floor_id		data

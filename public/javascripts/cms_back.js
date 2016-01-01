@@ -301,9 +301,12 @@ CMS.prototype = {
 				_this.ajax.common({
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
+						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
 						$('#chose_layouts_cntr').hide();
 						if(msg){
 							$('#content').empty().append(msg);
+							_this.parseHtml.parse();
+							$('#content .cntr').show();
 						}else{
 							alert('没有数据...');
 						}
@@ -335,6 +338,52 @@ CMS.prototype = {
 
 		this.move_unit.event();//与移动相关的事件
 	},
+	parseHtml : function(){
+		//1.如果c_block元素下面有c_floor元素，则去掉c_block元素的默认高度
+		//2.如果c_floor元素下面有c_model元素，则去掉c_floor元素的默认高度
+		var _this = this;
+		return {
+			parse : function(){
+				var that = this;
+				$('#content .cntr').find('.c_block').each(function(){
+					var $c_block = $(this);
+					that.parse_c_block($c_block);
+				});
+			},
+			parse_c_block : function($c_block){
+				var that = this;
+				var $c_floors = $c_block.find('.c_floor');
+				if($c_floors.length){//下面有元素再进行处理，否则没必要处理
+					_this.removeDefaultHeightColor($c_block);
+					$c_floors.each(function(){
+						var $c_floor = $(this);
+						that.parse_c_floor($c_floor);
+					});
+				}
+			},
+			parse_c_floor : function($c_floor){
+				var $c_models = $c_floor.find('.c_model');
+				if($c_models.length==1){
+					_this.removeDefaultHeightColor($c_floor);
+					
+					_this.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
+				}else if($c_models.length > 1){
+					console.log('一个楼层内，只能有一个c_model元素，即一个楼层只能套一个模板');
+				}
+			}
+		}
+			
+	},
+	removeDefaultHeightColor : function($obj){
+		$obj.removeClass('h50 h100 h150 h200 h250 h300 h350 h400 h450 h500 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18');
+	},
+	checkHeight : function($obj){
+		var height = $obj.height();
+		if(!height){
+			var fid = $obj.attr('fid');
+			console.log('fid为【'+fid+'】的楼层的高度为0，楼层高度要么有默认高度，要么会被模板元素撑高，如果为0，可能是模板元素为绝对定位状态(请在样式表中手动明确规定楼层高度)或浮动状态(请给楼层元素加上clear_rx样式类)');
+		}
+	},
 	init : function(){
 		
 		this.init_unit();
@@ -348,6 +397,7 @@ CMS.prototype = {
 		this.fn = this.fn();
 		this.ajax = this.ajax();
 		this.move_unit = this.move_unit();
+		this.parseHtml = this.parseHtml();
 	},
 	move_unit : function(){
 		//分3个级别的移动，块组级之间的上下移动blocks_move，块组级内部各块之间的左右移动block_move，块级内部各楼层之间的上下移动floor_move
@@ -549,8 +599,8 @@ CMS.prototype = {
 					}
 					
 
-					var current_blocks_order = $current_blocks.attr('cb_order');
-					var target_blocks_order = $target_blocks.attr('cb_order');
+					var current_blocks_order = $current_blocks.attr('bs_order');
+					var target_blocks_order = $target_blocks.attr('bs_order');
 					var current_blocks_id = $current_blocks.attr('id');
 					var target_blocks_id = $target_blocks.attr('id');
 					if(!(current_blocks_id&&target_blocks_id&&current_blocks_order&&target_blocks_order)){
@@ -562,8 +612,8 @@ CMS.prototype = {
 						url : _this.urls.blocks_save_orders,
 						successFn : function(msg){
 							that.move_top_down($current_blocks,$target_blocks,direct,function(){
-								$current_blocks.attr('cb_order',target_blocks_order);
-								$target_blocks.attr('cb_order',current_blocks_order);
+								$current_blocks.attr('bs_order',target_blocks_order);
+								$target_blocks.attr('bs_order',current_blocks_order);
 							});
 						},
 						data : { 
@@ -592,8 +642,8 @@ CMS.prototype = {
 
 					var current_block_order = $current_block.attr('b_order');
 					var target_block_order = $target_block.attr('b_order');
-					var current_block_id = $current_block.attr('id');
-					var target_block_id = $target_block.attr('id');
+					var current_block_id = $current_block.attr('bid');
+					var target_block_id = $target_block.attr('bid');
 					if(!(target_block_id&&target_block_id&&current_block_order&&target_block_order)){
 						console.log('current_block_id:'+current_block_id+',target_block_id:'+target_block_id+',current_block_order:'+current_block_order+',target_block_order:'+target_block_order+',排序用到的四个参数中有值为假的参数，请检查...');
 						return;
