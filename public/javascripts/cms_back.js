@@ -5,7 +5,10 @@ function CMS(){
 		is_chose_layout_btn_show : true,
 		can_blockGroups_move : true,
 		can_blockGroup_move : true,
-		can_block_move : true
+		can_block_move : true,
+		new_floor_height : 200, //新增楼层的高度，注意与数据库中的保持一致【也就是说，新增加的所有楼层的高度都是一样的】
+		new_move_time : 1000,
+		new_move_tuila_time : 700
 	},
 	this.urls = {
 		layout_query : '/layout/query',
@@ -13,6 +16,9 @@ function CMS(){
 		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',
 		blocks_save_orders : '/blocks/blocks_save_orders',
 		block_save_orders : '/block/block_save_orders',
+		create_floor_by_block_id : '/block/create_floor_by_block_id',
+		model_query : '/model/query',
+		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
 		creat_tmp : '/file/creat_tmp'
 	},
 	this.o = {
@@ -23,6 +29,37 @@ function CMS(){
 }
 CMS.prototype = {
 	html : {
+		getNoXHintInfo : function(msg,className,color,fontsize){
+			return "<div class='"+className+" need_remove hid_rx' style='color:"+color+";font-size:"+fontsize+"px;'>"+msg+"</div>";
+		},
+		getAddBlockBtns : function(){
+			return 	'<div class="btn_group c_block_btn_group need_remove clear_rx">'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn top">增加楼层(顶)</div>'+
+								'</div>'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn bottom">增加楼层(底)</div>'+
+								'</div>'+
+							'</div>';
+		},
+		getAddFloorBtns : function(){
+			return 	'<div class="btn_group c_floor_btn_group need_remove clear_rx">'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn chose_model">选择模板</div>'+
+								'</div>'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn up">向上移动</div>'+
+								'</div>'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn down">向下移动</div>'+
+								'</div>'+
+							'</div>';
+		},
 		getChoseLayoutFixBtn : function(){
 			return '<div class="choseBtn fixbtn" id="chose_layout_btn">'+
 						'<div class="bg"></div>'+
@@ -59,14 +96,14 @@ CMS.prototype = {
 						'<div class="btn_ctn btn10">块内楼层上下移动</div>'+
 					'</div>';
 		},
-		getChoseLayoutsWin : function(){
-			return 	'<div id="chose_layouts_cntr" class="hid_rx">'+
+		getChoseXWin : function(id,name){
+			return 	'<div id="'+id+'" class="hid_rx">'+
 						'<div class="bg3"></div>'+
 						'<div class="chose_win">'+
 							'<div class="bg2"></div>'+
 							'<div class="content">'+
 								'<div class="c_left">'+
-									'<h3 class="c_title">可选的布局有：</h3>'+
+									'<h3 class="c_title">可选的'+name+'有：</h3>'+
 									'<ul class="piece_ul"></ul>'+
 								'</div>'+
 								'<div class="c_right">'+
@@ -210,8 +247,12 @@ CMS.prototype = {
 			},
 			add_chose_layout_win : function(){
 				//加入选择布局窗口
-				var chose_layout_win_str = _this.html.getChoseLayoutsWin();
-				_this.o.$root.append(chose_layout_win_str);
+				var chose_win_str = _this.html.getChoseXWin('chose_layouts_cntr','布局');
+				_this.o.$root.append(chose_win_str);
+			},
+			add_chose_model_win : function(){
+				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
+				_this.o.$root.append(chose_win_str);
 			}
 		}
 		
@@ -246,16 +287,13 @@ CMS.prototype = {
 		}
 	},
 	juicer : {
-		msg_to_findpieces : function(){
-			return '<li class="border_top_none" imgurl="" layout_id=""><div class="bgli"></div><div class="ctnli">abc</div></li>';
-		},
 		msg_to_findpieces_html : function(msg){
-			var tpl = this.layout_tpl();
+			var tpl = this.list_tpl();
 			var html = juicer(tpl,msg);
 			return html;
 		},
-		layout_tpl : function(){
-			return '{@each layout_list as it}'+
+		list_tpl : function(){
+			return '{@each list as it}'+
 						'<li class="border_top_none" imgurl="${it.t_url}" dataid="${it.id}"><div class="bgli"></div>'+
 							'<div class="ctnli">${it.name}'+
 								'{@if it.isUpdate}'+
@@ -277,7 +315,6 @@ CMS.prototype = {
 				successFn : function(msg){
 					var html = _this.juicer.msg_to_findpieces_html(msg);
 					$('#chose_layouts_cntr').find('.piece_ul').empty().append(html);
-
 				},
 				data : {
 					t_type : 1,
@@ -289,13 +326,65 @@ CMS.prototype = {
 			});
 		});
 
+		//选择模板,将来会考虑选择模板的条件
+		this.o.$root.delegate('.chose_model','click',function(){
+			var fid = $(this).parents('.c_floor').attr('fid');
+			$('#chose_models_cntr').attr('chose_win_fid',fid).show();
+			_this.ajax.common({
+				url : _this.urls.model_query,
+				successFn : function(msg){
+					var html = _this.juicer.msg_to_findpieces_html(msg);
+					$('#chose_models_cntr').find('.piece_ul').empty().append(html);
+				},
+				data : {
+					t_type : 1,
+					t_width : 2,
+					term_type : 3,
+					floor_id : 4,
+					t_height : 5
+				}
+			});
+		});
+
+		//点击模板item时
+		this.o.$root.delegate('#chose_models_cntr .piece_ul li',{
+			mouseover : function(){
+				var imgurl = $(this).attr('imgurl');
+				$('#chose_models_cntr .prev_view img').attr('src',imgurl);
+			},
+			click : function(){
+				var mid = $(this).attr('dataid');
+				var fid = $('#chose_models_cntr').attr('chose_win_fid');
+				_this.ajax.common({
+					url : _this.urls.model_query_content_data_by_id,
+					successFn : function(msg){
+						//后台返回现成的html结构【包含正确的数据】
+						$('#chose_models_cntr').hide();
+						if(msg.reCode==1){
+							var $current_c_floor = _this.o.$content.find('.c_floor[fid="'+fid+'"]');
+							$current_c_floor.empty().append(msg.msg);
+							_this.parseHtml.parse_c_floor($current_c_floor);
+						}else{
+							alert('没有数据...');
+						}
+					},
+					data : { mid : mid,fid : fid}
+				});
+			}
+		});
+
+		//点击遮罩层关闭弹出窗口
+		this.o.$root.delegate('#chose_models_cntr .bg3','click',function(){
+			$('#chose_models_cntr').hide();
+		});
+
 		//点击遮罩层关闭弹出窗口
 		this.o.$root.delegate('#chose_layouts_cntr .bg3','click',function(){
 			$('#chose_layouts_cntr').hide();
 		});
 
-		//点击item时
-		this.o.$root.delegate('.piece_ul li',{
+		//点击布局item时
+		this.o.$root.delegate('#chose_layouts_cntr .piece_ul li',{
 			mouseover : function(){
 				var imgurl = $(this).attr('imgurl');
 				$('#chose_layouts_cntr .prev_view img').attr('src',imgurl);
@@ -322,24 +411,28 @@ CMS.prototype = {
 			}
 		});
 
+		//块组之间上下移动
 		this.o.$root.delegate('#blockGroups_move_btn','click',function(){
 			$(this).parent().find('.fixbtn').removeClass('active');
 			//$(this).addClass('active');
 			_this.move_unit.blockGroups_move($(this));
 		});
 
+		//块组内部左右移动
 		this.o.$root.delegate('#blockGroup_move_btn','click',function(){
 			$(this).parent().find('.fixbtn').removeClass('active');
 			//$(this).addClass('active');
 			_this.move_unit.blockGroup_move($(this));
 		});
 
+		//暂时没用上
 		this.o.$root.delegate('#block_move_btn','click',function(){
 			$(this).parent().find('.fixbtn').removeClass('active');
 			//$(this).addClass('active');
 			_this.move_unit.block_move($(this));
 		});
 
+		//预览
 		this.o.$root.delegate('#prev_view_btn','click',function(){
 			var head = $(document.head).html();
 			var body = $(document.body).html();
@@ -348,8 +441,44 @@ CMS.prototype = {
 				method : 'POST',
 				data : {head:head,body:body},
 				successFn : function(msg){
-					console.log('成功...');
 					window.open(msg.prev_view_page_url);
+				}
+			});
+		});
+
+		//增加楼层(底)
+		this.o.$root.delegate('.c_block_btn_group .bottom','click',function(){
+			//先发后台请求，成功后再进行dom操作
+			var $c_block = $(this).parents('.c_block');
+			var block_id = $c_block.attr('bid');
+			_this.ajax.common({
+				url : _this.urls.create_floor_by_block_id,
+				data : {block_id : block_id,order_direct : "bottom"},
+				successFn : function(msg){
+					if(msg.reCode==1){
+						_this.move_unit.f_to_absolute($c_block);
+						$c_block.append(msg.msg);
+						_this.move_unit.add_to_bottom($c_block);//开始动画
+					}
+				}
+			});
+		});
+
+		//增加楼层(顶)
+		this.o.$root.delegate('.c_block_btn_group .top','click',function(){
+			//先发后台请求，成功后再进行dom操作
+			var $c_block = $(this).parents('.c_block');
+			var block_id = $c_block.attr('bid');
+			_this.ajax.common({
+				url : _this.urls.create_floor_by_block_id,
+				data : {block_id : block_id,order_direct : "top"},
+				successFn : function(msg){
+					if(msg.reCode==1){
+						_this.move_unit.f_to_absolute($c_block); //先absolute化
+						$c_block.append(msg.msg);
+						_this.move_unit.add_to_top($c_block);//开始动画
+					}
+					
 				}
 			});
 		});
@@ -406,23 +535,55 @@ CMS.prototype = {
 			parse_c_block : function($c_block){
 				var that = this;
 				var $c_floors = $c_block.find('.c_floor');
+
+				if($c_block.find('.noFloorHintInfo').length==0){
+					var height = $c_block.height();
+					var noFloorHintInfo_html = _this.html.getNoXHintInfo("暂没有楼层，请添加楼层","noFloorHintInfo",'#88ff3d',24);
+					$c_block.append(noFloorHintInfo_html).find('.noFloorHintInfo').css({lineHeight:height+'px'});
+				}
+					
+
 				if($c_floors.length){//下面有元素再进行处理，否则没必要处理
 					_this.removeDefaultHeightColor($c_block);
 					$c_floors.each(function(){
 						var $c_floor = $(this);
 						that.parse_c_floor($c_floor);
 					});
+				}else{
+					//如果当前block下面没有floor，则在页面进行提示
+					$c_block.find('.noFloorHintInfo').show();
 				}
+
+				if($c_block.find('.c_block_btn_group').length==0){
+					var add_btn_html = _this.html.getAddBlockBtns();
+					$c_block.append(add_btn_html);//给块元素加上增加楼层按钮
+				}
+					
+
+
 			},
 			parse_c_floor : function($c_floor){
+
+				if($c_floor.find('.noModelHintInfo').length==0){
+					var height = $c_floor.height();
+					var noFloorHintInfo_html = _this.html.getNoXHintInfo('暂没有模板，请关联模板','noModelHintInfo','#F9F4AA',20);
+					$c_floor.append(noFloorHintInfo_html).find('.noModelHintInfo').css({lineHeight:height+'px'});
+				}
+
 				var $c_models = $c_floor.find('.c_model');
 				if($c_models.length==1){
 					_this.removeDefaultHeightColor($c_floor);
-					
-					_this.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
 				}else if($c_models.length > 1){
 					console.log('一个楼层内，只能有一个c_model元素，即一个楼层只能套一个模板');
+				}else{
+					$c_floor.find('.noModelHintInfo').show();
 				}
+
+				if($c_floor.find('.c_floor_btn_group').length==0){
+					var add_btn_html = _this.html.getAddFloorBtns();
+					$c_floor.append(add_btn_html);//给块元素加上增加楼层按钮
+				}
+				
 			},
 			parse_c_model : function(json){
 				var that = this;
@@ -430,12 +591,16 @@ CMS.prototype = {
 					_this.o.$content.find('.c_model').each(function(){
 						var $this = $(this);
 						var mid = $this.attr('mid');
-						var fid = $this.parents('.c_floor').attr('fid');
+						var $c_floor = $this.parents('.c_floor');
+						var fid = $c_floor.attr('fid');
 						var tmp = $this.find('.tmpl').html();
 						var data = that.get_data_by_fidmid(fid+mid,json);
 						var html = juicer(tmp,data);
 						$this.find('.translated').append(html);
 						$this.find('.tmpl').remove();
+
+
+						_this.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
 					});
 				}
 				_this.o.$content.find('.cntr').show();
@@ -466,6 +631,7 @@ CMS.prototype = {
 		//显示选择布局按钮
 		this.fn.add_fixed_btns();//加入悬浮按钮组
 		this.fn.add_chose_layout_win();//加入选择布局窗口
+		this.fn.add_chose_model_win();//加入选择模板窗口
 		
 		this.bind();
 	},
@@ -488,6 +654,101 @@ CMS.prototype = {
 			},
 			block_move : function(){
 
+			},
+			//底部增加楼层的动画，1将块高度增加，2.将最后一个floor设置为absolute,top0,left0,3.移动到最下面的位置处
+			add_to_bottom : function($c_block){
+				var that = this;
+				//执行开始将增加楼层按钮隐藏起来
+				$c_block.find('.c_block_btn_group').hide();
+				var old_height = 0;//如果块下面没有楼层，则old_height值为0
+				var c_floor_length = $c_block.find('.c_floor').length;
+				var move_time = 0;
+				if(c_floor_length > 1){
+					old_height = $c_block.height();
+					move_time = _this.setting.new_move_time;
+				}
+				$c_block.height(old_height + _this.setting.new_floor_height);
+
+				var target_top = $c_block.position().top + old_height;
+
+				var $last_floor = $c_block.find('.c_floor:last');
+				$last_floor.css({
+					position : 'absolute',
+					top : 0,
+					left : 0,
+					width : '100%'
+				}).show("slow",function(){
+					$(this).animate({
+						top : target_top
+					},move_time,function(){
+						//执行完后再把增加楼层按钮显示出来
+						$c_block.find('.c_block_btn_group').show();
+						_this.parseHtml.parse_c_block($c_block);//DOM操作完成后进行检查
+						that.f_to_unabsolute($c_block);
+					});
+				});
+			},
+			//顶部增加楼层的动画，1.将块高度增加，2.将所有floor在当前top的基础上向下移动，3将最后一个floor插入到第一个位置，然后显示出来
+			add_to_top : function($c_block){
+				var that = this;
+				$c_block.find('.c_block_btn_group').hide();
+				var $last_floor = $c_block.find('.c_floor:last');
+				$last_floor.hide();
+				var old_height = 0;//如果块下面没有楼层，则old_height值为0
+				var c_floor_length = $c_block.find('.c_floor').length;
+				var move_time = 0;
+				if(c_floor_length > 1){
+					old_height = $c_block.height();
+					move_time = _this.setting.new_move_time;
+				}
+				$c_block.height(old_height + _this.setting.new_floor_height);
+
+				$c_block.find('.c_floor').each(function(index){
+					var $this = $(this);
+					var top = $this.position().top;
+					$this.animate({top : top + _this.setting.new_floor_height},move_time + index * _this.setting.new_move_tuila_time,function(){
+						$last_floor.css({
+							position : 'absolute',
+							top : 0,
+							left : 0,
+							width : '100%'
+						}).show('slow',function(){
+							$c_block.find('.c_floor:first').before($last_floor);
+							$c_block.find('.c_block_btn_group').show();
+							_this.parseHtml.parse_c_block($c_block);//DOM操作完成后进行检查
+							that.f_to_unabsolute($c_block);
+						});
+						
+					});
+				});
+
+
+			},
+			//在点击增加楼层或上下移动时要执行该方法
+			f_to_absolute : function($c_block){
+				var $c_floors = $c_block.find('.c_floor');
+				var floor_length = $c_floors.length;
+				var c_block_height = 0;
+				for(var i = floor_length - 1;i >= 0;i--){
+					var $cur_floor = $c_floors.eq(i);
+
+					var top = $cur_floor.position().top;
+					var left = $cur_floor.position().left;
+					c_block_height += $cur_floor.height();
+
+					$cur_floor.css({
+						position:'absolute',
+						top:top,
+						left:left,
+						width:'100%'
+					});
+
+				}
+				$c_block.height(c_block_height);
+			},
+			f_to_unabsolute : function($c_block){
+				$c_block.removeAttr('style');
+				$c_block.find('.c_floor').removeAttr('style');
 			},
 			b_to_absolute : function($fixbtn){
 				var $this = _this.o.$content;

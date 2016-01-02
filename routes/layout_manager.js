@@ -8,7 +8,7 @@ router.get('/query', function(req, res, next) {
 	sqlclient.init();
 	sqlclient.query('SELECT id,name FROM  c_layout',function(err,rows,fields){
 		if(err) throw err;
-		res.status(200).json({ layout_list: rows });
+		res.status(200).json({ list: rows });
 	});
 });
 router.get('/layout_query_content_by_id', function(req, res, next) {
