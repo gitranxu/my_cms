@@ -24,6 +24,22 @@
 	<div id="config"></div>
 </div>
 
+一个c_model最基本的content结构
+<div class="c_model">
+	<style>
+		/* .aaa ul li{float: left;}
+		.aaa ul li img{width: 200px;height: 170px;} */
+	</style>
+	<script class="tmpl" type="text/template">
+		/*<ul class="clear_rx">
+			{@each model_list as it}
+				<li><a href=""><img src="images/${it.imgurl}" alt="${it.name}"></a></li>
+			{@/each}
+		</ul>*/
+	</script>
+	<div class="translated"></div>       【模板转换html后的存放位置】
+</div>
+
 
 c_layout	布局表
 id		name		content		create_time
@@ -39,7 +55,10 @@ c_floor		楼层表
 id		order		content		c_block_id
 
 c_model		模板表(juicer) 						#模板表中含有区域属性zone(1,2,3)【例如八宫格模板】,zone(all)【轮播图】
-id		content		
+id		content		data_model【该字段将来可以用于校验】
 
 c_data		数据表								#不同楼层(id唯一)不同模板的数据不一样
-id		c_model_id		zone_i		c_floor_id		data
+id		c_model_id		c_floor_id		data
+
+
+

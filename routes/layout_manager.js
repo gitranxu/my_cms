@@ -14,12 +14,6 @@ router.get('/query', function(req, res, next) {
 router.get('/layout_query_content_by_id', function(req, res, next) {
 
 	var dataid = req.query.dataid;
-	/*var sql = " SELECT l.content lc,cb.content cbc,cb.order cborder,cb.id cbid,b.content bc,b.order border,b.id bid "+
-			" FROM c_layout l,c_blocks cb,c_block b "+
-			" WHERE l.id = cb.layout_id "+
-			" AND cb.id = b.c_blocks_id "+
-			" AND l.id = '"+dataid+
-			"' ORDER BY cb.order ASC,b.order ASC ";*/
 	var sql = "SELECT b.*,cm.id 'mid',cm.content mc FROM ( "+
 				" SELECT a.*,f.`content` fc,f.id fid,f.order forder FROM ( "+
 				" SELECT l.content lc,bs.content bsc,bs.order bsorder,bs.id bsid,b.content bc,b.order border,b.id bid   "+
@@ -28,10 +22,13 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				   " AND bs.id = b.c_blocks_id   "+
 				   " AND l.id = '"+dataid+"'  "+
 				 " ) a LEFT JOIN c_floor f "+
-				 " ON a.bid = f.`c_block_id`) b LEFT JOIN c_model cm "+
+				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id` "+
+											    "  FROM c_floor f,c_model m,c_data d "+
+											    " WHERE f.`id` = d.`c_floor_id` "+
+											    "   AND d.`c_model_id` = m.`id`) cm "+
 				 " ON b.fid = cm.c_floor_id "+
 				 " ORDER BY b.bsorder ASC,b.border ASC,b.forder ASC";
-		//console.log(sql+'-----sql');
+		console.log(sql+'-----sql');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
@@ -82,6 +79,24 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 
 
+});
+
+//得到某个页面中所有的楼层模板数据json
+router.post('/get_floor_model_datas_of_layout',function(req,res,next){
+	var queryparams = req.body.queryparams;
+	var sql = "SELECT d.data,d.c_floor_model_id c_floor_model_id "+
+				"  FROM c_data d "+
+				" WHERE d.c_floor_model_id IN ("+queryparams+")";
+	console.log(sql);
+	sqlclient.init();
+	sqlclient.query(sql,function(err,rows,fields){
+		if(err) throw err;
+		if(rows.length){
+			res.json({msg:rows});
+		}else{
+			res.json({msg:''});
+		}
+	});
 });
 
 

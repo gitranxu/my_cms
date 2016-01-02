@@ -5,7 +5,6 @@ var router = express.Router();
 
 //生成临时html文件
 router.post('/creat_tmp', function(req, res, next) {
-	console.log('-----------123-');
 	var head = req.body.head;
 	var body = req.body.body;
 	var html = "<!DOCTYPE html><html><head></head><body></body></html>";

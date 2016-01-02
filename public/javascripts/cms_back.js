@@ -10,6 +10,7 @@ function CMS(){
 	this.urls = {
 		layout_query : '/layout/query',
 		layout_query_content_by_id : '/layout/layout_query_content_by_id',
+		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',
 		blocks_save_orders : '/blocks/blocks_save_orders',
 		block_save_orders : '/block/block_save_orders',
 		creat_tmp : '/file/creat_tmp'
@@ -309,7 +310,7 @@ CMS.prototype = {
 						if(msg){
 							_this.o.$content.empty().append(msg);
 							_this.parseHtml.parse();
-							_this.o.$content.find('.cntr').show();
+							//_this.o.$content.find('.cntr').show();
 						}else{
 							alert('没有数据...');
 						}
@@ -361,15 +362,39 @@ CMS.prototype = {
 		var _this = this;
 		return {
 			json : function(){
+				var that = this;
 				//得到解析模板用的json数据，然后再解析model时进行解析
-				
+				var queryparams = '';//查询字符串，格式'fidmid','fidmid'
+				_this.o.$content.find('.c_model').each(function(){
+					var $this = $(this);
+					var mid = $this.attr('mid');
+					var fid = $this.parents('.c_floor').attr('fid');
+					queryparams += "'"+fid+mid+"',";
+				});
+				queryparams = queryparams.substring(0,queryparams.length-1);
+				_this.ajax.common({
+					url : _this.urls.get_floor_model_datas_of_layout,
+					method : 'POST',
+					data : {queryparams : queryparams},
+					successFn : function(msg){
+						if(msg.msg){//如果有数据
+							//alert(JSON.stringify(msg.msg));
+							that.parse_c_model(msg.msg);
+						}else{
+							console.log('可能页面还没有模板，或模板没有数据...');
+						}
+					}
+				});
 			},
 			parse : function(){
 				var that = this;
+
 				_this.o.$content.find('.cntr').find('.c_block').each(function(){
 					var $c_block = $(this);
 					that.parse_c_block($c_block);
 				});
+
+				that.json();//得到解析模板用的json数据，然后进行解析
 			},
 			parse_c_block : function($c_block){
 				var that = this;
@@ -392,8 +417,27 @@ CMS.prototype = {
 					console.log('一个楼层内，只能有一个c_model元素，即一个楼层只能套一个模板');
 				}
 			},
-			parse_c_model : function(){
-
+			parse_c_model : function(json){
+				var that = this;
+				if(json.length){
+					_this.o.$content.find('.c_model').each(function(){
+						var $this = $(this);
+						var mid = $this.attr('mid');
+						var fid = $this.parents('.c_floor').attr('fid');
+						var tmp = $this.find('.tmpl').html();
+						var data = that.get_data_by_fidmid(fid+mid,json);
+						var html = juicer(tmp,data);
+						$this.find('.translated').append(html);
+						$this.find('.tmpl').remove();
+					});
+				}
+			},
+			get_data_by_fidmid : function(fidmid,jsondata){
+				for(var i = 0,j = jsondata.length; i < j;i++){
+					if(fidmid==jsondata[i].c_floor_model_id){
+						return { model_list : eval('('+jsondata[i].data+')') };
+					}
+				}
 			}
 		}
 			
