@@ -413,27 +413,32 @@ CMS.prototype = {
 
 		//块组之间上下移动
 		this.o.$root.delegate('#blockGroups_move_btn','click',function(){
-			$(this).parent().find('.fixbtn').removeClass('active');
-			//$(this).addClass('active');
 			_this.move_unit.blockGroups_move($(this));
 		});
 
 		//块组内部左右移动
 		this.o.$root.delegate('#blockGroup_move_btn','click',function(){
-			$(this).parent().find('.fixbtn').removeClass('active');
-			//$(this).addClass('active');
 			_this.move_unit.blockGroup_move($(this));
 		});
 
 		//暂时没用上
 		this.o.$root.delegate('#block_move_btn','click',function(){
-			$(this).parent().find('.fixbtn').removeClass('active');
-			//$(this).addClass('active');
 			_this.move_unit.block_move($(this));
 		});
 
 		//预览
+		//在点击预览按钮或生成按钮之前，要先判断块组块内部移动按钮是否为标红状态，如果是则不能进行
 		this.o.$root.delegate('#prev_view_btn','click',function(){
+			var blocks_active = $('#blockGroups_move_btn').hasClass('active');
+			var block_active = $('#blockGroup_move_btn').hasClass('active');
+			if(blocks_active){
+				alert('【块组之间上下移动】按钮为标红状态时，不能预览或生产页面，请切换状态');
+				return;
+			}
+			if(blocks_active || block_active){
+				alert('【块组内部左右移动】按钮为标红状态时，不能预览或生产页面，请切换状态');
+				return;
+			}
 			var head = $(document.head).html();
 			var body = $(document.body).html();
 			_this.ajax.common({
@@ -750,9 +755,18 @@ CMS.prototype = {
 				$c_block.removeAttr('style');
 				$c_block.find('.c_floor').removeAttr('style');
 			},
+			bs_to_unabsolute : function(){
+				_this.o.$content.removeAttr('style');
+				_this.o.$content.find('.blocks_move').removeAttr('style');
+			},
+			b_to_unabsolute : function(){
+				console.log('-----------888');
+				_this.o.$content.find('.clear_rx.blocks_move').removeAttr('style');
+				_this.o.$content.find('.clear_rx.blocks_move').find('.c_block').removeAttr('style');
+			},
 			b_to_absolute : function($fixbtn){
-				var $this = _this.o.$content;
-				$this.find('.clear_rx.blocks_move').each(function(){
+				var that = this;
+				_this.o.$content.find('.clear_rx.blocks_move').each(function(){
 					var $this = $(this);
 					var b_height = $this.height();
 					var b_width = $this.width();
@@ -787,6 +801,7 @@ CMS.prototype = {
 							}else{
 								$mask.hide();
 								$fixbtn.removeClass('active');
+								that.b_to_unabsolute();
 							}
 						}else{
 							$fixbtn.addClass('active');
@@ -825,6 +840,7 @@ CMS.prototype = {
 						}else{
 							$mask.hide();
 							$fixbtn.removeClass('active');
+							this.bs_to_unabsolute();
 						}
 					}else{
 						$fixbtn.addClass('active');
