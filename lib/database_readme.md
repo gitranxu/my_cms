@@ -62,3 +62,9 @@ id		c_model_id		c_floor_id		data
 
 
 
+
+reCode 
+	1	正常
+	10000	返回值为空
+	10001	传入的参数违法
+	

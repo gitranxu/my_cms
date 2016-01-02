@@ -372,19 +372,26 @@ CMS.prototype = {
 					queryparams += "'"+fid+mid+"',";
 				});
 				queryparams = queryparams.substring(0,queryparams.length-1);
-				_this.ajax.common({
-					url : _this.urls.get_floor_model_datas_of_layout,
-					method : 'POST',
-					data : {queryparams : queryparams},
-					successFn : function(msg){
-						if(msg.msg){//如果有数据
-							//alert(JSON.stringify(msg.msg));
-							that.parse_c_model(msg.msg);
-						}else{
-							console.log('可能页面还没有模板，或模板没有数据...');
+				if(queryparams){
+					_this.ajax.common({
+						url : _this.urls.get_floor_model_datas_of_layout,
+						method : 'POST',
+						data : {queryparams : queryparams},
+						successFn : function(msg){
+							if(msg.reCode==0){//如果有数据
+								//alert(JSON.stringify(msg.msg));
+								that.parse_c_model(msg.msg);
+							}else if(msg.reCode=10001){
+								console.log(msg.msg);
+							}else{
+								console.log('可能页面还没有模板，或模板没有数据...');
+							}
 						}
-					}
-				});
+					});
+				}else{
+					_this.o.$content.find('.cntr').show();
+				}
+					
 			},
 			parse : function(){
 				var that = this;
@@ -431,6 +438,7 @@ CMS.prototype = {
 						$this.find('.tmpl').remove();
 					});
 				}
+				_this.o.$content.find('.cntr').show();
 			},
 			get_data_by_fidmid : function(fidmid,jsondata){
 				for(var i = 0,j = jsondata.length; i < j;i++){
