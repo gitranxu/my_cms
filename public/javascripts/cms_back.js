@@ -34,124 +34,61 @@ function CMS(){
 		$config : $('#config')
 	}
 }
+
+
 CMS.prototype = {
 	html : {
 		getNoXHintInfo : function(msg,className,color,fontsize){
 			return "<div class='"+className+" need_remove hid_rx' style='color:"+color+";font-size:"+fontsize+"px;'>"+msg+"</div>";
 		},
+		//json格式{mask:"add_floor_mask",bg:"add_floor_bg",c_x_btn_group:"c_block_btn_group",items:[{class_name:"top",text:"增加楼层(顶)"},{class_name:"bottom",text:"增加楼层(底)"}]}
+		getTypeOneBtn : function(jsondata){
+			var tmpl = '<div class="${mask} need_remove">'+
+			                '<div class="${bg}"></div>'+
+			                '<div class="btn_group ${c_x_btn_group} clear_rx">'+
+			                    '{@each items as it}'+
+			                        '<div class="choseBtn ${it.hid_rx}">'+
+			                            '<div class="bg"></div>'+
+			                            '<div class="btn_ctn ${it.class_name}">${it.text}</div>'+
+			                        '</div>'+
+			                    '{@/each}'+
+			                '</div>'+
+			            '</div>';
+			return juicer(tmpl,jsondata);
+		},
+		getTypeTwoBtn : function(jsondata){
+			var tmpl = '<div class="choseBtn fixbtn" id="${btn_id}">'+
+							'<div class="bg"></div>'+
+							'<div class="btn_ctn">${btn_name}</div>'+
+						'</div>';
+			return juicer(tmpl,jsondata);
+		},
 		getAddBlockBtns : function(){
-
-			return 	'<div class="add_floor_mask need_remove">'+
-						'<div class="add_floor_bg"></div>'+
-						'<div class="btn_group c_block_btn_group need_remove clear_rx">'+
-							'<div class="choseBtn">'+
-								'<div class="bg"></div>'+
-								'<div class="btn_ctn top">增加楼层(顶)</div>'+
-							'</div>'+
-							'<div class="choseBtn">'+
-								'<div class="bg"></div>'+
-								'<div class="btn_ctn bottom">增加楼层(底)</div>'+
-							'</div>'+
-						'</div>'+
-					'</div>';
+			return this.getTypeOneBtn({mask:"add_floor_mask",bg:"add_floor_bg",c_x_btn_group:"c_block_btn_group",items:[{class_name:"top",text:"增加楼层(顶)"},{class_name:"bottom",text:"增加楼层(底)"}]});
 		},
 		getAddFloorBtns : function(){
-			return 	'<div class="no_mask need_remove">'+
-						'<div class="no_bg"></div>'+
-						'<div class="btn_group c_floor_btn_group clear_rx">'+
-							'<div class="choseBtn">'+
-								'<div class="bg"></div>'+
-								'<div class="btn_ctn chose_model">选择模板</div>'+
-							'</div>'+
-							'<div class="choseBtn">'+
-								'<div class="bg"></div>'+
-								'<div class="btn_ctn delete_model">删除楼层</div>'+
-							'</div>'+
-							'<div class="choseBtn">'+
-								'<div class="bg"></div>'+
-								'<div class="btn_ctn config_model hid_rx">配置楼层</div>'+
-							'</div>'+
-						'</div>'+
-					'</div>'
-		},
-		getBlockMoveBtns : function(index,total){
-			if(index==0){//第一个,返回向下移动
-				return 	'<div class="floor_mask need_remove">'+
-							'<div class="floor_bg"></div>'+
-							'<div class="btn_group c_floor_btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn down">向下移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}else if(index == total-1){//最后一个,返回向上移动
-				return 	'<div class="floor_mask need_remove">'+
-							'<div class="floor_bg"></div>'+
-							'<div class="btn_group c_floor_btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn up">向上移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}else{//返回上下移动
-				return 	'<div class="floor_mask need_remove">'+
-							'<div class="floor_bg"></div>'+
-							'<div class="btn_group c_floor_btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn down">向下移动</div>'+
-								'</div>'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn up">向上移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}
+			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
 		},
 		getChoseLayoutFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="chose_layout_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn9">选择布局</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"chose_layout_btn",btn_name:"选择布局"});
 		},
 		getGenerateFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="generate_html_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn9">生成静态页面</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"generate_html_btn",btn_name:"生成静态页面"});
 		},
 		getPrevViewFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="prev_view_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn10">预览</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"prev_view_btn",btn_name:"预览"});
 		},
 		getBlockGroupsMoveFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="blockGroups_move_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn10">块组之间上下移动</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"blockGroups_move_btn",btn_name:"块组之间上下移动"});
 		},
 		getBlockGroupMoveFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="blockGroup_move_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn10">块组内部左右移动</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"blockGroup_move_btn",btn_name:"块组内部左右移动"});
 		},
 		getBlockMoveFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="block_move_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn10">块内楼层上下移动</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"block_move_btn",btn_name:"块内楼层上下移动"});
 		},
 		getCreateFloorFixBtn : function(){
-			return '<div class="choseBtn fixbtn" id="floor_create_btn">'+
-						'<div class="bg"></div>'+
-						'<div class="btn_ctn btn10">增加楼层</div>'+
-					'</div>';
+			return this.getTypeTwoBtn({btn_id:"floor_create_btn",btn_name:"增加楼层"});
 		},
 		getChoseXWin : function(id,name){
 			return 	'<div id="'+id+'" class="hid_rx need_remove">'+
@@ -173,80 +110,27 @@ CMS.prototype = {
 						'</div>'+
 					'</div>';
 		},
-		getBlockGroupMoveBtns : function(index,total){
-			if(index==0){//第一个,返回向右移动
-				return 	'<div class="block_mask need_remove">'+
-							'<div class="block_bg"></div>'+
-							'<div class="btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn right">向右移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}else if(index == total-1){//最后一个,返回向左移动
-				return 	'<div class="block_mask need_remove">'+
-							'<div class="block_bg"></div>'+
-							'<div class="btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn left">向左移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}else{//返回左右移动
-				return 	'<div class="block_mask need_remove">'+
-							'<div class="block_bg"></div>'+
-							'<div class="btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn right">向右移动</div>'+
-								'</div>'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn left">向左移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
+		//jsondata:{first_class_name:"down",first_text:"向下移动",last_class_name:"up",last_text:"向上移动",mask:"floor_mask",bg:"floor_bg",c_x_btn_group:"c_floor_btn_group"}
+		getXMoveBtns : function(index,total,jsondata){
+			var items = null;
+			if(index==0){
+				items = [{class_name:jsondata.first_class_name,text:jsondata.first_text}];
+			}else if(index == total-1){
+				items = [{class_name:jsondata.last_class_name,text:jsondata.last_text}];
+			}else{
+				items = [{class_name:jsondata.first_class_name,text:jsondata.first_text},{class_name:jsondata.last_class_name,text:jsondata.last_text}];
 			}
+			var data = {mask:jsondata.mask,bg:jsondata.bg,c_x_btn_group:jsondata.c_x_btn_group,items:items};
+			return this.getTypeOneBtn(data);
+		},
+		getBlockMoveBtns : function(index,total){
+			return this.getXMoveBtns(index,total,{first_class_name:"down",first_text:"向下移动",last_class_name:"up",last_text:"向上移动",mask:"floor_mask",bg:"floor_bg",c_x_btn_group:"c_floor_btn_group"});
+		},
+		getBlockGroupMoveBtns : function(index,total){
+			return this.getXMoveBtns(index,total,{first_class_name:"right",first_text:"向右移动",last_class_name:"left",last_text:"向左移动",mask:"block_mask",bg:"block_bg",c_x_btn_group:""});
 		},
 		getBlockGroupsMoveBtns : function(index,total){
-			if(index==0){//第一个,返回向下移动
-				return 	'<div class="blocks_mask need_remove">'+
-							'<div class="blocks_bg"></div>'+
-							'<div class="btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn down">向下移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}else if(index == total-1){//最后一个,返回向上移动
-				return 	'<div class="blocks_mask need_remove">'+
-							'<div class="blocks_bg"></div>'+
-							'<div class="btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn up">向上移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}else{//返回上下移动
-				return 	'<div class="blocks_mask need_remove">'+
-							'<div class="blocks_bg"></div>'+
-							'<div class="btn_group">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn down">向下移动</div>'+
-								'</div>'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn up">向上移动</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'
-			}
-			
+			return this.getXMoveBtns(index,total,{first_class_name:"down",first_text:"向下移动",last_class_name:"up",last_text:"向上移动",mask:"blocks_mask",bg:"blocks_bg",c_x_btn_group:""});
 		},
 		getEditZone : function(){
 			return '<div class="c_edit_zone need_remove">'+
@@ -787,15 +671,10 @@ CMS.prototype = {
 			floor_up_down_btn : function($fixbtn){
 				//按c_block去控制c_floor按钮
 				//_this.html.getBlockMoveBtns(index,totle);
-				console.log('here.....');
 				_this.o.$content.find('.c_block').each(function(){
 					var $this = $(this);
 					var $c_floors = $this.find('.c_floor');
 					for(var i = 0,j = $c_floors.length; i < j ; i ++){
-						/*var btns = _this.html.getBlockMoveBtns(i,j);
-						var $cur_floor = $c_floors.eq(i);
-						$cur_floor.find('.floor_mask').remove();
-						$cur_floor.append(btns);*/
 
 						var $cur_floor = $c_floors.eq(i);
 
@@ -1149,7 +1028,7 @@ CMS.prototype = {
 			},
 			event : function(){
 				var that = this;
-				_this.o.$root.delegate('.blocks_btn .up, .blocks_btn .down','click',function(){
+				_this.o.$root.delegate('.blocks_mask .up, .blocks_mask .down','click',function(){
 					//先去调用后台，成功后再去移动页面元素,这里还要考虑，元素在运行中时要把这些移动按钮先隐藏起来
 					var $this = $(this);
 					var $current_blocks = $this.parents('.blocks_move');
@@ -1190,7 +1069,7 @@ CMS.prototype = {
 					});
 				});
 
-				_this.o.$root.delegate('.block_btn .right, .block_btn .left','click',function(){
+				_this.o.$root.delegate('.block_mask .right, .block_mask .left','click',function(){
 					//先去调用后台，成功后再去移动页面元素,这里还要考虑，元素在运行中时要把这些移动按钮先隐藏起来
 					var $this = $(this);
 					var $current_block = $this.parents('.c_block');
@@ -1204,7 +1083,7 @@ CMS.prototype = {
 						direct = 'right';
 					}
 					
-
+					console.log(11111111111);
 					var current_block_order = $current_block.attr('b_order');
 					var target_block_order = $target_block.attr('b_order');
 					var current_block_id = $current_block.attr('bid');
