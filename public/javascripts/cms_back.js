@@ -69,7 +69,7 @@ CMS.prototype = {
 							'</div>'+
 							'<div class="choseBtn">'+
 								'<div class="bg"></div>'+
-								'<div class="btn_ctn config_model">配置楼层</div>'+
+								'<div class="btn_ctn config_model hid_rx">配置楼层</div>'+
 							'</div>'+
 						'</div>'+
 					'</div>'
@@ -247,6 +247,12 @@ CMS.prototype = {
 						'</div>'
 			}
 			
+		},
+		getEditZone : function(){
+			return '<div class="c_edit_zone need_remove">'+
+                        '<div class="c_edit_bg"></div>'+
+                        '<div class="c_edit_btn">编辑</div>'+
+                    '</div>';
 		}
 	},
 	fn : function(){
@@ -337,6 +343,7 @@ CMS.prototype = {
 	bind : function(){
 		var _this = this;
 
+		//点击系统按钮变大变小
 		this.o.$root.delegate('#sys_btns','click',function(e){
 			if(e.target != this){
 				return;
@@ -356,6 +363,11 @@ CMS.prototype = {
 					});
 				});
 			}
+			
+		});
+
+		//点击编辑按钮，弹出编辑窗口
+		this.o.$root.delegate('.c_edit_btn','click',function(e){
 			
 		});
 
@@ -447,7 +459,6 @@ CMS.prototype = {
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
-						console.log(msg);
 						$('#chose_layouts_cntr').hide();
 						if(msg){
 							_this.o.$content.empty().append(msg);
@@ -610,7 +621,6 @@ CMS.prototype = {
 						data : {queryparams : queryparams},
 						successFn : function(msg){
 							if(msg.reCode==0){//如果有数据
-								//alert(JSON.stringify(msg.msg));
 								that.parse_c_model(msg.msg);
 							}else if(msg.reCode=10001){
 								console.log(msg.msg);
@@ -633,8 +643,6 @@ CMS.prototype = {
 				});
 
 				that.json();//得到解析模板用的json数据，然后进行解析
-
-				//_this.move_unit.floor_up_down_btn();//生成楼层的上下移动按钮
 			},
 			parse_c_block : function($c_block){
 				var that = this;
@@ -658,12 +666,6 @@ CMS.prototype = {
 					//如果当前block下面没有floor，则在页面进行提示
 					$c_block.find('.noFloorHintInfo').show();
 				}
-
-				/*if($c_block.find('.c_block_btn_group').length==0){
-					var add_btn_html = _this.html.getAddBlockBtns();
-					$c_block.append(add_btn_html);//给块元素加上增加楼层按钮
-				}*/
-					
 
 
 			},
@@ -690,6 +692,11 @@ CMS.prototype = {
 				}
 				
 			},
+			parse_c_edit : function(){
+				//对c_edit类的元素进行处理
+				var c_edit_zone_html = _this.html.getEditZone();
+				_this.o.$content.find('.c_edit').append(c_edit_zone_html);
+			},
 			parse_c_model : function(json){
 				var that = this;
 				if(json.length){
@@ -704,10 +711,10 @@ CMS.prototype = {
 						$this.find('.translated').append(html);
 						$this.find('.tmpl').remove();
 
-
 						_this.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
 					});
 				}
+				that.parse_c_edit();
 				_this.o.$content.find('.cntr').show();
 			},
 			get_data_by_fidmid : function(fidmid,jsondata){

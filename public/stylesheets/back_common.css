@@ -60,7 +60,8 @@
 .add_floor_mask .btn_group{position: relative;z-index: 9451;float: right;margin-right: 10px;margin-top: 10px;background: rgba(155,144,12,.5)}
 .floor_mask .btn_group{position: relative;z-index: 9401;float: right;margin-right: 10px;margin-top: 10px;background: rgba(155,144,12,.5)}
 
-.blocks_mask,.block_mask,.floor_mask,.no_mask,.add_floor_mask{position: absolute;width: 100%;height: 100%;top:0;left:0;}
+.blocks_mask,.block_mask,.floor_mask,.add_floor_mask{position: absolute;width: 100%;height: 100%;top:0;left:0;}
+.no_mask{position: absolute;width: 100%;height: 0%;top:0;left:0;}
 
 .c_block_btn_group{position: absolute;top: 0;left: 0;z-index: 1000;background: rgba(123,32,151,.4);}
 .c_block_btn_group:hover{background: rgba(123,32,151,.8);}
@@ -83,3 +84,11 @@
 .fixbtn:hover .bg{opacity: .8}
 .fixbtn .btn_ctn{height: auto;width: 20px;padding: 0;}
 .fixbtn.active .bg{opacity: .8;background: red;}
+
+
+.c_edit{position: relative;}
+.c_edit .c_edit_zone{width: 100%;height: 100%;position: absolute;top: 0;left: 0;}
+.c_edit .c_edit_bg{background: black;filter: alpha(opacity=60);opacity: .6;position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: 9000;}
+.c_edit .c_edit_btn{width: 60px;height: 30px;position: absolute;top: 50%;left: 50%;margin-top: -15px;margin-left: -30px;text-align: center;line-height: 30px;background: rgba(255,144,12,.5);z-index: 9001;color: #fff;cursor: pointer;}
+.c_edit .c_edit_btn:hover{background: rgba(155,244,12,.8);}
+.c_edit .c_edit_zone:hover .c_edit_bg{opacity: .3;filter: alpha(opacity=30);}
