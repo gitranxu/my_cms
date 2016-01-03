@@ -106,7 +106,7 @@ router.post('/get_floor_model_datas_of_layout',function(req,res,next){
 
 function block_append_floor($obj,row_obj){
 	if(row_obj.fid){
-		$obj.append(row_obj.fc).find('.c_floor').not('[fid]').attr('fid',row_obj.fid);
+		$obj.append(row_obj.fc).find('.c_floor').not('[fid]').attr('fid',row_obj.fid).attr('f_order',row_obj.forder);
 		floor_append_model($obj.find('.c_floor[fid="'+row_obj.fid+'"]'),row_obj);
 	}
 	

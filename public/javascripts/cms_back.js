@@ -16,6 +16,7 @@ function CMS(){
 		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',
 		blocks_save_orders : '/blocks/blocks_save_orders',
 		block_save_orders : '/block/block_save_orders',
+		floor_save_orders : '/floor/floor_save_orders',
 		create_floor_by_block_id : '/block/create_floor_by_block_id',
 		model_query : '/model/query',
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
@@ -852,6 +853,17 @@ CMS.prototype = {
 				$this.height(content_height);
 
 			},
+			f_update_btn : function(){
+				console.log('-------888');
+				/*var $this = _this.o.$content;
+				var blocks_length = $this.find('.blocks_move').length;
+				for(var i = 0;i < blocks_length;i++){
+					var html = _this.html.getBlockGroupsMoveBtns(i,blocks_length);
+					var $cur_blocks = $this.find('.blocks_move:eq('+i+')');
+					$cur_blocks.find('.blocks_mask').remove();
+					$cur_blocks.append(html);
+				}*/
+			},
 			b_update_btn : function($clear_rx_blocks_move){
 				var $this = $clear_rx_blocks_move;
 				var block_length = $this.find('.c_block').length;
@@ -935,6 +947,39 @@ CMS.prototype = {
 				},200);
 					
 			},
+			f_move_top_down : function($current_floor,$target_floor,direct,fn){
+				var $c_block = $current_floor.parents('.c_block');
+				this.f_to_absolute($c_block);
+
+				var that = this;
+				var current_top = $current_floor.position().top;
+				var target_top = $target_floor.position().top;
+				var current_height = $current_floor.height();
+				var target_height = $target_floor.height();
+
+				var x = 1;
+				if(direct=='down'){
+					x = -1;
+				}
+
+				var cur_end_top = current_top-x*target_height;
+				var tar_end_top = target_top+x*current_height;
+
+				$current_floor.animate({top:cur_end_top},1000);
+				setTimeout(function(){
+					$target_floor.animate({top:tar_end_top},1000,function(){
+						if(direct=='up'){
+							$current_floor.after($target_floor);
+						}else{
+							$current_floor.before($target_floor);
+						}
+						fn&&fn();
+						that.f_update_btn();
+						that.f_to_unabsolute($c_block);
+					});
+				},200);
+
+			},
 			event : function(){
 				var that = this;
 				_this.o.$root.delegate('.blocks_btn .up, .blocks_btn .down','click',function(){
@@ -944,10 +989,10 @@ CMS.prototype = {
 					var $target_blocks = null;
 					var direct = '';
 					if($this.hasClass('up')){
-						$target_blocks = $current_blocks.prev('.blocks_move');
+						$target_blocks = $current_blocks.prevAll('.blocks_move').eq(0);
 						direct = 'up';
 					}else{
-						$target_blocks = $current_blocks.next('.blocks_move');
+						$target_blocks = $current_blocks.nextAll('.blocks_move').eq(0);
 						direct = 'down';
 					}
 					
@@ -985,10 +1030,10 @@ CMS.prototype = {
 					var $target_block = null;
 					var direct = '';
 					if($this.hasClass('left')){
-						$target_block = $current_block.prev('.c_block');
+						$target_block = $current_block.prevAll('.c_block').eq(0);
 						direct = 'left';
 					}else{
-						$target_block = $current_block.next('.c_block');
+						$target_block = $current_block.nextAll('.c_block').eq(0);
 						direct = 'right';
 					}
 					
@@ -1015,6 +1060,47 @@ CMS.prototype = {
 							target_block_id : target_block_id,
 							current_block_order : current_block_order,
 							target_block_order : target_block_order
+						}
+					});
+				});
+
+				_this.o.$root.delegate('.c_floor_btn_group .up, .c_floor_btn_group .down','click',function(){
+					//先去调用后台，成功后再去移动页面元素,这里还要考虑，元素在运行中时要把这些移动按钮先隐藏起来
+					var $this = $(this);
+					var $current_floor = $this.parents('.c_floor');
+					var $target_floor = null;
+					var direct = '';
+					if($this.hasClass('up')){
+						$target_floor = $current_floor.prevAll('.c_floor').eq(0);
+						direct = 'up';
+					}else{
+						$target_floor = $current_floor.nextAll('.c_floor').eq(0);
+						direct = 'down';
+					}
+					
+
+					var current_floor_order = $current_floor.attr('f_order');
+					var target_floor_order = $target_floor.attr('f_order');
+					var current_floor_id = $current_floor.attr('fid');
+					var target_floor_id = $target_floor.attr('fid');
+					if(!(target_floor_id&&target_floor_id&&current_floor_order&&target_floor_order)){
+						console.log('current_floor_id:'+current_floor_id+',target_floor_id:'+target_floor_id+',current_floor_order:'+current_floor_order+',target_floor_order:'+target_floor_order+',排序用到的四个参数中有值为假的参数，请检查...');
+						return;
+					}
+
+					_this.ajax.common({
+						url : _this.urls.floor_save_orders,
+						successFn : function(msg){
+							that.f_move_top_down($current_floor,$target_floor,direct,function(){
+								$current_floor.attr('f_order',target_floor_order);
+								$target_floor.attr('f_order',current_floor_order);
+							});
+						},
+						data : { 
+							current_floor_id : current_floor_id,
+							target_floor_id : target_floor_id,
+							current_floor_order : current_floor_order,
+							target_floor_order : target_floor_order
 						}
 					});
 				});
