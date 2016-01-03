@@ -8,6 +8,7 @@ function CMS(){
 	},
 	this.sys_btns = {
 		chose_layout_show : true,
+		create_floor_show : true,
 		prev_view_show : true,
 		make_html_show : true,
 		blockGroups_move_show : true,
@@ -38,16 +39,20 @@ CMS.prototype = {
 			return "<div class='"+className+" need_remove hid_rx' style='color:"+color+";font-size:"+fontsize+"px;'>"+msg+"</div>";
 		},
 		getAddBlockBtns : function(){
-			return 	'<div class="btn_group c_block_btn_group need_remove clear_rx">'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn top">增加楼层(顶)</div>'+
-								'</div>'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn bottom">增加楼层(底)</div>'+
-								'</div>'+
-							'</div>';
+
+			return 	'<div class="add_floor_mask need_remove">'+
+						'<div class="add_floor_bg"></div>'+
+						'<div class="btn_group c_block_btn_group need_remove clear_rx">'+
+							'<div class="choseBtn">'+
+								'<div class="bg"></div>'+
+								'<div class="btn_ctn top">增加楼层(顶)</div>'+
+							'</div>'+
+							'<div class="choseBtn">'+
+								'<div class="bg"></div>'+
+								'<div class="btn_ctn bottom">增加楼层(底)</div>'+
+							'</div>'+
+						'</div>'+
+					'</div>';
 		},
 		getAddFloorBtns : function(){
 			return 	'<div class="no_mask need_remove">'+
@@ -139,6 +144,12 @@ CMS.prototype = {
 			return '<div class="choseBtn fixbtn" id="block_move_btn">'+
 						'<div class="bg"></div>'+
 						'<div class="btn_ctn btn10">块内楼层上下移动</div>'+
+					'</div>';
+		},
+		getCreateFloorFixBtn : function(){
+			return '<div class="choseBtn fixbtn" id="floor_create_btn">'+
+						'<div class="bg"></div>'+
+						'<div class="btn_ctn btn10">增加楼层</div>'+
 					'</div>';
 		},
 		getChoseXWin : function(id,name){
@@ -250,6 +261,8 @@ CMS.prototype = {
 				var $sys_btns = $('#sys_btns');
 
 				_this.sys_btns.chose_layout_show && $sys_btns.append(_this.html.getChoseLayoutFixBtn());//加入选择布局按钮
+
+				_this.sys_btns.create_floor_show && $sys_btns.append(_this.html.getCreateFloorFixBtn());//加入选择布局按钮
 				
 				_this.sys_btns.blockGroups_move_show && $sys_btns.append(_this.html.getBlockGroupsMoveFixBtn());//加入块组之间上下移动按钮
 
@@ -335,7 +348,7 @@ CMS.prototype = {
 					$this.addClass('to_small');
 				});
 			}else{
-				$this.animate({height:200,width:200},1000,function(){
+				$this.animate({height:200,width:300},1000,function(){
 					$this.find('.fixbtn').show("slow",function(){
 						$this.removeClass('bg_color1');
 						$this.removeClass('to_small');
@@ -469,6 +482,11 @@ CMS.prototype = {
 		//块内楼层上下移动
 		this.o.$root.delegate('#block_move_btn','click',function(){
 			_this.move_unit.block_move($(this));
+		});
+
+		//增加楼层
+		this.o.$root.delegate('#floor_create_btn','click',function(){
+			_this.move_unit.floor_create_show($(this));
 		});
 
 		//预览
@@ -606,10 +624,10 @@ CMS.prototype = {
 					$c_block.find('.noFloorHintInfo').show();
 				}
 
-				if($c_block.find('.c_block_btn_group').length==0){
+				/*if($c_block.find('.c_block_btn_group').length==0){
 					var add_btn_html = _this.html.getAddBlockBtns();
 					$c_block.append(add_btn_html);//给块元素加上增加楼层按钮
-				}
+				}*/
 					
 
 
@@ -706,17 +724,19 @@ CMS.prototype = {
 			blockGroup_move : function($fixbtn){
 				this.b_to_absolute($fixbtn);
 			},
-			block_move : function($fixbtn){//仅仅是控制上下选择按钮显示隐藏
-				//按c_block去控制c_floor按钮
-				//_this.html.getBlockMoveBtns(index,totle);
+			block_move : function($fixbtn){
 				this.floor_up_down_btn($fixbtn);
-				/*if(!$fixbtn.hasClass('active')){
-					$('.c_floor_btn_group .up,.c_floor_btn_group .down').show();
-					$fixbtn.addClass('active');
+			},
+			floor_create_show : function($fixbtn){
+				//给每个c_block得到增加楼层html
+				if(!$fixbtn.hasClass('active')){
+					var html = _this.html.getAddBlockBtns();
+					_this.o.$content.find('.c_block').append(html);
+					$fixbtn.addClass('active')
 				}else{
-					$('.c_floor_btn_group .up,.c_floor_btn_group .down').hide();
-					$fixbtn.removeClass('active');
-				}*/
+					_this.o.$content.find('.add_floor_mask').remove();
+					$fixbtn.removeClass('active')
+				}
 				
 			},
 			floor_up_down_btn : function($fixbtn){
