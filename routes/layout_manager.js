@@ -28,6 +28,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 											    "   AND d.`c_model_id` = m.`id`) cm "+
 				 " ON b.fid = cm.c_floor_id "+
 				 " ORDER BY b.bsorder ASC,b.border ASC,b.forder ASC";
+				 
 		console.log(sql+'-----sql');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){

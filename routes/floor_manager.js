@@ -1,5 +1,4 @@
 var express = require('express');
-var cheerio = require('cheerio');//后台经量的jquery
 var router = express.Router();
 var uuid = require('node-uuid'); 
 var sqlclient = require('../lib/mysql_cli');
@@ -17,6 +16,25 @@ router.get('/floor_save_orders', function(req, res, next) {
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
 		res.json({reCode:1,changedRows:rows.changedRows});
+	});
+
+
+});
+
+//直接删除，不保存原数据，麻烦（有一个可行的方案，将原id,原关联的c_block_id保留，并改变原来的值，但还是麻烦，直接删除）
+router.post('/floor_delete', function(req, res, next) {
+
+	var fid = req.body.fid;
+	if(!fid){
+		console.log('floor_id的值不合法:'+fid);
+		res.json({reCode:10001,msg:"参数不合法"});
+		return;
+	}
+	var sql = " DELETE FROM c_floor WHERE id='"+fid+"' ";
+	sqlclient.init();
+	sqlclient.query(sql,function(err,rows,fields){
+		if(err) throw err;
+		res.json({reCode:1,msg:"删除成功"});
 	});
 
 

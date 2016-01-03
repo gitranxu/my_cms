@@ -1,37 +1,16 @@
 需求：
-4.楼层的上下移动【完成】
 
 删除楼层，
 配置楼层【维护楼层数据】，
 配置按钮
 
 
-上下移动按钮调整位置
-增加楼层按钮拿出来
 
 
 
 BUG：
 a.暂没有楼层，暂没有模板，显示隐藏不对
-b.这些按钮门的z-index值大小顺序
 
-所有z-index起点最低为10000
-
-
-bg_chose_models_bg
-bg_chose_models_content_bg
-bgli
-
-
-bg_block
-bg_blocks
-
-fixbtn
-
-c_block_btn_group
-c_floor_btn_group
-block_mask
-blocks_mask
 
 
 

@@ -22,6 +22,7 @@ function CMS(){
 		blocks_save_orders : '/blocks/blocks_save_orders',
 		block_save_orders : '/block/block_save_orders',
 		floor_save_orders : '/floor/floor_save_orders',
+		floor_delete : '/floor/floor_delete',
 		create_floor_by_block_id : '/block/create_floor_by_block_id',
 		model_query : '/model/query',
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
@@ -64,11 +65,11 @@ CMS.prototype = {
 							'</div>'+
 							'<div class="choseBtn">'+
 								'<div class="bg"></div>'+
-								'<div class="btn_ctn chose_model">删除楼层</div>'+
+								'<div class="btn_ctn delete_model">删除楼层</div>'+
 							'</div>'+
 							'<div class="choseBtn">'+
 								'<div class="bg"></div>'+
-								'<div class="btn_ctn chose_model">配置楼层</div>'+
+								'<div class="btn_ctn config_model">配置楼层</div>'+
 							'</div>'+
 						'</div>'+
 					'</div>'
@@ -446,6 +447,7 @@ CMS.prototype = {
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
+						console.log(msg);
 						$('#chose_layouts_cntr').hide();
 						if(msg){
 							_this.o.$content.empty().append(msg);
@@ -459,6 +461,38 @@ CMS.prototype = {
 					dataType : 'html'
 				});
 			}
+		});
+
+		//删除楼层时
+		this.o.$root.delegate('.c_floor_btn_group .delete_model','click',function(){
+			if(!window.confirm('你确定要删除楼层吗？')){
+                return;
+            }
+			//删除成功后再操作DOM
+			var $this = $(this);
+			var $floor_for_del = $this.parents('.c_floor');
+			var fid = $floor_for_del.attr('fid');
+			if(!fid){
+				console.log('得到的fid值为：'+fid+',请仔细检查');
+				return;
+			}
+			_this.ajax.common({
+				url : _this.urls.floor_delete,
+				method : 'POST',
+				data : {fid : fid},
+				successFn : function(msg){
+					if(msg.reCode==1){
+						alert(msg.msg);
+						//删除成功后要操作DOM元素
+						var $c_block = $floor_for_del.parents('.c_block');
+						$floor_for_del.remove();
+						_this.parseHtml.parse_c_block($c_block);
+						
+					}else{
+						alert(msg.msg);
+					}
+				}
+			});
 		});
 
 		//块组之间上下移动
@@ -620,6 +654,7 @@ CMS.prototype = {
 						that.parse_c_floor($c_floor);
 					});
 				}else{
+					_this.addDefaultHeightColor($c_block);
 					//如果当前block下面没有floor，则在页面进行提示
 					$c_block.find('.noFloorHintInfo').show();
 				}
@@ -687,6 +722,9 @@ CMS.prototype = {
 	},
 	removeDefaultHeightColor : function($obj){
 		$obj.removeClass('h50 h100 h150 h200 h250 h300 h350 h400 h450 h500 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18');
+	},
+	addDefaultHeightColor : function($obj){
+		$obj.addClass('h300 c5');
 	},
 	checkHeight : function($obj){
 		var height = $obj.height();
