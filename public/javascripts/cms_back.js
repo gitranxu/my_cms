@@ -2,13 +2,17 @@
 function CMS(){
 	this.setting = {
 		version : '1.0.0',
-		is_chose_layout_btn_show : true,
-		can_blockGroups_move : true,
-		can_blockGroup_move : true,
-		can_block_move : true,
 		new_floor_height : 200, //新增楼层的高度，注意与数据库中的保持一致【也就是说，新增加的所有楼层的高度都是一样的】
 		new_move_time : 1000,
 		new_move_tuila_time : 700
+	},
+	this.sys_btns = {
+		chose_layout_show : true,
+		prev_view_show : true,
+		make_html_show : true,
+		blockGroups_move_show : true,
+		blockGroup_move_show : true,
+		floor_move_show : true
 	},
 	this.urls = {
 		layout_query : '/layout/query',
@@ -46,20 +50,60 @@ CMS.prototype = {
 							'</div>';
 		},
 		getAddFloorBtns : function(){
-			return 	'<div class="btn_group c_floor_btn_group need_remove clear_rx">'+
+			return 	'<div class="no_mask need_remove">'+
+						'<div class="no_bg"></div>'+
+						'<div class="btn_group c_floor_btn_group clear_rx">'+
+							'<div class="choseBtn">'+
+								'<div class="bg"></div>'+
+								'<div class="btn_ctn chose_model">选择模板</div>'+
+							'</div>'+
+							'<div class="choseBtn">'+
+								'<div class="bg"></div>'+
+								'<div class="btn_ctn chose_model">删除楼层</div>'+
+							'</div>'+
+							'<div class="choseBtn">'+
+								'<div class="bg"></div>'+
+								'<div class="btn_ctn chose_model">配置楼层</div>'+
+							'</div>'+
+						'</div>'+
+					'</div>'
+		},
+		getBlockMoveBtns : function(index,total){
+			if(index==0){//第一个,返回向下移动
+				return 	'<div class="floor_mask need_remove">'+
+							'<div class="floor_bg"></div>'+
+							'<div class="btn_group c_floor_btn_group">'+
 								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
-									'<div class="btn_ctn chose_model">选择模板</div>'+
+									'<div class="btn_ctn down">向下移动</div>'+
+								'</div>'+
+							'</div>'+
+						'</div>'
+			}else if(index == total-1){//最后一个,返回向上移动
+				return 	'<div class="floor_mask need_remove">'+
+							'<div class="floor_bg"></div>'+
+							'<div class="btn_group c_floor_btn_group">'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn up">向上移动</div>'+
+								'</div>'+
+							'</div>'+
+						'</div>'
+			}else{//返回上下移动
+				return 	'<div class="floor_mask need_remove">'+
+							'<div class="floor_bg"></div>'+
+							'<div class="btn_group c_floor_btn_group">'+
+								'<div class="choseBtn">'+
+									'<div class="bg"></div>'+
+									'<div class="btn_ctn down">向下移动</div>'+
 								'</div>'+
 								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn up">向上移动</div>'+
 								'</div>'+
-								'<div class="choseBtn">'+
-									'<div class="bg"></div>'+
-									'<div class="btn_ctn down">向下移动</div>'+
-								'</div>'+
-							'</div>';
+							'</div>'+
+						'</div>'
+			}
 		},
 		getChoseLayoutFixBtn : function(){
 			return '<div class="choseBtn fixbtn" id="chose_layout_btn">'+
@@ -80,26 +124,26 @@ CMS.prototype = {
 					'</div>';
 		},
 		getBlockGroupsMoveFixBtn : function(){
-			return '<div class="choseBtn fixbtn fixbtn2" id="blockGroups_move_btn">'+
+			return '<div class="choseBtn fixbtn" id="blockGroups_move_btn">'+
 						'<div class="bg"></div>'+
 						'<div class="btn_ctn btn10">块组之间上下移动</div>'+
 					'</div>';
 		},
 		getBlockGroupMoveFixBtn : function(){
-			return '<div class="choseBtn fixbtn fixbtn2" id="blockGroup_move_btn">'+
+			return '<div class="choseBtn fixbtn" id="blockGroup_move_btn">'+
 						'<div class="bg"></div>'+
 						'<div class="btn_ctn btn10">块组内部左右移动</div>'+
 					'</div>';
 		},
 		getBlockMoveFixBtn : function(){
-			return '<div class="choseBtn fixbtn fixbtn2" id="block_move_btn">'+
+			return '<div class="choseBtn fixbtn" id="block_move_btn">'+
 						'<div class="bg"></div>'+
 						'<div class="btn_ctn btn10">块内楼层上下移动</div>'+
 					'</div>';
 		},
 		getChoseXWin : function(id,name){
-			return 	'<div id="'+id+'" class="hid_rx">'+
-						'<div class="bg3"></div>'+
+			return 	'<div id="'+id+'" class="hid_rx need_remove">'+
+						'<div class="win_bg"></div>'+
 						'<div class="chose_win">'+
 							'<div class="bg2"></div>'+
 							'<div class="content">'+
@@ -118,36 +162,35 @@ CMS.prototype = {
 					'</div>';
 		},
 		getBlockGroupMoveBtns : function(index,total){
-			var result = '';
 			if(index==0){//第一个,返回向右移动
-				return 	'<div class="block_mask">'+
-							'<div class="bg5"></div>'+
+				return 	'<div class="block_mask need_remove">'+
+							'<div class="block_bg"></div>'+
 							'<div class="btn_group">'+
-								'<div class="choseBtn block_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn right">向右移动</div>'+
 								'</div>'+
 							'</div>'+
 						'</div>'
 			}else if(index == total-1){//最后一个,返回向左移动
-				return 	'<div class="block_mask">'+
-							'<div class="bg5"></div>'+
+				return 	'<div class="block_mask need_remove">'+
+							'<div class="block_bg"></div>'+
 							'<div class="btn_group">'+
-								'<div class="choseBtn block_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn left">向左移动</div>'+
 								'</div>'+
 							'</div>'+
 						'</div>'
 			}else{//返回左右移动
-				return 	'<div class="block_mask">'+
-							'<div class="bg5"></div>'+
+				return 	'<div class="block_mask need_remove">'+
+							'<div class="block_bg"></div>'+
 							'<div class="btn_group">'+
-								'<div class="choseBtn block_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn right">向右移动</div>'+
 								'</div>'+
-								'<div class="choseBtn block_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn left">向左移动</div>'+
 								'</div>'+
@@ -156,36 +199,35 @@ CMS.prototype = {
 			}
 		},
 		getBlockGroupsMoveBtns : function(index,total){
-			var result = '';
 			if(index==0){//第一个,返回向下移动
-				return 	'<div class="blocks_mask">'+
-							'<div class="bg5"></div>'+
+				return 	'<div class="blocks_mask need_remove">'+
+							'<div class="blocks_bg"></div>'+
 							'<div class="btn_group">'+
-								'<div class="choseBtn blocks_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn down">向下移动</div>'+
 								'</div>'+
 							'</div>'+
 						'</div>'
 			}else if(index == total-1){//最后一个,返回向上移动
-				return 	'<div class="blocks_mask">'+
-							'<div class="bg5"></div>'+
+				return 	'<div class="blocks_mask need_remove">'+
+							'<div class="blocks_bg"></div>'+
 							'<div class="btn_group">'+
-								'<div class="choseBtn blocks_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn up">向上移动</div>'+
 								'</div>'+
 							'</div>'+
 						'</div>'
 			}else{//返回上下移动
-				return 	'<div class="blocks_mask">'+
-							'<div class="bg5"></div>'+
+				return 	'<div class="blocks_mask need_remove">'+
+							'<div class="blocks_bg"></div>'+
 							'<div class="btn_group">'+
-								'<div class="choseBtn blocks_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn down">向下移动</div>'+
 								'</div>'+
-								'<div class="choseBtn blocks_btn">'+
+								'<div class="choseBtn">'+
 									'<div class="bg"></div>'+
 									'<div class="btn_ctn up">向上移动</div>'+
 								'</div>'+
@@ -198,53 +240,26 @@ CMS.prototype = {
 	fn : function(){
 		var _this = this;
 		return {
-			modify_pre_btn_position : function(){
-				$('#generate_html_btn').css('right',($(document.body).width()-1200)/2+28);
-				$('#prev_view_btn').css({'right':($(document.body).width()-1200)/2+28+33});
-				$('#chose_layout_btn').css({'right':($(document.body).width()-1200)/2+28+33+33});
-
-				$('#blockGroups_move_btn').css('right',($(document.body).width()-1200)/2+28);
-				$('#blockGroup_move_btn').css({'right':($(document.body).width()-1200)/2+28+33});
-				$('#block_move_btn').css({'right':($(document.body).width()-1200)/2+28+33+33});
+			page_reinit : function(){
+				$('#sys_btns .fixbtn').removeClass('active notclick');
+				_this.o.$content.removeAttr('style');
 			},
 			add_fixed_btns : function(){
-				//加入生成静态页按钮
-				var tmp = '';
-				tmp = _this.html.getGenerateFixBtn();
-				_this.o.$config.append(tmp);
 
-				//加入预览按钮
-				tmp = _this.html.getPrevViewFixBtn();
-				_this.o.$config.append(tmp);
+				_this.o.$config.append('<div id="sys_btns" class="need_remove"></div>');
+				var $sys_btns = $('#sys_btns');
 
-				if(_this.setting.is_chose_layout_btn_show){
-					//加入选择布局按钮
-					tmp = _this.html.getChoseLayoutFixBtn();
-					_this.o.$config.append(tmp);
-				}
+				_this.sys_btns.chose_layout_show && $sys_btns.append(_this.html.getChoseLayoutFixBtn());//加入选择布局按钮
+				
+				_this.sys_btns.blockGroups_move_show && $sys_btns.append(_this.html.getBlockGroupsMoveFixBtn());//加入块组之间上下移动按钮
 
-				_this.o.$config.append('<div id="move_btns"></div>');
-				var $move_btns = $('#move_btns');
+				_this.sys_btns.blockGroup_move_show && $sys_btns.append(_this.html.getBlockGroupMoveFixBtn());//加入块组内部左右移动按钮
 
-				if(_this.setting.can_blockGroups_move){
-					//加入块组之间上下移动按钮
-					tmp = _this.html.getBlockGroupsMoveFixBtn();
-					$move_btns.append(tmp);
-				}
+				_this.sys_btns.floor_move_show && $sys_btns.append(_this.html.getBlockMoveFixBtn());//加入块内楼层上下移动按钮
 
-				if(_this.setting.can_blockGroup_move){
-					//加入块组内部左右移动按钮
-					tmp = _this.html.getBlockGroupMoveFixBtn();
-					$move_btns.append(tmp);
-				}
+				_this.sys_btns.make_html_show && $sys_btns.append(_this.html.getGenerateFixBtn());//加入生成静态页按钮
 
-				if(_this.setting.can_block_move){
-					//加入块内楼层上下移动按钮
-					tmp = _this.html.getBlockMoveFixBtn();
-					$move_btns.append(tmp);
-				}
-
-				this.modify_pre_btn_position();//重新调整预览，生成静态页面按钮的位置
+				_this.sys_btns.prev_view_show && $sys_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
 			},
 			add_chose_layout_win : function(){
 				//加入选择布局窗口
@@ -307,6 +322,28 @@ CMS.prototype = {
 	},
 	bind : function(){
 		var _this = this;
+
+		this.o.$root.delegate('#sys_btns','click',function(e){
+			if(e.target != this){
+				return;
+			}
+			var $this = $(this);
+			if(!$this.hasClass('to_small')){
+				$this.find('.fixbtn').hide();
+				$this.addClass('bg_color1');
+				$this.animate({height:30,width:20},1000,function(){
+					$this.addClass('to_small');
+				});
+			}else{
+				$this.animate({height:200,width:200},1000,function(){
+					$this.find('.fixbtn').show("slow",function(){
+						$this.removeClass('bg_color1');
+						$this.removeClass('to_small');
+					});
+				});
+			}
+			
+		});
 
 		//选择布局
 		this.o.$root.delegate('#chose_layout_btn','click',function(){
@@ -375,12 +412,12 @@ CMS.prototype = {
 		});
 
 		//点击遮罩层关闭弹出窗口
-		this.o.$root.delegate('#chose_models_cntr .bg3','click',function(){
+		this.o.$root.delegate('#chose_models_cntr .win_bg','click',function(){
 			$('#chose_models_cntr').hide();
 		});
 
 		//点击遮罩层关闭弹出窗口
-		this.o.$root.delegate('#chose_layouts_cntr .bg3','click',function(){
+		this.o.$root.delegate('#chose_layouts_cntr .win_bg','click',function(){
 			$('#chose_layouts_cntr').hide();
 		});
 
@@ -400,11 +437,10 @@ CMS.prototype = {
 						if(msg){
 							_this.o.$content.empty().append(msg);
 							_this.parseHtml.parse();
-							//_this.o.$content.find('.cntr').show();
 						}else{
 							alert('没有数据...');
 						}
-						$('#move_btns .fixbtn').removeClass('active');
+						_this.fn.page_reinit();
 					},
 					data : { dataid : dataid},
 					dataType : 'html'
@@ -414,15 +450,23 @@ CMS.prototype = {
 
 		//块组之间上下移动
 		this.o.$root.delegate('#blockGroups_move_btn','click',function(){
+			if($('#blockGroup_move_btn').hasClass('active')){
+				alert('激活【块组之间上下移动】按钮，请先取消【块组内部左右移动】按钮激活状态。');
+				return;
+			}
 			_this.move_unit.blockGroups_move($(this));
 		});
 
 		//块组内部左右移动
 		this.o.$root.delegate('#blockGroup_move_btn','click',function(){
+			if($('#blockGroups_move_btn').hasClass('active')){
+				alert('激活【块组内部左右移动】按钮，请先取消【块组之间上下移动】按钮激活状态。');
+				return;
+			}
 			_this.move_unit.blockGroup_move($(this));
 		});
 
-		//暂时没用上
+		//块内楼层上下移动
 		this.o.$root.delegate('#block_move_btn','click',function(){
 			_this.move_unit.block_move($(this));
 		});
@@ -537,6 +581,8 @@ CMS.prototype = {
 				});
 
 				that.json();//得到解析模板用的json数据，然后进行解析
+
+				//_this.move_unit.floor_up_down_btn();//生成楼层的上下移动按钮
 			},
 			parse_c_block : function($c_block){
 				var that = this;
@@ -638,6 +684,8 @@ CMS.prototype = {
 		this.fn.add_fixed_btns();//加入悬浮按钮组
 		this.fn.add_chose_layout_win();//加入选择布局窗口
 		this.fn.add_chose_model_win();//加入选择模板窗口
+
+		//this.fn.floor_up_down_btn();
 		
 		this.bind();
 	},
@@ -658,7 +706,54 @@ CMS.prototype = {
 			blockGroup_move : function($fixbtn){
 				this.b_to_absolute($fixbtn);
 			},
-			block_move : function(){
+			block_move : function($fixbtn){//仅仅是控制上下选择按钮显示隐藏
+				//按c_block去控制c_floor按钮
+				//_this.html.getBlockMoveBtns(index,totle);
+				this.floor_up_down_btn($fixbtn);
+				/*if(!$fixbtn.hasClass('active')){
+					$('.c_floor_btn_group .up,.c_floor_btn_group .down').show();
+					$fixbtn.addClass('active');
+				}else{
+					$('.c_floor_btn_group .up,.c_floor_btn_group .down').hide();
+					$fixbtn.removeClass('active');
+				}*/
+				
+			},
+			floor_up_down_btn : function($fixbtn){
+				//按c_block去控制c_floor按钮
+				//_this.html.getBlockMoveBtns(index,totle);
+				console.log('here.....');
+				_this.o.$content.find('.c_block').each(function(){
+					var $this = $(this);
+					var $c_floors = $this.find('.c_floor');
+					for(var i = 0,j = $c_floors.length; i < j ; i ++){
+						/*var btns = _this.html.getBlockMoveBtns(i,j);
+						var $cur_floor = $c_floors.eq(i);
+						$cur_floor.find('.floor_mask').remove();
+						$cur_floor.append(btns);*/
+
+						var $cur_floor = $c_floors.eq(i);
+
+						var $mask = $cur_floor.find('.floor_mask');
+						if($mask.length){
+							var is_hide = $mask.is(':hidden');
+							if(is_hide){
+								$mask.show();
+								$fixbtn.addClass('active');
+							}else{
+								$mask.hide();
+								$fixbtn.removeClass('active');
+								//that.b_to_unabsolute();
+							}
+						}else{
+							$fixbtn.addClass('active');
+							var html = _this.html.getBlockMoveBtns(i,j);
+							$cur_floor.append(html);
+						}
+
+					}
+				});
+
 
 			},
 			//底部增加楼层的动画，1将块高度增加，2.将最后一个floor设置为absolute,top0,left0,3.移动到最下面的位置处
@@ -761,12 +856,16 @@ CMS.prototype = {
 				_this.o.$content.find('.blocks_move').removeAttr('style');
 			},
 			b_to_unabsolute : function(){
-				console.log('-----------888');
 				_this.o.$content.find('.clear_rx.blocks_move').removeAttr('style');
 				_this.o.$content.find('.clear_rx.blocks_move').find('.c_block').removeAttr('style');
 			},
 			b_to_absolute : function($fixbtn){
 				var that = this;
+				if(_this.o.$content.find('.clear_rx.blocks_move').length==0){
+					alert('该页面没有可供左右移动的HTML结构');
+					$('#blockGroup_move_btn').addClass('notclick');
+					return;
+				}
 				_this.o.$content.find('.clear_rx.blocks_move').each(function(){
 					var $this = $(this);
 					var b_height = $this.height();
@@ -853,16 +952,15 @@ CMS.prototype = {
 				$this.height(content_height);
 
 			},
-			f_update_btn : function(){
-				console.log('-------888');
-				/*var $this = _this.o.$content;
-				var blocks_length = $this.find('.blocks_move').length;
-				for(var i = 0;i < blocks_length;i++){
-					var html = _this.html.getBlockGroupsMoveBtns(i,blocks_length);
-					var $cur_blocks = $this.find('.blocks_move:eq('+i+')');
-					$cur_blocks.find('.blocks_mask').remove();
-					$cur_blocks.append(html);
-				}*/
+			f_update_btn : function($c_block){
+				var $this = $c_block;
+				var $floors = $this.find('.c_floor');
+				for(var i = 0 , j = $floors.length ;i < j ; i++){
+					var html = _this.html.getBlockMoveBtns(i,j);
+					var $cur_floor = $floors.eq(i);
+					$cur_floor.find('.floor_mask').remove();
+					$cur_floor.append(html);
+				}
 			},
 			b_update_btn : function($clear_rx_blocks_move){
 				var $this = $clear_rx_blocks_move;
@@ -957,6 +1055,10 @@ CMS.prototype = {
 				var current_height = $current_floor.height();
 				var target_height = $target_floor.height();
 
+
+				$current_floor.find('.floor_mask').hide();
+				$target_floor.find('.floor_mask').hide();
+
 				var x = 1;
 				if(direct=='down'){
 					x = -1;
@@ -974,7 +1076,7 @@ CMS.prototype = {
 							$current_floor.before($target_floor);
 						}
 						fn&&fn();
-						that.f_update_btn();
+						that.f_update_btn($c_block);
 						that.f_to_unabsolute($c_block);
 					});
 				},200);

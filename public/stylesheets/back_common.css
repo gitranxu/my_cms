@@ -16,7 +16,7 @@
 /*选择布局弹出窗口开始*/
 
 #chose_layouts_cntr .bg3{z-index: 1001;filter:alpha(opacity=40);opacity: .4;}
-.chose_win{width: 800px;height: 400px;position: fixed;top: 24%;left: 50%;margin-left: -400px;z-index: 1002;padding: 10px;}
+.chose_win{width: 800px;height: 400px;position: fixed;top: 24%;left: 50%;margin-left: -400px;z-index: 10001;padding: 10px;}
 .chose_win .bg2{filter:alpha(opacity=40);opacity: .4}
 .chose_win .content{position: relative;z-index: 2;color: #ffffff;height: 100%;}
 .c_title{font-size: 12px;line-height: 24px;height: 24px;margin-bottom: 10px;}
@@ -33,34 +33,51 @@
 .prev_view img{width: 100%;height: auto;border: none;}
 /*选择布局弹出窗口结束*/
 
-.c_block_btn_group{position: absolute;top: 0;left: 0;z-index: 1000;background: rgba(123,32,151,.4);}
-.c_block_btn_group:hover{background: rgba(123,32,151,.8);}
-.c_floor_btn_group{position: absolute;top: 0;left: 200px;z-index: 1000;background: rgba(243,155,51,.4);}
-.c_floor_btn_group:hover{background: rgba(243,155,51,.8);}
+
 
 .choseBtn{float:right;position: relative;border-radius:4px;overflow: hidden;margin-right: 10px;margin-bottom: 6px;}
 .choseBtn:hover .bg{opacity: .5;filter:alpha(opacity=50);}
 .btn_ctn{position: relative;height: 20px;width: 80px;padding: 4px;text-align: center;color: #ffffff;cursor: pointer;z-index: 2;font-size: 12px;line-height: 20px;}
 .bg,.bg2,.bg3,.bgli,.bg5{background: black;filter: alpha(opacity=10);opacity: .1;position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: 1;}
 #content{position: relative;}
-.fixbtn{position: fixed;top: 30%;width: 20px;margin-right: 0;margin-bottom: 0;padding: 4px;z-index: 999999;}
-.fixbtn2{top: 50%;}
-.fixbtn .bg{opacity: .4;}
-.fixbtn:hover .bg{opacity: .8}
-.fixbtn .btn_ctn{height: auto;width: 20px;padding: 0;}
-.fixbtn.active .bg{opacity: .8;background: red;}
 
-.blocks_mask{position: absolute;width: 100%;height: 100%;top:0;left:0;}
-.blocks_mask .bg5{opacity: .5;filter:alpha(opacity=50);background: #50626D;}
-.block_mask{position: absolute;width: 100%;height: 100%;top:0;left:0;}
-.block_mask .bg5{opacity: .7;filter:alpha(opacity=70);background: #000111;}
 
-.blocks_btn{width: 40%;}
-.blocks_btn .btn_ctn{width: 100%;}
 
-.noFloorHintInfo,.noModelHintInfo{position: absolute;top: 0;left: 0;width: 100%;height: 100%;color: #fff;text-align: center;}
 
+.noFloorHintInfo,.noModelHintInfo{position: absolute;top: 0;left: 0;width: 100%;height: 100%;color: #fff;text-align: center;white-space:nowrap;text-overflow:ellipsis;-o-text-overflow:ellipsis;overflow:hidden;}
+
+
+.win_bg{background: black;filter: alpha(opacity=70);opacity: .7;position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: 10000;}
+.blocks_bg{background: black;filter: alpha(opacity=70);opacity: .7;position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: 9600;}
+.block_bg{background: black;filter: alpha(opacity=70);opacity: .7;position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: 9500;}
+.floor_bg{background: black;filter: alpha(opacity=70);opacity: .7;position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: 9400;}
+.no_bg{}
+
+.no_mask .btn_group{position: relative;z-index: 9301;float: left;margin-left: 10px;margin-top: 10px;background: rgba(155,144,12,.5)}
+.block_mask .btn_group{position: relative;z-index: 9501;float: right;margin-right: 10px;margin-top: 10px;background: rgba(155,144,12,.5)}
+.blocks_mask .btn_group{position: relative;z-index: 9601;float: right;margin-right: 10px;margin-top: 10px;background: rgba(155,144,12,.5)}
+.floor_mask .btn_group{position: relative;z-index: 9401;float: right;margin-right: 10px;margin-top: 10px;background: rgba(155,144,12,.5)}
+
+.blocks_mask,.block_mask,.floor_mask,.no_mask{position: absolute;width: 100%;height: 100%;top:0;left:0;}
+
+.c_block_btn_group{position: absolute;top: 0;left: 0;z-index: 1000;background: rgba(123,32,151,.4);}
+.c_block_btn_group:hover{background: rgba(123,32,151,.8);}
 
 #back{position: relative;}
 .c_block{position: relative;}
 .c_floor{position: relative;}
+
+.notclick{background: yellow;}
+.notclick .btn_ctn{cursor: not-allowed;}
+.notclick.fixbtn:hover .bg{opacity: .5;filter: alpha(opacity=50);}
+
+#sys_btns{position: fixed;top: 30%;right: 50px;width: 300px;height: 200px;z-index: 9900;}
+#sys_btns:hover{background: rgba(155,211,89,.7); }
+#sys_btns .choseBtn{margin-right: 0;}
+.bg_color1{background: rgba(155,211,89,.7);}
+
+.fixbtn{width: 20px;padding: 4px;position: relative;float: left;margin-left: 4px;}
+.fixbtn .bg{opacity: .4;}
+.fixbtn:hover .bg{opacity: .8}
+.fixbtn .btn_ctn{height: auto;width: 20px;padding: 0;}
+.fixbtn.active .bg{opacity: .8;background: red;}

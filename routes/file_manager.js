@@ -13,7 +13,6 @@ router.post('/creat_tmp', function(req, res, next) {
 	$('body').append(body);
 	$('.need_remove').remove();
 	$('#config').remove();//能写到#config里面的，尽量写到这个里面
-	$('.block_mask,.blocks_mask').remove();
 
 	var prev_view_page_url = $('#back').attr('prev_view_page_url');
 	if(!prev_view_page_url){
