@@ -63,12 +63,16 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 
 
-				}else{//如果bs_content不存在
+				}else{//如果bs_content不存在,这种的元素同时居有id,bid属性，利用哪个找都可以确定该元素是不是已经存在了
+
 					var $2 = cheerio.load(rows[i].bc);
 					$2('.blocks_move').attr('id',bsid).attr('bid',rows[i].bid).attr('bs_order',rows[i].bsorder);
-					$('.cntr').append($2.html());
+					var length = $('.cntr').find('#'+bsid).length;
+					if(!length){//如果不存在
+						$('.cntr').append($2.html());
+					}
 
-					block_append_floor($2('.c_block[bid="'+bid+'"]'),rows[i]);
+					block_append_floor($('#'+bsid),rows[i]);
 				}
 			}
 			res.status(200).send($.html());

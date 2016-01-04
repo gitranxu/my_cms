@@ -58,7 +58,7 @@ c_model		模板表(juicer) 						#模板表中含有区域属性zone(1,2,3)【�
 id		content		data_model【该字段将来可以用于校验】
 
 c_data		数据表								#不同楼层(id唯一)不同模板的数据不一样
-id		c_model_id		c_floor_id		data
+id		c_model_id		c_floor_id		c_floor_model_id		data
 
 
 

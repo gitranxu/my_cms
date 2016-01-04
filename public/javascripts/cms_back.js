@@ -173,6 +173,21 @@ CMS.prototype = {
 			add_chose_model_win : function(){
 				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
 				_this.o.$root.append(chose_win_str);
+			},
+
+			removeDefaultHeightColor : function($obj){
+				$obj.removeClass('h50 h100 h150 h200 h250 h300 h350 h400 h450 h500 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18');
+			},
+			addDefaultHeightColor : function($obj){
+				var rand18 = _this.tools.getRandomNum(1,18);
+				$obj.addClass('h300 c'+rand18);
+			},
+			checkHeight : function($obj){
+				var height = $obj.height();
+				if(!height){
+					var fid = $obj.attr('fid');
+					console.log('fid为【'+fid+'】的楼层的高度为0，楼层高度要么有默认高度，要么会被模板元素撑高，如果为0，可能是模板元素为绝对定位状态(请在样式表中手动明确规定楼层高度)或浮动状态(请给楼层元素加上clear_rx样式类)');
+				}
 			}
 		}
 		
@@ -345,6 +360,7 @@ CMS.prototype = {
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
 						$('#chose_layouts_cntr').hide();
 						if(msg){
+							console.log(msg);
 							_this.o.$content.empty().append(msg);
 							_this.parseHtml.parse();
 						}else{
@@ -540,13 +556,13 @@ CMS.prototype = {
 					
 
 				if($c_floors.length){//下面有元素再进行处理，否则没必要处理
-					_this.removeDefaultHeightColor($c_block);
+					_this.fn.removeDefaultHeightColor($c_block);
 					$c_floors.each(function(){
 						var $c_floor = $(this);
 						that.parse_c_floor($c_floor);
 					});
 				}else{
-					_this.addDefaultHeightColor($c_block);
+					_this.fn.addDefaultHeightColor($c_block);
 					//如果当前block下面没有floor，则在页面进行提示
 					$c_block.find('.noFloorHintInfo').show();
 				}
@@ -563,7 +579,7 @@ CMS.prototype = {
 
 				var $c_models = $c_floor.find('.c_model');
 				if($c_models.length==1){
-					_this.removeDefaultHeightColor($c_floor);
+					_this.fn.removeDefaultHeightColor($c_floor);
 				}else if($c_models.length > 1){
 					console.log('一个楼层内，只能有一个c_model元素，即一个楼层只能套一个模板');
 				}else{
@@ -595,7 +611,7 @@ CMS.prototype = {
 						$this.find('.translated').append(html);
 						$this.find('.tmpl').remove();
 
-						_this.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
+						_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
 					});
 				}
 				that.parse_c_edit();
@@ -610,19 +626,6 @@ CMS.prototype = {
 			}
 		}
 			
-	},
-	removeDefaultHeightColor : function($obj){
-		$obj.removeClass('h50 h100 h150 h200 h250 h300 h350 h400 h450 h500 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18');
-	},
-	addDefaultHeightColor : function($obj){
-		$obj.addClass('h300 c5');
-	},
-	checkHeight : function($obj){
-		var height = $obj.height();
-		if(!height){
-			var fid = $obj.attr('fid');
-			console.log('fid为【'+fid+'】的楼层的高度为0，楼层高度要么有默认高度，要么会被模板元素撑高，如果为0，可能是模板元素为绝对定位状态(请在样式表中手动明确规定楼层高度)或浮动状态(请给楼层元素加上clear_rx样式类)');
-		}
 	},
 	init : function(){
 		
@@ -1152,6 +1155,17 @@ CMS.prototype = {
 				});
 			}
 		}
+	},
+	tools : {
+		getRandomNum : function(Min,Max){ 
+
+	        var Range = Max - Min; 
+
+	        var Rand = Math.random(); 
+
+	        return(Min + Math.round(Rand * Range)); 
+
+		} 
 	}
 }
 
