@@ -710,14 +710,14 @@ CMS.prototype = {
 				$c_block.find('.c_block_btn_group').hide();
 				var old_height = 0;//如果块下面没有楼层，则old_height值为0
 				var c_floor_length = $c_block.find('.c_floor').length;
-				var move_time = 0;
+				var move_time = 500;
 				if(c_floor_length > 1){
 					old_height = $c_block.height();
 					move_time = _this.setting.new_move_time;
 				}
 				$c_block.height(old_height + _this.setting.new_floor_height);
 
-				var target_top = $c_block.position().top + old_height;
+				var target_top = old_height;
 
 				var $last_floor = $c_block.find('.c_floor:last');
 				$last_floor.css({
@@ -744,7 +744,7 @@ CMS.prototype = {
 				$last_floor.hide();
 				var old_height = 0;//如果块下面没有楼层，则old_height值为0
 				var c_floor_length = $c_block.find('.c_floor').length;
-				var move_time = 0;
+				var move_time = 500;
 				if(c_floor_length > 1){
 					old_height = $c_block.height();
 					move_time = _this.setting.new_move_time;
