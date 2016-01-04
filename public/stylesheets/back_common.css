@@ -92,3 +92,5 @@
 .c_edit .c_edit_btn{width: 60px;height: 30px;position: absolute;top: 50%;left: 50%;margin-top: -15px;margin-left: -30px;text-align: center;line-height: 30px;background: rgba(255,144,12,.5);z-index: 9001;color: #fff;cursor: pointer;}
 .c_edit .c_edit_btn:hover{background: rgba(155,244,12,.8);}
 .c_edit .c_edit_zone:hover .c_edit_bg{opacity: .3;filter: alpha(opacity=30);}
+
+.c_edit_s_win{width: 424px;height: 214px;background-color: #fff;border: 1px solid #e7eaec;padding: 20px;position: absolute;top:100px;left: 100px;}

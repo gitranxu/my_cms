@@ -24,7 +24,7 @@
 	<div id="config"></div>
 </div>
 
-一个c_model最基本的content结构
+一个c_model最基本的content结构【zone_key必填，可以先暂时认为zone_key与c_edit是一一对应关系】
 <div class="c_model">
 	<style>
 		/* .aaa ul li{float: left;}
@@ -33,12 +33,19 @@
 	<script class="tmpl" type="text/template">
 		/*<ul class="clear_rx">
 			{@each model_list as it}
-				<li><a href=""><img src="/images/${it.imgurl}" alt="${it.name}"></a></li>
+				<li class="c_edit" zone_key="${it.zone_key}"><a href=""><img src="/images/${it.imgurl}" alt="${it.name}"></a></li>
 			{@/each}
 		</ul>*/
 	</script>
 	<div class="translated"></div>       【模板转换html后的存放位置】
 </div>
+
+一个data_model最基本的结构【zone_key必填】
+[
+	{imgurl:"sys/default128X128.jpg",name:"默认图片",href:"www.baidu.com",new_open:false,zone_key:"1aa"},
+	{imgurl:"sys/default128X128.jpg",name:"默认图片",href:"www.baidu.com",new_open:false,zone_key:"2bb"},
+	{imgurl:"sys/default128X128.jpg",name:"默认图片",href:"www.baidu.com",new_open:false,zone_key:"3jk"}
+]
 
 
 c_layout	布局表

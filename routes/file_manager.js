@@ -1,6 +1,8 @@
 var express = require('express');
 var cheerio = require('cheerio');
 var fs = require('fs');
+var sys = require('sys');
+var formidable = require('formidable');
 var router = express.Router();
 
 //生成临时html文件
@@ -29,6 +31,23 @@ router.post('/creat_tmp', function(req, res, next) {
 	})
 
   /*res.render('index2', {abc:'test',list:[{name:'rx',show:true},{name:'cl',show:true},{name:'xx',show:false}],blah:[{num:1},{num:2},{num:3,inner:[{time:'15:00'},{time:'16:00'},{time:'17:00'},{time:'18:00'}]},{num:4}] });*/
+});
+
+//图片上传
+router.post('/upload',function(req,res,next){
+	var form = new formidable.IncomingForm();
+	form.uploadDir = "public/images/upload";
+	console.log('about to parse')
+	form.parse(req,function(err,fields,files){
+		var s = files.file.path.lastIndexOf('\\');
+		var path = files.file.path.substring(0,s+1);
+		console.log(files);
+		var img_path = path+files.file.name;
+		fs.renameSync(files.file.path, img_path);
+		res.json({"reCode":1,"msg":img_path});
+        //res.json({data:{reCode:1,img_path:img_path,msg:'上传成功'},status:200});
+	});
+	//res.json({reCode:1,msg:'11111'});
 });
 
 module.exports = router;

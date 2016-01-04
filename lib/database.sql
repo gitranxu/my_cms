@@ -30,7 +30,7 @@ CREATE TABLE `c_block` (
 
 /*Data for the table `c_block` */
 
-insert  into `c_block`(`id`,`content`,`order`,`c_blocks_id`) values ('1','<div class=\"c_block c5 h200 blocks_move\"></div>',1,'7219122a-af67-11e5-baf7-68f728f3bf19'),('10','<div class=\"c_block c8 h250 blocks_move\">块二还可以维护布局所属终端类型</div>',3,'327951f3-af67-11e5-baf7-68f728f3bf19'),('11','<div class=\"c_block c9 h200 blocks_move\">块二还可以维护布局所属终端类型</div>',24,'4f0a4e60-af67-11e5-baf7-68f728f3bf19'),('2','<div class=\"cb1 c_block fl_rx c2 h300\"></div>',3,'86352d1d-af67-11e5-baf7-68f728f3bf19'),('3','<div class=\"cb2 c_block fl_rx c15 h300\"></div>',2,'86352d1d-af67-11e5-baf7-68f728f3bf19'),('4','<div class=\"cb1 c_block fl_rx c2 h300\"></div>',2,'91834cab-af67-11e5-baf7-68f728f3bf19'),('6','<div class=\"cb3 c_block fl_rx c11 h300\"></div>',3,'91834cab-af67-11e5-baf7-68f728f3bf19'),('7','<div class=\"c_block c5 h200 blocks_move\"></div>',1,'9e0eaa3e-af67-11e5-baf7-68f728f3bf19'),('8','<div class=\"c_block c4 h200 blocks_move\"><span>块一对于布局来说，可以设置块类型，块宽高，块边距,块最大楼层数,f_w等信息</span></div>',1,'de293ad3-af66-11e5-baf7-68f728f3bf19'),('9','<div class=\"c_block c5 h200 blocks_move\"><div>块二还可以维护布局所属终端类型</div></div>',2,'08fd8d8b-af67-11e5-baf7-68f728f3bf19'),('db7acfc0-af6b-11e5-baf7-68f728f3bf19','<div class=\"cb2 c_block fl_rx c9 h300\"></div>',1,'91834cab-af67-11e5-baf7-68f728f3bf19');
+insert  into `c_block`(`id`,`content`,`order`,`c_blocks_id`) values ('1','<div class=\"c_block c5 h200 blocks_move\"></div>',1,'7219122a-af67-11e5-baf7-68f728f3bf19'),('10','<div class=\"c_block c8 h250 blocks_move\"></div>',3,'327951f3-af67-11e5-baf7-68f728f3bf19'),('11','<div class=\"c_block c9 h200 blocks_move\">块二还可以维护布局所属终端类型</div>',24,'4f0a4e60-af67-11e5-baf7-68f728f3bf19'),('2','<div class=\"cb1 c_block fl_rx c2 h300\"></div>',3,'86352d1d-af67-11e5-baf7-68f728f3bf19'),('3','<div class=\"cb2 c_block fl_rx c15 h300\"></div>',2,'86352d1d-af67-11e5-baf7-68f728f3bf19'),('4','<div class=\"cb1 c_block fl_rx c2 h300\"></div>',2,'91834cab-af67-11e5-baf7-68f728f3bf19'),('6','<div class=\"cb3 c_block fl_rx c11 h300\"></div>',3,'91834cab-af67-11e5-baf7-68f728f3bf19'),('7','<div class=\"c_block c5 h200 blocks_move\"></div>',1,'9e0eaa3e-af67-11e5-baf7-68f728f3bf19'),('8','<div class=\"c_block c4 h200 blocks_move\"><span>块一对于布局来说，可以设置块类型，块宽高，块边距,块最大楼层数,f_w等信息</span></div>',1,'de293ad3-af66-11e5-baf7-68f728f3bf19'),('9','<div class=\"c_block c5 h200 blocks_move\"><div>块二还可以维护布局所属终端类型</div></div>',2,'08fd8d8b-af67-11e5-baf7-68f728f3bf19'),('db7acfc0-af6b-11e5-baf7-68f728f3bf19','<div class=\"cb2 c_block fl_rx c9 h300\"></div>',1,'91834cab-af67-11e5-baf7-68f728f3bf19');
 
 /*Table structure for table `c_blocks` */
 
@@ -63,6 +63,8 @@ CREATE TABLE `c_data` (
 
 /*Data for the table `c_data` */
 
+insert  into `c_data`(`id`,`c_model_id`,`c_floor_id`,`data`,`c_floor_model_id`) values ('15f0a6fe-b2af-11e5-b815-68f728f3bf19','aasdfsdf','130231c0-b2af-11e5-a8e7-ef78194f52f4',NULL,'130231c0-b2af-11e5-a8e7-ef78194f52f4aasdfsdf'),('59a170cf-b2ad-11e5-b815-68f728f3bf19','aasdfsdf','a2c00380-b2ac-11e5-9593-2d1e6153edf6',NULL,'a2c00380-b2ac-11e5-9593-2d1e6153edf6aasdfsdf');
+
 /*Table structure for table `c_floor` */
 
 DROP TABLE IF EXISTS `c_floor`;
@@ -77,6 +79,8 @@ CREATE TABLE `c_floor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `c_floor` */
+
+insert  into `c_floor`(`id`,`content`,`order`,`c_block_id`,`create_time`) values ('130231c0-b2af-11e5-a8e7-ef78194f52f4','<div class=\"c_floor h200 c3\" fid=\"130231c0-b2af-11e5-a8e7-ef78194f52f4\" f_order=\"1\"></div>',1,'8','2016-01-04 14:47:51'),('a2c00380-b2ac-11e5-9593-2d1e6153edf6','<div class=\"c_floor h200 c10\" fid=\"a2c00380-b2ac-11e5-9593-2d1e6153edf6\" f_order=\"1\"></div>',1,'10','2016-01-04 14:30:23');
 
 /*Table structure for table `c_layout` */
 
@@ -108,7 +112,7 @@ CREATE TABLE `c_model` (
 
 /*Data for the table `c_model` */
 
-insert  into `c_model`(`id`,`content`,`data_model`,`name`) values ('aasdfsdf','<div class=\"c_model\">\r\n	<style>\r\n		.aaa ul li{float: left;}\r\n		.aaa ul li img{width: 200px;height: 170px;} \r\n	</style>\r\n	<script class=\"tmpl\" type=\"text/template\">\r\n		<ul class=\"clear_rx\">\r\n			{@each model_list as it}\r\n				<li><a href=\"\"><img src=\"/images/${it.imgurl}\" alt=\"${it.name}\"></a></li>\r\n			{@/each}\r\n		</ul>\r\n	</script>\r\n	<div class=\"translated aaa\"></div>\r\n</div>','[\r\n	{imgurl:\"sys/default128X128.jpg\",name:\"默认图片\"},\r\n	{imgurl:\"sys/default128X128.jpg\",name:\"默认图片\"},\r\n	{imgurl:\"sys/default128X128.jpg\",name:\"默认图片\"}\r\n]\r\n','模板1');
+insert  into `c_model`(`id`,`content`,`data_model`,`name`) values ('aasdfsdf','<div class=\"c_model\">\r\n	<style>\r\n		.aaa ul li{float: left;}\r\n		.aaa ul li img{width: 200px;height: 170px;} \r\n	</style>\r\n	<script class=\"tmpl\" type=\"text/template\">\r\n		<ul class=\"clear_rx\">\r\n			{@each model_list as it}\r\n				<li class=\"c_edit\"><a href=\"\"><img src=\"/images/${it.imgurl}\" alt=\"${it.name}\"></a></li>\r\n			{@/each}\r\n		</ul>\r\n	</script>\r\n	<div class=\"translated aaa\"></div>\r\n</div>','[\r\n	{imgurl:\"sys/default128X128.jpg\",name:\"默认图片\"},\r\n	{imgurl:\"sys/default128X128.jpg\",name:\"默认图片\"},\r\n	{imgurl:\"sys/default128X128.jpg\",name:\"默认图片\"}\r\n]\r\n','模板1');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
