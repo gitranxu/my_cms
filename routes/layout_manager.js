@@ -86,16 +86,16 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 });
 
-//得到某个页面中所有的楼层模板数据json
+//得到某个页面中所有的楼层模板数据json,如果模板没有数据，则使用默认数据
 router.post('/get_floor_model_datas_of_layout',function(req,res,next){
 	var queryparams = req.body.queryparams;
 	if(!queryparams){
 		res.json({reCode:10001,msg:'传入的参数违法'});
 		return;
 	}
-	var sql = "SELECT d.data,d.c_floor_model_id c_floor_model_id "+
-				"  FROM c_data d "+
-				" WHERE d.c_floor_model_id IN ("+queryparams+")";
+	var sql = "SELECT d.data,d.c_floor_model_id c_floor_model_id,m.data_model "+
+				"  FROM c_data d,c_model m "+
+				" WHERE m.id = d.c_model_id AND d.c_floor_model_id IN ("+queryparams+")";
 	console.log(sql);
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){

@@ -26,6 +26,7 @@ function CMS(){
 		create_floor_by_block_id : '/block/create_floor_by_block_id',
 		model_query : '/model/query',
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
+		data_add : '/data/add',
 		creat_tmp : '/file/creat_tmp'
 	},
 	this.o = {
@@ -310,6 +311,7 @@ CMS.prototype = {
 		});
 
 		//点击模板item时
+		//分两步，1.增加一条c_data记录，2查询数据
 		this.o.$root.delegate('#chose_models_cntr .piece_ul li',{
 			mouseover : function(){
 				var imgurl = $(this).attr('imgurl');
@@ -318,21 +320,37 @@ CMS.prototype = {
 			click : function(){
 				var mid = $(this).attr('dataid');
 				var fid = $('#chose_models_cntr').attr('chose_win_fid');
+
 				_this.ajax.common({
-					url : _this.urls.model_query_content_data_by_id,
+					url : _this.urls.data_add,
+					data : { mid : mid,fid : fid },
+					method : 'POST',
 					successFn : function(msg){
-						//后台返回现成的html结构【包含正确的数据】
-						$('#chose_models_cntr').hide();
 						if(msg.reCode==1){
-							var $current_c_floor = _this.o.$content.find('.c_floor[fid="'+fid+'"]');
-							$current_c_floor.empty().append(msg.msg);
-							_this.parseHtml.parse_c_floor($current_c_floor);
+							//这里再去查询数据
+							_this.ajax.common({
+								url : _this.urls.model_query_content_data_by_id,
+								successFn : function(msg){
+									//后台返回现成的html结构【包含正确的数据】
+									$('#chose_models_cntr').hide();
+									if(msg.reCode==1){
+										var $current_c_floor = _this.o.$content.find('.c_floor[fid="'+fid+'"]');
+										$current_c_floor.empty().append(msg.msg);
+										_this.parseHtml.parse_c_floor($current_c_floor);
+									}else{
+										alert('没有数据...');
+									}
+								},
+								data : { mid : mid,fid : fid}
+							});
+
 						}else{
-							alert('没有数据...');
+							alert(msg.msg);
 						}
-					},
-					data : { mid : mid,fid : fid}
+					}
 				});
+
+					
 			}
 		});
 
@@ -620,7 +638,12 @@ CMS.prototype = {
 			get_data_by_fidmid : function(fidmid,jsondata){
 				for(var i = 0,j = jsondata.length; i < j;i++){
 					if(fidmid==jsondata[i].c_floor_model_id){
-						return { model_list : eval('('+jsondata[i].data+')') };
+						//这里再增加一个判断，如果没有数据，则提供data_model作为默认数据
+						var data = jsondata[i].data;
+						if(!data){
+							data = jsondata[i].data_model;
+						}
+						return { model_list : eval('('+data+')') };
 					}
 				}
 			}
