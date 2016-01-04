@@ -37,17 +37,14 @@ router.post('/creat_tmp', function(req, res, next) {
 router.post('/upload',function(req,res,next){
 	var form = new formidable.IncomingForm();
 	form.uploadDir = "public/images/upload";
-	console.log('about to parse')
 	form.parse(req,function(err,fields,files){
 		var s = files.file.path.lastIndexOf('\\');
 		var path = files.file.path.substring(0,s+1);
 		console.log(files);
 		var img_path = path+files.file.name;
 		fs.renameSync(files.file.path, img_path);
-		res.json({"reCode":1,"msg":img_path});
-        //res.json({data:{reCode:1,img_path:img_path,msg:'上传成功'},status:200});
+        res.json({reCode:1,img_path:img_path,msg:'上传成功'});
 	});
-	//res.json({reCode:1,msg:'11111'});
 });
 
 module.exports = router;

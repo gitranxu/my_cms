@@ -7,6 +7,15 @@
 	<link rel="stylesheet" href="/stylesheets/base.css">
 	<link rel="stylesheet" href="/stylesheets/animate.min.css">
 	<link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">
+    <style>
+        .input_file_btn {
+            opacity: 0.4;
+            background: yellow;
+            height: 142px;
+            width: 180px;
+            position: absolute;
+        }
+    </style>
 </head>
 <body style="background:orange;">
 	
@@ -22,14 +31,16 @@
 			<input type="submit" value="上传">
 		</form> -->
 
-		<input type="file" id="file1" name="file">
+		<input type="file" id="file1" name="file" class="input_file_btn">
 		<input type="button" value="上传" id="uploadbtn">
 		<div>图片上传</div>
-		<img src="/images/upload/xx.jpg" style="width:200px;height:100px;" alt="">
+		<img src="/images/sys/default_upload.jpg" style="width:200px;height:100px;" alt="" id="test2">
 		<div class="href"></div>
 		<div class="new_open"></div>
 		<div>提交</div>
 	</div>
+
+    
 
     
 
@@ -49,11 +60,12 @@
 				secureuri:false,
 				fileElementId:'file1',
 				success:function(data,status){
-					console.log(data);
-					console.log(status);
-					if(data.reCode==1){
-						alert(data.msg);
-						alert(data.img_path);
+					if(status=='success'){
+						var reg = /\{.+\}/;
+                        var msg_str = reg.exec(data)[0];
+                        var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
+                        var msg_obj = eval('('+msg_str_done+')');
+                        $('#test2').attr('src',msg_obj.img_path);
 					}
 				},
 				error:function(){
