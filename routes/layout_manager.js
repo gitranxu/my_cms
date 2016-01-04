@@ -67,8 +67,8 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 					var $2 = cheerio.load(rows[i].bc);
 					$2('.blocks_move').attr('id',bsid).attr('bid',rows[i].bid).attr('bs_order',rows[i].bsorder);
-					var length = $('.cntr').find('#'+bsid).length;
-					if(!length){//如果不存在
+					var b_appended_length = $('.cntr').find('#'+bsid).length;
+					if(!b_appended_length){//如果不存在
 						$('.cntr').append($2.html());
 					}
 
