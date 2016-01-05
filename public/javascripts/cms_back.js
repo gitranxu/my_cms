@@ -26,13 +26,15 @@ function CMS(){
 		create_floor_by_block_id : '/block/create_floor_by_block_id',
 		model_query : '/model/query',
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
+		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',
 		data_add : '/data/add',
 		creat_tmp : '/file/creat_tmp'
 	},
 	this.o = {
 		$root : $('#back'),
 		$content : $('#content'),
-		$config : $('#config')
+		$config : $('#config'),
+		$cur_c_edit_btn : null //这个对象是点击编辑按钮时赋值的，用于图片编辑小窗口查询相关参数用
 	}
 }
 
@@ -111,6 +113,31 @@ CMS.prototype = {
 						'</div>'+
 					'</div>';
 		},
+		getEditOneImgWin : function(){
+			return '<div id="c_edit_s_win_id" class="c_edit_s_win animated hid_rx need_remove">'+
+						'<div class="title">图片信息编辑</div>'+
+						'<div class="content clear_rx">'+
+							'<div class="upload_img_comp fl_rx">'+
+								'<input type="file" id="file1" name="file" class="input_file_btn" onchange="my_ajaxFileUpload(this);">'+
+								'<img src="/images/sys/default_upload.jpg" alt="">'+
+							'</div>'+
+							'<div class="img_info fl_rx">'+
+								'<div class="input">'+
+									'<div class="dec">请输入图片链接地址</div>'+
+									'<input type="text" class="text" placeholder="请输入图片链接地址">'+
+								'</div>'+
+								'<div class="input">'+
+									'<div class="dec">是否在新窗口打开</div>'+
+									'<div class="div clear_rx">'+
+										'<div class="yesorno  fl_rx" open_new="yes">是</div>'+
+										'<div class="yesorno active fr_rx" open_new="no">否</div>'+
+									'</div>'+
+								'</div>'+
+								'<div class="btn btn-success btn-block save" style="width:81%;">保存</div>'+
+							'</div>'+
+						'</div>'+
+					'</div>';
+		},
 		//jsondata:{first_class_name:"down",first_text:"向下移动",last_class_name:"up",last_text:"向上移动",mask:"floor_mask",bg:"floor_bg",c_x_btn_group:"c_floor_btn_group"}
 		getXMoveBtns : function(index,total,jsondata){
 			var items = null;
@@ -174,6 +201,11 @@ CMS.prototype = {
 			add_chose_model_win : function(){
 				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
 				_this.o.$root.append(chose_win_str);
+			},
+			add_edit_one_img_win : function(){
+				var edit_one_img_win_str = _this.html.getEditOneImgWin();
+				_this.o.$root.append(edit_one_img_win_str);
+				_this.extra_event.edit_one_img_win_event();
 			},
 
 			removeDefaultHeightColor : function($obj){
@@ -268,7 +300,11 @@ CMS.prototype = {
 
 		//点击编辑按钮，弹出编辑窗口
 		this.o.$root.delegate('.c_edit_btn','click',function(e){
-			
+			_this.o.$cur_c_edit_btn = $(this);
+			var $this = $(this).parents('.c_edit_zone');
+			var top = $this.offset().top;
+			var left = $this.offset().left;
+			$('#c_edit_s_win_id').css({top:top,left:left}).show().addClass('bounceInUp');
 		});
 
 		//选择布局
@@ -515,6 +551,34 @@ CMS.prototype = {
 
 		this.move_unit.event();//与移动相关的事件
 	},
+	extra_event : function(){
+		var _this = this;
+		return {
+			edit_one_img_win_event : function(){
+				_this.o.$root.delegate('#c_edit_s_win_id .yesorno','click',function(){
+					var $this = $(this);
+					$('.yesorno').removeClass('active');
+					$this.addClass('active');
+				});
+
+				_this.o.$root.delegate('#c_edit_s_win_id .save','click',function(){
+					//var $this = $(this);
+					var $edit_btn = _this.o.$cur_c_edit_btn;
+					var fid = $edit_btn.parents('.c_floor').attr('fid');
+					var mid = $edit_btn.parents('.c_model').attr('mid');
+					var zone_key = $edit_btn.parents('.c_edit').attr('zone_key');
+					
+					_this.ajax.common({
+						url : _this.urls.get_img_data_by_fidmid,
+						data : {fid:fid,mid:mid,zone_key:zone_key},
+						successFn : function(msg){
+							alert(msg.msg);
+						}
+					});
+				});
+			}
+		};
+	},
 	parseHtml : function(){
 		//1.如果c_block元素下面有c_floor元素，则去掉c_block元素的默认高度
 		//2.如果c_floor元素下面有c_model元素，则去掉c_floor元素的默认高度
@@ -657,7 +721,7 @@ CMS.prototype = {
 		this.fn.add_chose_layout_win();//加入选择布局窗口
 		this.fn.add_chose_model_win();//加入选择模板窗口
 
-		//this.fn.floor_up_down_btn();
+		this.fn.add_edit_one_img_win();//加入编辑图片小窗口
 		
 		this.bind();
 	},
@@ -666,6 +730,7 @@ CMS.prototype = {
 		this.ajax = this.ajax();
 		this.move_unit = this.move_unit();
 		this.parseHtml = this.parseHtml();
+		this.extra_event = this.extra_event();
 	},
 	move_unit : function(){
 		//分3个级别的移动，块组级之间的上下移动blocks_move，块组级内部各块之间的左右移动block_move，块级内部各楼层之间的上下移动floor_move
@@ -1197,3 +1262,41 @@ $().ready(function(){
 	var cms = new CMS();
 	cms.init();
 });
+function my_ajaxFileUpload(fileObj){
+	var allowExtention = ".jpg,.bmp,.gif,.png"; //允许上传文件的后缀名
+    var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+    var browserVersion = window.navigator.userAgent.toUpperCase();
+
+    var $img = $(fileObj).next('img');
+    if (allowExtention.indexOf(extention) > -1) {
+
+        $.ajaxFileUpload({
+			url : '/file/upload',
+			secureuri:false,
+			fileElementId:'file1',
+			success:function(data,status){
+				if(status=='success'){
+					var reg = /\{.+\}/;
+                    var msg_str = reg.exec(data)[0];
+                    var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
+                    var msg_obj = eval('('+msg_str_done+')');
+
+                    $img.attr('src',msg_obj.img_path);
+				}
+			},
+			error:function(){
+			},
+			dataType:'text'
+		});
+
+    } else {
+        alert("仅支持" + allowExtention + "为后缀名的文件!");
+        fileObj.value = ""; //清空选中文件
+        if (browserVersion.indexOf("MSIE") > -1) {
+            fileObj.select();
+            document.selection.clear();
+        }
+        fileObj.outerHTML = fileObj.outerHTML;
+    }
+
+}

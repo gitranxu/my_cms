@@ -40,7 +40,7 @@ router.post('/upload',function(req,res,next){
 	form.parse(req,function(err,fields,files){
 		var s = files.file.path.lastIndexOf('\\');
 		var path = files.file.path.substring(0,s+1);
-		console.log(files);
+		//console.log(files);
 		var img_path = path+files.file.name;
 		fs.renameSync(files.file.path, img_path);
         res.json({reCode:1,img_path:img_path,msg:'上传成功'});

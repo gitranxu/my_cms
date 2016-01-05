@@ -7,15 +7,7 @@
 	<link rel="stylesheet" href="/stylesheets/base.css">
 	<link rel="stylesheet" href="/stylesheets/animate.min.css">
 	<link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">
-    <style>
-        .input_file_btn {
-            opacity: 0.4;
-            background: yellow;
-            height: 142px;
-            width: 180px;
-            position: absolute;
-        }
-    </style>
+
 </head>
 <body style="background:orange;">
 	
@@ -25,20 +17,10 @@
   	    </div> -->
     
 
-	<div id="c_edit_s_win_id" class="c_edit_s_win">
-		<!-- <form action="/file/upload" enctype="multipart/form-data" method="post" id="test">
-			<input type="file" name="upload" multiple="multiple">
-			<input type="submit" value="上传">
-		</form> -->
+	
 
-		<input type="file" id="file1" name="file" class="input_file_btn">
-		<input type="button" value="上传" id="uploadbtn">
-		<div>图片上传</div>
-		<img src="/images/sys/default_upload.jpg" style="width:200px;height:100px;" alt="" id="test2">
-		<div class="href"></div>
-		<div class="new_open"></div>
-		<div>提交</div>
-	</div>
+	<div id="test2">测试2</div>
+	<div id="test3">测试3</div>
 
     
 
@@ -49,13 +31,26 @@
 	<!-- <script src="/javascripts/other/juicer-min.js" class="need_remove"></script>
 	    <script src="/javascripts/cms_back.js" class="need_remove"></script> -->
 	<script type="text/javascript">
-	$().ready(function(){
-		$('#uploadbtn').click(function(){
-			ajaxFileUpload();
+
+		$().ready(function(){
+			$('#test2').click(function(){
+				$('#c_edit_s_win_id').removeClass('bounceInUp').hide();
+			});
+			$('#test3').click(function(){
+
+				$('#c_edit_s_win_id').css({left:300}).show().addClass('bounceInUp');
+			});
 		});
 
-		function ajaxFileUpload(){
-			$.ajaxFileUpload({
+	function my_ajaxFileUpload(fileObj){
+		var allowExtention = ".jpg,.bmp,.gif,.png"; //允许上传文件的后缀名
+        var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+        var browserVersion = window.navigator.userAgent.toUpperCase();
+
+        var $img = $(fileObj).next('img');
+        if (allowExtention.indexOf(extention) > -1) {
+
+            $.ajaxFileUpload({
 				url : '/file/upload',
 				secureuri:false,
 				fileElementId:'file1',
@@ -65,16 +60,26 @@
                         var msg_str = reg.exec(data)[0];
                         var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
                         var msg_obj = eval('('+msg_str_done+')');
-                        $('#test2').attr('src',msg_obj.img_path);
+
+                        $img.attr('src',msg_obj.img_path);
 					}
 				},
 				error:function(){
-					alert('here...');
 				},
 				dataType:'text'
 			});
-		}
-	});
+
+        } else {
+            alert("仅支持" + allowExtention + "为后缀名的文件!");
+            fileObj.value = ""; //清空选中文件
+            if (browserVersion.indexOf("MSIE") > -1) {
+                fileObj.select();
+                document.selection.clear();
+            }
+            fileObj.outerHTML = fileObj.outerHTML;
+        }
+
+	}
 	</script>
 </body>
 </html>

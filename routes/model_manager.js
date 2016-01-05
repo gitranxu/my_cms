@@ -12,6 +12,17 @@ router.get('/query', function(req, res, next) {
 	});
 });
 
+
+router.get('/get_img_data_by_fidmid', function(req, res, next) {
+	var sql = '';
+	sqlclient.init();
+	sqlclient.query('SELECT id,name FROM  c_model',function(err,rows,fields){
+		if(err) throw err;
+		res.status(200).json({ list: rows });
+	});
+});
+
+
 //1.得到tmp	2.得到data
 //如果有数据，取数据，如果没有，则取默认数据
 //得到模板，将tmpl去掉，将解析的加到translate元素中

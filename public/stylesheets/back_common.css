@@ -93,4 +93,20 @@
 .c_edit .c_edit_btn:hover{background: rgba(155,244,12,.8);}
 .c_edit .c_edit_zone:hover .c_edit_bg{opacity: .3;filter: alpha(opacity=30);}
 
-.c_edit_s_win{width: 424px;height: 214px;background-color: #fff;border: 1px solid #e7eaec;padding: 20px;position: absolute;top:100px;left: 100px;}
+.c_edit_s_win{width: 424px;height: 196px;background-color: #fff;border: 1px solid #e7eaec;position: absolute;top:100px;left: 100px;z-index: 9004;}
+	.c_edit_s_win .title{height: 30px;line-height: 30px;text-align: center;background: #ccad12;}
+	.c_edit_s_win .content{margin: 10px;margin-left: 20px;}
+		.c_edit_s_win .upload_img_comp{position: relative;width: 180px;height: 142px;}
+		.c_edit_s_win .upload_img_comp .input_file_btn{position: absolute;width: 180px;height: 142px;opacity: 0;filter: alpha(opacity=0);background: yellow;top: 0;left: 0;z-index: 2;}
+		.c_edit_s_win .upload_img_comp img{position: absolute;width: 180px;height: 142px;top: 0;left: 0;z-index: 1;border: 1px solid #33fa2d;}
+		.c_edit_s_win .img_info{height: 142px;width: 180px;margin-left: 30px;}
+						.img_info .input{margin-bottom: 5px;}
+									.img_info .input .dec{height: 20px;line-height: 20px;margin-bottom: 1px;}
+									.img_info .input .text{height: 30px;line-height: 30px;padding-left: 10px;border:1px solid #33fa2d;}
+									.img_info .input .yesorno{width: 48%;height: 30px;background: #e6e6e6;line-height: 30px;text-align: center;cursor: pointer;border-radius: 6px;color: #fff;}
+									.img_info .input .yesorno.active{background: #5cb85c;}
+
+.btn{display: inline-block;padding: .1rem 1rem;font-size: 1rem;font-weight: 400;line-height: 1.5;text-align: center;white-space: nowrap;vertical-align: middle;-ms-touch-action: manipulation;touch-action: manipulation;cursor: pointer;user-select: none;border: .0625rem solid transparent;border-radius: .2rem}
+.btn-success {color: #fff;background-color: #5cb85c;border-color: #5cb85c;}
+.btn-success.focus, .btn-success:focus, .btn-success:hover {color: #fff;background-color: #449d44;border-color: #419641;}
+.btn-block {display: block;width: 100%;}
