@@ -35,6 +35,9 @@ function CMS(){
 		$content : $('#content'),
 		$config : $('#config'),
 		$cur_c_edit_btn : null //这个对象是点击编辑按钮时赋值的，用于图片编辑小窗口查询相关参数用
+	},
+	this.data = {
+		cur_one_img : {}//点击编辑按钮时，先去查询这个编辑按钮对应的fidmid的data数据，保存在该属性中
 	}
 }
 
@@ -129,8 +132,8 @@ CMS.prototype = {
 								'<div class="input">'+
 									'<div class="dec">是否在新窗口打开</div>'+
 									'<div class="div clear_rx">'+
-										'<div class="yesorno  fl_rx" open_new="yes">是</div>'+
-										'<div class="yesorno active fr_rx" open_new="no">否</div>'+
+										'<div class="yesorno yes fl_rx" open_new="yes">是</div>'+
+										'<div class="yesorno no active fr_rx" open_new="no">否</div>'+
 									'</div>'+
 								'</div>'+
 								'<div class="btn btn-success btn-block save" style="width:81%;">保存</div>'+
@@ -221,6 +224,28 @@ CMS.prototype = {
 					var fid = $obj.attr('fid');
 					console.log('fid为【'+fid+'】的楼层的高度为0，楼层高度要么有默认高度，要么会被模板元素撑高，如果为0，可能是模板元素为绝对定位状态(请在样式表中手动明确规定楼层高度)或浮动状态(请给楼层元素加上clear_rx样式类)');
 				}
+			},
+			//这里假设jsondata结构为[{},{},{... zone_key:xxx}]
+			get_json_by_zone_key : function(jsondata,zone_key){
+				for(var i = 0,j = jsondata.length; i < j; i++ ){
+					if(jsondata[i]['zone_key'] == zone_key){
+						return jsondata[i];
+					}
+				}
+				return '';
+			},
+			show_c_edit_s_win : function($this,data){
+				var top = $this.offset().top;
+				var left = $this.offset().left;
+				$('#c_edit_s_win_id').find('.text').val(data.href);
+				$('#c_edit_s_win_id').find('.yesorno').removeClass('active');
+				if(data.new_open){
+					$('#c_edit_s_win_id').find('.yes').addClass('active');
+				}else{
+					$('#c_edit_s_win_id').find('.no').addClass('active');
+				}
+				$('#c_edit_s_win_id').find('img').attr('src','/images/'+data.imgurl);
+				$('#c_edit_s_win_id').css({top:top,left:left}).show().addClass('bounceInUp');
 			}
 		}
 		
@@ -296,15 +321,6 @@ CMS.prototype = {
 				});
 			}
 			
-		});
-
-		//点击编辑按钮，弹出编辑窗口
-		this.o.$root.delegate('.c_edit_btn','click',function(e){
-			_this.o.$cur_c_edit_btn = $(this);
-			var $this = $(this).parents('.c_edit_zone');
-			var top = $this.offset().top;
-			var left = $this.offset().left;
-			$('#c_edit_s_win_id').css({top:top,left:left}).show().addClass('bounceInUp');
 		});
 
 		//选择布局
@@ -549,6 +565,33 @@ CMS.prototype = {
 			});
 		});
 
+		//点击编辑按钮，弹出编辑窗口,查询出相关数据保存起来
+		this.o.$root.delegate('.c_edit_btn','click',function(e){
+			var $this = $(this);
+			_this.o.$cur_c_edit_btn = $this;
+
+			var fid = $this.parents('.c_floor').attr('fid');
+			var mid = $this.parents('.c_model').attr('mid');
+			var zone_key = $this.parents('.c_edit').attr('zone_key');
+			
+			_this.ajax.common({
+				url : _this.urls.get_img_data_by_fidmid,
+				data : {fid:fid,mid:mid},
+				successFn : function(msg){
+
+					_this.data.cur_one_img = eval('('+msg.msg+')');
+
+					var item_data_obj = _this.fn.get_json_by_zone_key(_this.data.cur_one_img,zone_key);
+
+					_this.fn.show_c_edit_s_win($this.parents('.c_edit_zone'),item_data_obj);
+					
+				}
+			});
+
+
+					
+		});
+
 		this.move_unit.event();//与移动相关的事件
 	},
 	extra_event : function(){
@@ -564,17 +607,7 @@ CMS.prototype = {
 				_this.o.$root.delegate('#c_edit_s_win_id .save','click',function(){
 					//var $this = $(this);
 					var $edit_btn = _this.o.$cur_c_edit_btn;
-					var fid = $edit_btn.parents('.c_floor').attr('fid');
-					var mid = $edit_btn.parents('.c_model').attr('mid');
-					var zone_key = $edit_btn.parents('.c_edit').attr('zone_key');
 					
-					_this.ajax.common({
-						url : _this.urls.get_img_data_by_fidmid,
-						data : {fid:fid,mid:mid,zone_key:zone_key},
-						successFn : function(msg){
-							alert(msg.msg);
-						}
-					});
 				});
 			}
 		};
@@ -671,12 +704,14 @@ CMS.prototype = {
 					var add_btn_html = _this.html.getAddFloorBtns();
 					$c_floor.append(add_btn_html);//给块元素加上增加楼层按钮
 				}
+				this.parse_c_edit($c_floor);
 				
 			},
-			parse_c_edit : function(){
+			parse_c_edit : function($scope){
 				//对c_edit类的元素进行处理
 				var c_edit_zone_html = _this.html.getEditZone();
-				_this.o.$content.find('.c_edit').append(c_edit_zone_html);
+				$scope.find('.c_edit_zone').remove();
+				$scope.find('.c_edit').append(c_edit_zone_html);
 			},
 			parse_c_model : function(json){
 				var that = this;
@@ -695,7 +730,7 @@ CMS.prototype = {
 						_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
 					});
 				}
-				that.parse_c_edit();
+				that.parse_c_edit(_this.o.$content);
 				_this.o.$content.find('.cntr').show();
 			},
 			get_data_by_fidmid : function(fidmid,jsondata){

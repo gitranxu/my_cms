@@ -14,11 +14,31 @@ router.get('/query', function(req, res, next) {
 
 
 router.get('/get_img_data_by_fidmid', function(req, res, next) {
-	var sql = '';
+	var fid = req.query.fid;
+	var mid = req.query.mid;
+	var sql = 'SELECT '+
+				  ' d.data, '+
+				  ' m.data_model '+ 
+				' FROM '+
+				  ' c_data d, '+
+				  ' c_model m '+ 
+				' WHERE d.c_model_id = m.id '+ 
+				  ' AND d.c_floor_id = "'+fid+'" '+ 
+				  ' AND d.c_model_id = "'+mid+'"';
 	sqlclient.init();
-	sqlclient.query('SELECT id,name FROM  c_model',function(err,rows,fields){
+	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
-		res.status(200).json({ list: rows });
+		if(rows.length){
+			var data = '';
+			if(rows[0].data){
+				data = rows[0].data;
+			}else{
+				data = rows[0].data_model;
+			}
+			res.json({reCode:1,msg:data});
+		}else{
+			res.json({reCode:10000,msg:""});
+		}
 	});
 });
 

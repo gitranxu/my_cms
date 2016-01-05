@@ -25,7 +25,10 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id` "+
 											    "  FROM c_floor f,c_model m,c_data d "+
 											    " WHERE f.`id` = d.`c_floor_id` "+
-											    "   AND d.`c_model_id` = m.`id`) cm "+
+											    "   AND d.`c_model_id` = m.`id` "+
+											    " 	AND d.`connect_time` = (SELECT MAX(d1.connect_time) "+
+																		" 	FROM c_data d1 "+
+																		" 	WHERE d1.`c_floor_id`=f.`id`)) cm "+
 				 " ON b.fid = cm.c_floor_id "+
 				 " ORDER BY b.bsorder ASC,b.border ASC,b.forder ASC";
 				 
@@ -96,7 +99,7 @@ router.post('/get_floor_model_datas_of_layout',function(req,res,next){
 	var sql = "SELECT d.data,d.c_floor_model_id c_floor_model_id,m.data_model "+
 				"  FROM c_data d,c_model m "+
 				" WHERE m.id = d.c_model_id AND d.c_floor_model_id IN ("+queryparams+")";
-	console.log(sql);
+	console.log(sql+'---------------get_floor_model_datas_of_layout');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
