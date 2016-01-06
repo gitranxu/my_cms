@@ -86,3 +86,22 @@ reCode
 按钮的显示系统
 1.fixed的那几个按钮，可以让用户移动它的位置
 2.考虑块组，块级，楼层级以及编辑 按钮如何显示更加合理
+
+
+亮点：
+1.css_namespace，CSS样式占位符，避免了样式冲突的问题
+		使用该功能，则c_model的格式为 css_namespaceXX
+		<div class="c_model">
+			<style>
+				.css_namespaceliumeiling ul li{float: left;}
+				.css_namespaceliumeiling ul li img{width: 140px;height: 110px;}
+			</style>
+			<script class="tmpl" type="text/template">
+				<ul class="clear_rx">
+					{@each model_list as it}
+						<li class="c_edit" zone_key="${it.zone_key}"><a href="${it.href}" {@if it.new_open=="yes"}target="_blank"{@/if}><img src="${it.imgurl}" alt="${it.name}"></a></li>
+					{@/each}
+				</ul>
+			</script>
+			<div class="translated css_namespaceliumeiling"></div>
+		</div>

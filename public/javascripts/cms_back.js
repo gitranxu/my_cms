@@ -750,6 +750,11 @@ CMS.prototype = {
 					$c_floor.append(add_btn_html);//给块元素加上增加楼层按钮
 				}
 				this.parse_c_edit($c_floor);
+
+				var $c_model = $c_floor.find('.c_model');
+				var mid = $c_model.attr('mid');
+				var html = $c_model.html();
+				$c_model.empty().append(html.replace(/css_namespace\w*/g,'c_'+mid));
 				
 			},
 			parse_c_edit : function($scope){

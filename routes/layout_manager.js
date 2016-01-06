@@ -78,6 +78,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					block_append_floor($('#'+bsid),rows[i]);
 				}
 			}
+
 			res.status(200).send($.html());
 		}else{
 			res.send('');
@@ -122,8 +123,14 @@ function block_append_floor($obj,row_obj){
 
 function floor_append_model($obj,row_obj){
 	if(row_obj.mid){
+		//var html = replace_css_namespace(row_obj.mc,row_obj.mid);
 		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid).attr('mtype',row_obj.mtype);
 	}
 }
+
+//将css_namespace格式的字符串用c_mid代替,这个替换功能交由前端完成
+//function replace_css_namespace(html,id){
+//	return html.replace(/css_namespace\w*/g,'c_'+id);
+//}
 
 module.exports = router;
