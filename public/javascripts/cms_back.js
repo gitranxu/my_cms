@@ -759,6 +759,7 @@ CMS.prototype = {
 				$scope.find('.c_edit').append(c_edit_zone_html);
 			},
 			parse_c_model : function(json){
+				console.log(JSON.stringify(json));
 				var that = this;
 				if(json.length){
 					_this.o.$content.find('.c_model').each(function(){
@@ -766,11 +767,18 @@ CMS.prototype = {
 						var mid = $this.attr('mid');
 						var $c_floor = $this.parents('.c_floor');
 						var fid = $c_floor.attr('fid');
-						var tmp = $this.find('.tmpl').html();
-						var data = that.get_data_by_fidmid(fid+mid,json);
-						var html = juicer(tmp,data);
-						$this.find('.translated').append(html);
-						$this.find('.tmpl').remove();
+
+						var mtype = $this.attr('mtype');
+						if(mtype==2){//如果模板类型为2，则需要进行加工，
+							var tmp = $this.find('.tmpl').html();
+							var data = that.get_data_by_fidmid(fid+mid,json);
+							var html = juicer(tmp,data);
+							$this.find('.translated').append(html);
+							$this.find('.tmpl').remove();
+						}else if(mtype==1){
+							console.log('普通HTML模板，不需要进行juicer处理');
+						}
+							
 
 						_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
 					});

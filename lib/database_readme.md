@@ -24,7 +24,7 @@
 	<div id="config"></div>
 </div>
 
-一个c_model最基本的content结构【zone_key必填，可以先暂时认为zone_key与c_edit是一一对应关系】
+一个c_model最基本的content结构(juicer模板)【zone_key必填，可以先暂时认为zone_key与c_edit是一一对应关系】
 <div class="c_model">
 	<style>
 		/* .aaa ul li{float: left;}
@@ -39,6 +39,12 @@
 	</script>
 	<div class="translated"></div>       【模板转换html后的存放位置】
 </div>
+
+一个c_model普通HTML模板至少需要下面的这个标签
+<div class="c_model">
+	
+</div>
+
 
 一个data_model最基本的结构【zone_key必填】
 [

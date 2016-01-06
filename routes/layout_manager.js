@@ -14,7 +14,7 @@ router.get('/query', function(req, res, next) {
 router.get('/layout_query_content_by_id', function(req, res, next) {
 
 	var dataid = req.query.dataid;
-	var sql = "SELECT b.*,cm.id 'mid',cm.content mc FROM ( "+
+	var sql = "SELECT b.*,cm.id 'mid',cm.content mc,cm.type mtype FROM ( "+
 				" SELECT a.*,f.`content` fc,f.id fid,f.order forder FROM ( "+
 				" SELECT l.content lc,bs.content bsc,bs.order bsorder,bs.id bsid,b.content bc,b.order border,b.id bid   "+
 				  " FROM c_layout l,c_blocks bs,c_block b   "+
@@ -22,7 +22,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				   " AND bs.id = b.c_blocks_id   "+
 				   " AND l.id = '"+dataid+"'  "+
 				 " ) a LEFT JOIN c_floor f "+
-				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id` "+
+				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id`,m.type "+
 											    "  FROM c_floor f,c_model m,c_data d "+
 											    " WHERE f.`id` = d.`c_floor_id` "+
 											    "   AND d.`c_model_id` = m.`id` "+
@@ -122,7 +122,7 @@ function block_append_floor($obj,row_obj){
 
 function floor_append_model($obj,row_obj){
 	if(row_obj.mid){
-		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid);
+		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid).attr('mtype',row_obj.mtype);
 	}
 }
 

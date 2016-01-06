@@ -52,7 +52,7 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 	var fid = req.query.fid;
 	var sql = "SELECT a.*,b.data "+
 				  " FROM ( "+
-					" SELECT   m.content,m.`data_model`,m.`id` "+
+					" SELECT   m.content,m.`data_model`,m.`id`,m.type mtype "+
 					" FROM c_model m  "+
 					" WHERE m.id = '"+mid+"' "+
 					" ) a LEFT JOIN  "+
@@ -67,16 +67,24 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 		if(rows.length){
 
 			var $ = cheerio.load(rows[0].content);
-			var tmpl = ($('.tmpl').html());
-			var data = rows[0].data;
-			if(!data){
-				data = rows[0].data_model;
+			var mtype = rows[0].mtype;
+
+			if(mtype==2){//模板类型为2时进行这样的处理
+				var tmpl = ($('.tmpl').html());
+				var data = rows[0].data;
+				if(!data){
+					data = rows[0].data_model;
+				}
+
+				var html = juicer(tmpl,{model_list : eval('('+data+')')});
+				$('.tmpl').remove();
+				$('.translated').append(html);
+			}else if(mtype==1){
+				console.log('普通HTML模板不需要进行juicer处理');
 			}
 
-			var html = juicer(tmpl,{model_list : eval('('+data+')')});
-			$('.tmpl').remove();
-			$('.translated').append(html);
-			$('.c_model').attr('mid',rows[0].id);
+
+			$('.c_model').attr('mid',rows[0].id).attr('mtype',mtype);
 			res.json({reCode:1,msg:$.html()});
 		}else{
 			res.json({reCode:10000,msg:''});
