@@ -28,6 +28,7 @@ function CMS(){
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
 		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',
 		data_add : '/data/add',
+		save_data : '/data/save_data',
 		creat_tmp : '/file/creat_tmp'
 	},
 	this.o = {
@@ -234,17 +235,25 @@ CMS.prototype = {
 				}
 				return '';
 			},
+			set_json_by_zone_key : function(jsondata_all,jsondata_item){
+				for(var i = 0,j = jsondata_all.length; i < j; i++ ){
+					if(jsondata_all[i]['zone_key'] == jsondata_item['zone_key']){
+						jsondata_all[i] = jsondata_item;
+					}
+				}
+				return jsondata_all;
+			},
 			show_c_edit_s_win : function($this,data){
 				var top = $this.offset().top;
 				var left = $this.offset().left;
 				$('#c_edit_s_win_id').find('.text').val(data.href);
 				$('#c_edit_s_win_id').find('.yesorno').removeClass('active');
-				if(data.new_open){
+				if(data.new_open=="yes"){
 					$('#c_edit_s_win_id').find('.yes').addClass('active');
 				}else{
 					$('#c_edit_s_win_id').find('.no').addClass('active');
 				}
-				$('#c_edit_s_win_id').find('img').attr('src','/images/'+data.imgurl);
+				$('#c_edit_s_win_id').find('img').attr('src',data.imgurl);
 				$('#c_edit_s_win_id').css({top:top,left:left}).show().addClass('bounceInUp');
 			}
 		}
@@ -384,6 +393,7 @@ CMS.prototype = {
 								url : _this.urls.model_query_content_data_by_id,
 								successFn : function(msg){
 									//后台返回现成的html结构【包含正确的数据】
+									//alert(msg.msg);
 									$('#chose_models_cntr').hide();
 									if(msg.reCode==1){
 										var $current_c_floor = _this.o.$content.find('.c_floor[fid="'+fid+'"]');
@@ -604,10 +614,45 @@ CMS.prototype = {
 					$this.addClass('active');
 				});
 
+				//点击保存时，将当前取的数据放进json中
 				_this.o.$root.delegate('#c_edit_s_win_id .save','click',function(){
-					//var $this = $(this);
+					var $this = $(this);
 					var $edit_btn = _this.o.$cur_c_edit_btn;
-					
+					var fid = $edit_btn.parents('.c_floor').attr('fid');
+					var mid = $edit_btn.parents('.c_model').attr('mid');
+
+					var zone_key = $edit_btn.parents('.c_edit').attr('zone_key');
+					var imgurl = $this.parents('.content').find('img').attr('src');
+					var alt_name = $this.parents('.content').find('img').attr('alt');
+					var href = $this.parents('.content').find('.text').val();
+
+					var new_open = $this.parents('.content').find('.yesorno.active').attr('open_new');
+					var to_save_data = _this.fn.set_json_by_zone_key(_this.data.cur_one_img,{imgurl:imgurl,name:alt_name,href:href,new_open:new_open,zone_key:zone_key});
+
+					_this.ajax.common({
+						url : _this.urls.save_data,
+						method : 'POST',
+						data : {to_save_data : JSON.stringify(to_save_data),fid:fid,mid:mid},
+						successFn : function(msg){
+							if(msg.reCode==1){
+								$('#c_edit_s_win_id').removeClass('bounceInUp').hide();
+								alert(msg.msg);
+								//根据保存结果，修改DOM
+								//1.是否target,2.href,3.imgurl,4.name
+								var $c_edit = $edit_btn.parents('.c_edit');
+								if(new_open=="yes"){
+									$c_edit.find('a').attr('target','_blank').attr('href',href);
+								}else{
+									$c_edit.find('a').removeAttr('target').attr('href',href);
+								}
+								$c_edit.find('img').attr('src',imgurl).attr('alt',alt_name);
+								
+							}else{
+								console.log('返回的结果reCode不等于1')
+							}
+						}
+					});
+
 				});
 			}
 		};

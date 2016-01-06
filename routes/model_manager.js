@@ -25,6 +25,7 @@ router.get('/get_img_data_by_fidmid', function(req, res, next) {
 				' WHERE d.c_model_id = m.id '+ 
 				  ' AND d.c_floor_id = "'+fid+'" '+ 
 				  ' AND d.c_model_id = "'+mid+'"';
+	console.log(sql+'-----------------get_img_data_by_fidmid');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
@@ -75,8 +76,7 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 			var html = juicer(tmpl,{model_list : eval('('+data+')')});
 			$('.tmpl').remove();
 			$('.translated').append(html);
-
-
+			$('.c_model').attr('mid',rows[0].id);
 			res.json({reCode:1,msg:$.html()});
 		}else{
 			res.json({reCode:10000,msg:''});

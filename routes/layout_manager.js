@@ -32,7 +32,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				 " ON b.fid = cm.c_floor_id "+
 				 " ORDER BY b.bsorder ASC,b.border ASC,b.forder ASC";
 				 
-		console.log(sql+'-----sql');
+		console.log(sql+'-----layout_query_content_by_id');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;

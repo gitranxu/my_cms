@@ -33,7 +33,7 @@
 	<script class="tmpl" type="text/template">
 		/*<ul class="clear_rx">
 			{@each model_list as it}
-				<li class="c_edit" zone_key="${it.zone_key}"><a href=""><img src="/images/${it.imgurl}" alt="${it.name}"></a></li>
+				<li class="c_edit" zone_key="${it.zone_key}"><a href="${it.href}" {@if it.new_open}target="_blank"{@/if}><img src="${it.imgurl}" alt="${it.name}"></a></li>
 			{@/each}
 		</ul>*/
 	</script>
