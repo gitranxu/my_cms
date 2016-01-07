@@ -437,6 +437,7 @@ CMS.prototype = {
 				_this.ajax.common({
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
+						//alert(msg);
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
 						$('#chose_layouts_cntr').hide();
 						if(msg){

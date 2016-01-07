@@ -59,7 +59,14 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					if(!b_appended_length){//如果不存在，加入b_content
 						var $3 = cheerio.load(rows[i].bc);
 						$3('.c_block').attr('bid',rows[i].bid).attr('b_order',rows[i].border);
-						$('.cntr').find('#'+bsid).append($3.html());
+						//如果bs_content里面有wrap1200元素，则b_content加入到该元素下面
+						var $wrap1200 = $('#'+bsid).find('.wrap1200');
+						if($wrap1200.length){
+							$wrap1200.append($3.html());
+						}else{
+							$('#'+bsid).append($3.html());
+						}
+						
 					}
 
 					block_append_floor($('.cntr').find('.c_block[bid="'+bid+'"]'),rows[i]);

@@ -7,79 +7,21 @@
 	<link rel="stylesheet" href="/stylesheets/base.css">
 	<link rel="stylesheet" href="/stylesheets/animate.min.css">
 	<link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">
-
 </head>
-<body style="background:orange;">
+<body>
 	
-  	<!-- <div id="back" class="wrap1200" prev_view_page_url="http://localhost:3000/projects/tmp/aaa.html">
+  	<div id="back" prev_view_page_url="http://localhost:3000/projects/tmp/aaa.html">
   	        <div id="content"></div>
   	        <div id="config"></div>
-  	    </div> -->
-    
+  	    </div>
 
-	
-
-	<div id="test2">测试2</div>
-	<div id="test3">测试3</div>
-
-    
 
     
 
 	<script src="/javascripts/other/jquery-1.9.1.min.js"></script>
 	<script src="/javascripts/other/ajaxfileupload.js"></script>
-	<!-- <script src="/javascripts/other/juicer-min.js" class="need_remove"></script>
-	    <script src="/javascripts/cms_back.js" class="need_remove"></script> -->
-	<script type="text/javascript">
+	<script src="/javascripts/other/juicer-min.js" class="need_remove"></script>
+	<script src="/javascripts/cms_back.js" class="need_remove"></script>
 
-		$().ready(function(){
-			$('#test2').click(function(){
-				$('#c_edit_s_win_id').removeClass('bounceInUp').hide();
-			});
-			$('#test3').click(function(){
-
-				$('#c_edit_s_win_id').css({left:300}).show().addClass('bounceInUp');
-			});
-		});
-
-	function my_ajaxFileUpload(fileObj){
-		var allowExtention = ".jpg,.bmp,.gif,.png"; //允许上传文件的后缀名
-        var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
-        var browserVersion = window.navigator.userAgent.toUpperCase();
-
-        var $img = $(fileObj).next('img');
-        if (allowExtention.indexOf(extention) > -1) {
-
-            $.ajaxFileUpload({
-				url : '/file/upload',
-				secureuri:false,
-				fileElementId:'file1',
-				success:function(data,status){
-					if(status=='success'){
-						var reg = /\{.+\}/;
-                        var msg_str = reg.exec(data)[0];
-                        var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
-                        var msg_obj = eval('('+msg_str_done+')');
-
-                        $img.attr('src',msg_obj.img_path);
-					}
-				},
-				error:function(){
-				},
-				dataType:'text'
-			});
-
-        } else {
-            alert("仅支持" + allowExtention + "为后缀名的文件!");
-            fileObj.value = ""; //清空选中文件
-            if (browserVersion.indexOf("MSIE") > -1) {
-                fileObj.select();
-                document.selection.clear();
-            }
-            fileObj.outerHTML = fileObj.outerHTML;
-        }
-
-	}
-	</script>
 </body>
 </html>

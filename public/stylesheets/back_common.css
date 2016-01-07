@@ -67,6 +67,7 @@
 .c_block_btn_group:hover{background: rgba(123,32,151,.8);}
 
 #back{position: relative;}
+#back .cntr{position: relative;}
 .c_block{position: relative;}
 .c_floor{position: relative;}
 

@@ -24,6 +24,12 @@
 	<div id="config"></div>
 </div>
 
+c_blocks的content的内容可以为空,可以不为空，不为空的时候,如果需要clear_rx则加上，如果需要子元素wrap1200可以加上，不需要可以不加
+<div class="xx blocks_move">
+	<div class="wrap1200"></div>
+</div>
+
+
 一个c_model最基本的content结构(juicer模板)【zone_key必填，可以先暂时认为zone_key与c_edit是一一对应关系】
 <div class="c_model">
 	<style>
