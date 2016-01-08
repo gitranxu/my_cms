@@ -66,6 +66,34 @@ CMS.prototype = {
 			            '</div>';
 			return juicer(tmpl,jsondata);
 		},
+		getTypeThreeBtn : function(jsondata){
+			var tmpl = '<div class="${mask} need_remove">'+
+			                '<div class="${bg}"></div>'+
+			                '<div class="btn_group ${c_x_btn_group} clear_rx">'+
+			                    '{@each items as it}'+
+			                        '<div class="choseBtn ${it.hid_rx}">'+
+			                            '<div class="bg"></div>'+
+			                            '<div class="btn_ctn ${it.class_name}">${it.text}</div>'+
+			                        '</div>'+
+			                    '{@/each}'+
+			                '</div>'+
+			                '<div class="edit_group hid_rx">'+
+			                    '{@each items as it}'+
+			                        '<div class="edit_item ${it.hid_rx}">'+
+			                            '<span>块的宽度 :</span><input type="text" value="${it.width}" class="width edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item ${it.hid_rx}">'+
+			                            '<span>上外边距 :</span><input type="text" value="${it.marginA}" class="marginA edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item ${it.hid_rx}">'+
+			                            '<span>下外边距 :</span><input type="text" value="${it.marginB}" class="marginB edit_input">'+
+			                        '</div>'+
+			                    '{@/each}'+
+			                    '<div class="saveBtn">保存</div>'+
+			                '</div>'+
+			            '</div>';
+			return juicer(tmpl,jsondata);
+		},
 		getTypeTwoBtn : function(jsondata){
 			var tmpl = '<div class="choseBtn fixbtn" id="${btn_id}">'+
 							'<div class="bg"></div>'+
@@ -77,7 +105,7 @@ CMS.prototype = {
 			return this.getTypeOneBtn({mask:"add_floor_mask",bg:"add_floor_bg",c_x_btn_group:"c_block_btn_group",items:[{class_name:"top",text:"增加楼层(顶)"},{class_name:"bottom",text:"增加楼层(底)"}]});
 		},
 		getEditBlockBtns : function(){
-			return this.getTypeOneBtn({mask:"edit_block_mask",bg:"edit_block_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑块"}]});
+			return this.getTypeThreeBtn({mask:"edit_block_mask",bg:"edit_block_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑块"}]});
 		},
 		getAddFloorBtns : function(){
 			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
@@ -204,6 +232,8 @@ CMS.prototype = {
 			page_reinit : function(){
 				$('#sys_btns .fixbtn').removeClass('active notclick');
 				_this.o.$content.removeAttr('style');
+				_this.o.$sys_sub_btns.hide();
+				_this.o.$sys_sub_btns.find('.choseBtn').removeClass('active');
 			},
 			add_fixed_btns : function(){
 				var sys_btns_html = _this.html.getSysBtns();
@@ -717,6 +747,59 @@ CMS.prototype = {
 						$p_choseBtn.removeClass('active')
 					}
 				});
+
+				//点击遮罩层上的编辑块
+				_this.o.$root.delegate('.edit_block_mask .edit','click',function(){
+					var $this = $(this);
+					$this.parents('.edit_block_mask').find('.edit_group').show();
+				});
+
+				//点击编辑块保存按钮
+				_this.o.$root.delegate('.edit_block_mask .saveBtn','click',function(){
+					var $this = $(this);
+					var $edit_group = $this.parents('.edit_group');
+					//得到字符串，然后根据bid去更新数据库里相应的列以及当前页面中cntr下面style中的占位符中的相应数据#bid{width:120px;margin-top:10px;margin-bottom:10px;}
+					var width = $edit_group.find('.width').val();
+					var margin_top = $edit_group.find('.marginA').val();
+					var margin_bottom = $edit_group.find('.marginB').val();
+					//回头这里在加验证
+					var reg = /^\d*$/;
+					if(!reg.test(width)){
+						alert('【宽度】请输入正整数，不能有空格，负号，小数点');
+						return;
+					}
+					if(!reg.test(margin_top)){
+						alert('【外边距】请输入正整数，不能有空格，负号，小数点');
+						return;
+					}
+					if(!reg.test(margin_bottom)){
+						alert('【外边距】请输入正整数，不能有空格，负号，小数点');
+						return;
+					}
+
+					var s = 'width:'+width+'px;margin-top:'+margin_top+'px;margin-bottom:'+margin_bottom+'px;';
+					
+					var bid = $this.parents('.c_block').attr('bid');
+					_this.ajax.common({//保存进数据库后，再去操作页面
+
+					});
+
+					var reg_css = /\.css_rx_start\{\}([.\s]*)\.css_rx_end\{\}/;
+					var target_s = $('.cntr > style').html();
+					console.log(target_s);
+					var result = target_s.match(reg_css);
+					/*var test = "#layout1 .cb1{width: 200px;}"+
+"#layout1 .cb2{width: 700px;}"+
+"#layout1 .cb3{width: 300px;}"+
+".css_rx_start{}"+
+"#abc{width:100px;margin-top:100px;margin-bottom:200px;}"+
+"#ccc{width:200px;margin-top:20px;margin-bottom:50px;}"+
+".css_rx_end{}";
+					console.log(test.match(reg_css)[1]);*/
+					console.log(result);
+					$edit_group.hide();
+				});
+
 
 				//点击编辑楼层按钮
 				_this.o.$root.delegate('#sys_btns .edit_floor_btn','click',function(){
