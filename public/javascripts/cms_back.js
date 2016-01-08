@@ -8,6 +8,7 @@ function CMS(){
 	},
 	this.sys_btns = {
 		chose_layout_show : true,
+		edit_layout_show : true,
 		create_floor_show : true,
 		prev_view_show : true,
 		make_html_show : true,
@@ -35,6 +36,8 @@ function CMS(){
 		$root : $('#back'),
 		$content : $('#content'),
 		$config : $('#config'),
+		$sys_main_btns : null,
+		$sys_sub_btns : null,
 		$cur_c_edit_btn : null //这个对象是点击编辑按钮时赋值的，用于图片编辑小窗口查询相关参数用
 	},
 	this.data = {
@@ -73,11 +76,17 @@ CMS.prototype = {
 		getAddBlockBtns : function(){
 			return this.getTypeOneBtn({mask:"add_floor_mask",bg:"add_floor_bg",c_x_btn_group:"c_block_btn_group",items:[{class_name:"top",text:"增加楼层(顶)"},{class_name:"bottom",text:"增加楼层(底)"}]});
 		},
+		getEditBlockBtns : function(){
+			return this.getTypeOneBtn({mask:"edit_block_mask",bg:"edit_block_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑块"}]});
+		},
 		getAddFloorBtns : function(){
 			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
 		},
 		getChoseLayoutFixBtn : function(){
 			return this.getTypeTwoBtn({btn_id:"chose_layout_btn",btn_name:"选择布局"});
+		},
+		getEditLayoutFixBtn : function(){
+			return this.getTypeTwoBtn({btn_id:"edit_layout_btn",btn_name:"编辑布局"});
 		},
 		getGenerateFixBtn : function(){
 			return this.getTypeTwoBtn({btn_id:"generate_html_btn",btn_name:"生成静态页面"});
@@ -169,6 +178,24 @@ CMS.prototype = {
                         '<div class="c_edit_bg"></div>'+
                         '<div class="c_edit_btn">编辑</div>'+
                     '</div>';
+		},
+		getEditLayoutSubBtns : function(){
+
+		},
+		getSysBtns : function(){
+			return '<div id="sys_btns" class="need_remove">'+
+						'<div class="main_btns"></div>'+
+						'<div class="sub_btns hid_rx">'+
+							'<div class="choseBtn" style="display: block;">'+
+			                    '<div class="bg"></div>'+
+			                    '<div class="btn_ctn edit_block_btn">编辑块</div>'+
+			                '</div>'+
+			                '<div class="choseBtn" style="display: block;">'+
+			                    '<div class="bg"></div>'+
+			                    '<div class="btn_ctn edit_floor_btn">编辑楼层</div>'+
+			                '</div>'+
+			            '</div>'+
+			        '</div>';
 		}
 	},
 	fn : function(){
@@ -179,23 +206,28 @@ CMS.prototype = {
 				_this.o.$content.removeAttr('style');
 			},
 			add_fixed_btns : function(){
+				var sys_btns_html = _this.html.getSysBtns();
+				_this.o.$config.append(sys_btns_html);
+				_this.o.$sys_main_btns = $('#sys_btns').find('.main_btns');
+				var $main_btns = _this.o.$sys_main_btns;
+				_this.o.$sys_sub_btns = $('#sys_btns').find('.sub_btns');
 
-				_this.o.$config.append('<div id="sys_btns" class="need_remove"></div>');
-				var $sys_btns = $('#sys_btns');
+				_this.sys_btns.chose_layout_show && $main_btns.append(_this.html.getChoseLayoutFixBtn());//加入选择布局按钮
 
-				_this.sys_btns.chose_layout_show && $sys_btns.append(_this.html.getChoseLayoutFixBtn());//加入选择布局按钮
-
-				_this.sys_btns.create_floor_show && $sys_btns.append(_this.html.getCreateFloorFixBtn());//加入选择布局按钮
+				_this.sys_btns.edit_layout_show && $main_btns.append(_this.html.getEditLayoutFixBtn()) && _this.extra_event.edit_layout_btn_event();//加入编辑布局按钮
 				
-				_this.sys_btns.blockGroups_move_show && $sys_btns.append(_this.html.getBlockGroupsMoveFixBtn());//加入块组之间上下移动按钮
 
-				_this.sys_btns.blockGroup_move_show && $sys_btns.append(_this.html.getBlockGroupMoveFixBtn());//加入块组内部左右移动按钮
+				_this.sys_btns.create_floor_show && $main_btns.append(_this.html.getCreateFloorFixBtn());//加入选择布局按钮
+				
+				_this.sys_btns.blockGroups_move_show && $main_btns.append(_this.html.getBlockGroupsMoveFixBtn());//加入块组之间上下移动按钮
 
-				_this.sys_btns.floor_move_show && $sys_btns.append(_this.html.getBlockMoveFixBtn());//加入块内楼层上下移动按钮
+				_this.sys_btns.blockGroup_move_show && $main_btns.append(_this.html.getBlockGroupMoveFixBtn());//加入块组内部左右移动按钮
 
-				_this.sys_btns.make_html_show && $sys_btns.append(_this.html.getGenerateFixBtn());//加入生成静态页按钮
+				_this.sys_btns.floor_move_show && $main_btns.append(_this.html.getBlockMoveFixBtn());//加入块内楼层上下移动按钮
 
-				_this.sys_btns.prev_view_show && $sys_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
+				_this.sys_btns.make_html_show && $main_btns.append(_this.html.getGenerateFixBtn());//加入生成静态页按钮
+
+				_this.sys_btns.prev_view_show && $main_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
 			},
 			add_chose_layout_win : function(){
 				//加入选择布局窗口
@@ -319,13 +351,13 @@ CMS.prototype = {
 				$this.find('.fixbtn').hide();
 				$this.addClass('bg_color1');
 				$this.animate({height:30,width:20},1000,function(){
-					$this.addClass('to_small');
+					$this.addClass('to_small ofh_rx');
 				});
 			}else{
 				$this.animate({height:200,width:300},1000,function(){
 					$this.find('.fixbtn').show("slow",function(){
 						$this.removeClass('bg_color1');
-						$this.removeClass('to_small');
+						$this.removeClass('to_small ofh_rx');
 					});
 				});
 			}
@@ -654,6 +686,41 @@ CMS.prototype = {
 						}
 					});
 
+				});
+			},
+			edit_layout_btn_event : function(){
+				//点击编辑布局按钮时，添加子按钮（没有则添加，有则显示）
+				_this.o.$root.delegate('#edit_layout_btn','click',function(){
+					var $this = $(this);
+					if($this.hasClass('active')){ //关闭
+						_this.o.$sys_sub_btns.fadeOut('slow');
+						$this.removeClass('active');
+					}else{	//打开
+						_this.o.$sys_sub_btns.fadeIn('slow');
+						$this.addClass('active');
+
+					}
+				});
+
+				//点击编辑块按钮
+				_this.o.$root.delegate('#sys_btns .edit_block_btn','click',function(){
+					//逻辑，点击时，对所有的c_block进行遍历，加上编辑块的按钮，遮罩层的zindex值>编辑楼层的>移动的，但是小于弹出窗口的
+					var $this = $(this);
+					var $p_choseBtn = $this.parents('.choseBtn');
+
+					if(!$p_choseBtn.hasClass('active')){
+						var html = _this.html.getEditBlockBtns();
+						_this.o.$content.find('.c_block').append(html);
+						$p_choseBtn.addClass('active')
+					}else{
+						_this.o.$content.find('.edit_block_mask').remove();
+						$p_choseBtn.removeClass('active')
+					}
+				});
+
+				//点击编辑楼层按钮
+				_this.o.$root.delegate('#sys_btns .edit_floor_btn','click',function(){
+					alert(2)
 				});
 			}
 		};

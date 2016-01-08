@@ -111,3 +111,9 @@ reCode
 			</script>
 			<div class="translated css_namespaceliumeiling"></div>
 		</div>
+
+2.如果要增加对bs,b,f等的边框边距的支持，需要提前加上占位符
+	a.所有对bs,b,f的宽高，外边距等样式的操作，最终会统一放到cntr元素下面的style中，占位符暂定为
+	  	.css_rx_start{}
+		.css_rx_end{}
+		这两个类为空类，每次都是统一替换这两个占位符之间的内容(正则)，生成用户编辑后的，所以每次这种样式变化后，都要重新生成一次，并保存到数据库，所以这里要引入一个c_page表，每条记录有自己的编辑后的信息

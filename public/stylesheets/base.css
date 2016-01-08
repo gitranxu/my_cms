@@ -15,5 +15,6 @@ body{font-size:12px;font-family:"微软雅黑";}/*具体看自己的网站是怎
 .fl_rx{float: left;}
 .fr_rx{float: right;}
 .hid_rx{display: none;}
+.ofh_rx{overflow: hidden;}
 .wrap1200{width: 1200px;margin: 0 auto;}
 .relative{position: relative;}
