@@ -821,8 +821,11 @@ CMS.prototype = {
 
 				var $c_model = $c_floor.find('.c_model');
 				var mid = $c_model.attr('mid');
-				var html = $c_model.html();
-				$c_model.empty().append(html.replace(/css_namespace\w*/g,'c_'+mid));
+				if(mid){
+					var html = $c_model.html();
+					$c_model.empty().append(html.replace(/css_namespace\w*/g,'c_'+mid));
+				}
+					
 				
 			},
 			parse_c_edit : function($scope){
