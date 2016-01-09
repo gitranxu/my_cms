@@ -112,8 +112,48 @@ reCode
 			<div class="translated css_namespaceliumeiling"></div>
 		</div>
 
-2.如果要增加对bs,b,f等的边框边距的支持，需要提前加上占位符
+2.如果要增加对bs,b,f等的边框边距的支持，需要提前加上占位符  //回头删掉
 	a.所有对bs,b,f的宽高，外边距等样式的操作，最终会统一放到cntr元素下面的style中，占位符暂定为
 	  	.css_rx_start{}
 		.css_rx_end{}
 		这两个类为空类，每次都是统一替换这两个占位符之间的内容(正则)，生成用户编辑后的，所以每次这种样式变化后，都要重新生成一次，并保存到数据库，所以这里要引入一个c_page表，每条记录有自己的编辑后的信息
+
+
+2.对bs,f进行操作
+	a.bs进行操作时，窗口显示bs(可编辑上下外边距，根据id进行)，同时判断这个bs下面b的数量，动态显示b的编辑列表(这样即有id又有bid的元素因其下面没有b，所以只能编辑bs的属性)，可编辑b的左右外边距和宽度，但总和不能超过bs的宽度
+	b.f进行操作时，根据f的数量显示，可编辑f的上下外边距
+	c.cntr元素下面的style中(这个style必须有，即使内容为空)，最上面一直到.css_layout_end_rx{}，这之前这些CSS样式都是关于bs,b,f的一些宽，外边距的样式
+	d.因为一个布局的c_blocks_id,c_block_id是固定的，所以为了区分不同页面，需要加上页面与上述id的关联关系表，因c_floor_id是动态生成的，且是全局唯一的，所以无需建立关系表
+	e.提供一个创建页面的窗口，用于建立页面与布局之间的关系，这个窗口一开始要求用户录入页面所属项目名称，页面名称，页面URL，页面选择的布局等信息，点击保存后，生成c_page记录，根据c_layout_id生成c_page_blocks及c_page_block记录等
+
+
+
+
+SELECT 
+  c_blocks_id,style bsstyle 
+FROM
+  c_page_blocks 
+WHERE c_page_id = "6a7ded55-b670-11e5-828f-003067b83487" 
+  AND c_blocks_id IN 
+  (SELECT 
+    id 
+  FROM
+    c_blocks 
+  WHERE layout_id = 'c232ed09-af67-11e5-baf7-68f728f3bf19')
+  
+  
+  
+ SELECT c_block_id,style bstyle FROM c_page_block WHERE c_page_id = "6a7ded55-b670-11e5-828f-003067b83487" 
+  AND c_block_id IN (SELECT id FROM c_block WHERE c_blocks_id IN(SELECT 
+    id 
+  FROM
+    c_blocks 
+  WHERE layout_id = 'c232ed09-af67-11e5-baf7-68f728f3bf19'))
+  
+  
+  
+  SELECT id fid,style fstyle FROM c_floor WHERE c_block_id IN (SELECT id FROM c_block WHERE c_blocks_id IN(SELECT 
+    id 
+  FROM
+    c_blocks 
+  WHERE layout_id = 'c232ed09-af67-11e5-baf7-68f728f3bf19'))

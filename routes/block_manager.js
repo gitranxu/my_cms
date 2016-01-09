@@ -56,7 +56,7 @@ function addFloor(block_id,order,sqlclient,res){
 	var rand18 = GetRandomNum(1,18);
 	var uuid_s = uuid.v1();
 	var content = '<div class="c_floor h200 c'+rand18+'" fid="'+uuid_s+'" f_order="'+order+'"></div>';
-	var inert_sql = "INSERT INTO c_floor VALUES('"+uuid_s+"','"+content+"',"+order+",'"+block_id+"',NOW());";
+	var inert_sql = "INSERT INTO c_floor VALUES('"+uuid_s+"','"+content+"',"+order+",'"+block_id+"',NOW(),NULL);";
 	sqlclient.query(inert_sql,function(err,rows,fields){
 		if(err) throw err;
 		res.json({reCode:1,msg:content});

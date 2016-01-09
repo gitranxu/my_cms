@@ -13,14 +13,15 @@ router.get('/query', function(req, res, next) {
 });
 router.get('/layout_query_content_by_id', function(req, res, next) {
 
-	var dataid = req.query.dataid;
+	var layoutid = req.query.layoutid;
+	var pageid = req.query.pageid;
 	var sql = "SELECT b.*,cm.id 'mid',cm.content mc,cm.type mtype FROM ( "+
 				" SELECT a.*,f.`content` fc,f.id fid,f.order forder FROM ( "+
 				" SELECT l.content lc,bs.content bsc,bs.order bsorder,bs.id bsid,b.content bc,b.order border,b.id bid   "+
 				  " FROM c_layout l,c_blocks bs,c_block b   "+
 				 " WHERE l.id = bs.layout_id   "+
 				   " AND bs.id = b.c_blocks_id   "+
-				   " AND l.id = '"+dataid+"'  "+
+				   " AND l.id = '"+layoutid+"'  "+
 				 " ) a LEFT JOIN c_floor f "+
 				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id`,m.type "+
 											    "  FROM c_floor f,c_model m,c_data d "+
@@ -51,14 +52,14 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					var bs_appended_length = $('.cntr').find('#'+bsid).length;
 					if(!bs_appended_length){ //如果不存在，加入bs_content
 						var $2 = cheerio.load(bs_content);
-						$2('.blocks_move').attr('id',bsid).attr('bs_order',rows[i].bsorder);
+						$2('.blocks_move').attr('id',bsid).attr('bs_order',rows[i].bsorder).addClass('c_'+bsid);
 						$('.cntr').append($2.html());
 					}
 					//加入bs_content后，下一步加入c_block
 					var b_appended_length = $('.cntr').find('.c_block[bid="'+bid+'"]').length;
 					if(!b_appended_length){//如果不存在，加入b_content
 						var $3 = cheerio.load(rows[i].bc);
-						$3('.c_block').attr('bid',rows[i].bid).attr('b_order',rows[i].border);
+						$3('.c_block').attr('bid',rows[i].bid).attr('b_order',rows[i].border).addClass('c_'+rows[i].bid);;
 						//如果bs_content里面有wrap1200元素，则b_content加入到该元素下面
 						var $wrap1200 = $('#'+bsid).find('.wrap1200');
 						if($wrap1200.length){
@@ -76,7 +77,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				}else{//如果bs_content不存在,这种的元素同时居有id,bid属性，利用哪个找都可以确定该元素是不是已经存在了
 
 					var $2 = cheerio.load(rows[i].bc);
-					$2('.blocks_move').attr('id',bsid).attr('bid',rows[i].bid).attr('bs_order',rows[i].bsorder);
+					$2('.blocks_move').attr('id',bsid).attr('bid',rows[i].bid).attr('bs_order',rows[i].bsorder).addClass('c_'+bsid);
 					var b_appended_length = $('.cntr').find('#'+bsid).length;
 					if(!b_appended_length){//如果不存在
 						$('.cntr').append($2.html());
@@ -86,7 +87,10 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				}
 			}
 
-			res.status(200).send($.html());
+			//查找CSS样式，最后再返回
+			add_layout_css(sqlclient,pageid,$,res);
+			//res.status(200).send($.html());
+			
 		}else{
 			res.send('');
 		}
@@ -122,7 +126,7 @@ router.post('/get_floor_model_datas_of_layout',function(req,res,next){
 
 function block_append_floor($obj,row_obj){
 	if(row_obj.fid){
-		$obj.append(row_obj.fc).find('.c_floor').not('[fid]').attr('fid',row_obj.fid).attr('f_order',row_obj.forder);
+		$obj.append(row_obj.fc).find('.c_floor').not('[fid]').attr('fid',row_obj.fid).attr('f_order',row_obj.forder).addClass('c_'+row_obj.fid);
 		floor_append_model($obj.find('.c_floor[fid="'+row_obj.fid+'"]'),row_obj);
 	}
 	
@@ -139,5 +143,73 @@ function floor_append_model($obj,row_obj){
 //function replace_css_namespace(html,id){
 //	return html.replace(/css_namespace\w*/g,'c_'+id);
 //}
+
+
+function add_layout_css(sqlclient,pageid,$,res){
+	var query_bs_style = "SELECT c_blocks_id,style bsstyle "+
+							" FROM c_page_blocks  "+
+							" WHERE c_page_id = '"+pageid+"'  "+
+							  " AND c_blocks_id IN  "+
+									  " (SELECT bs.id  "+
+									  	" FROM c_blocks bs,c_page p  "+
+									  	" WHERE bs.layout_id = p.c_layout_id "+
+									   " AND p.id = '"+pageid+"')";
+	var query_b_style = " SELECT c_block_id,style bstyle  "+
+							" FROM c_page_block  "+
+						   " WHERE c_page_id = '"+pageid+"'  "+
+  							 " AND c_block_id IN (SELECT id  "+
+  							                      " FROM c_block  "+
+  							                     " WHERE c_blocks_id IN(SELECT bs.id  "+
+																	    " FROM c_blocks bs,c_page p  "+
+																	    " WHERE bs.layout_id = p.c_layout_id "+
+																	   " AND p.id = '"+pageid+"'))";
+	var query_f_style = "SELECT id fid,style fstyle "+
+						   " FROM c_floor  "+
+						  " WHERE c_block_id IN (SELECT id  "+
+						                         " FROM c_block  "+
+						                        " WHERE c_blocks_id IN(SELECT bs.id  "+
+																	  " FROM c_blocks bs,c_page p  "+
+																	    " WHERE bs.layout_id = p.c_layout_id "+
+																	   " AND p.id = '"+pageid+"'))";
+	var css_s = "";
+	console.log(query_bs_style+'-------------------query_bs_style');
+	sqlclient.query(query_bs_style,function(err,rows,fields){
+		if(err) throw err;
+		if(rows.length){
+			for(var i = 0,j = rows.length;i < j;i++){
+				css_s += '.c_'+rows[i].c_blocks_id+'{'+rows[i].bsstyle+'}';
+			}
+		}else{
+			console.log('查找块组样式数据为空');
+		}
+		console.log(query_b_style+'-------------------query_b_style')
+		sqlclient.query(query_b_style,function(err,rows,fields){
+			if(err) throw err;
+			if(rows.length){
+				for(var i = 0,j = rows.length;i < j;i++){
+					css_s += '.c_'+rows[i].c_block_id+'{'+rows[i].bstyle+'}';
+				}
+			}else{
+				console.log('查找块样式数据为空');
+			}
+			console.log(query_f_style+'-------------------query_f_style')
+			sqlclient.query(query_f_style,function(err,rows,fields){
+				if(err) throw err;
+				if(rows.length){
+					for(var i = 0,j = rows.length;i < j;i++){
+						css_s += '.c_'+rows[i].fid+'{'+rows[i].fstyle+'}';
+					}
+				}else{
+					console.log('查找楼层样式数据为空');
+				}
+				console.log('-------------------55555555')
+				css_s += '.css_layout_end_rx{}';
+				//这里还要把css_s入到$.html中去
+				$('.cntr > style').prepend(css_s);
+				res.status(200).send($.html());
+			});
+		});
+	});
+}
 
 module.exports = router;

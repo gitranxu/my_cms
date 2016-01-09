@@ -104,8 +104,8 @@ CMS.prototype = {
 		getAddBlockBtns : function(){
 			return this.getTypeOneBtn({mask:"add_floor_mask",bg:"add_floor_bg",c_x_btn_group:"c_block_btn_group",items:[{class_name:"top",text:"增加楼层(顶)"},{class_name:"bottom",text:"增加楼层(底)"}]});
 		},
-		getEditBlockBtns : function(){
-			return this.getTypeThreeBtn({mask:"edit_block_mask",bg:"edit_block_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑块"}]});
+		getEditBlocksBtns : function(){
+			return this.getTypeThreeBtn({mask:"edit_blocks_mask",bg:"edit_blocks_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑块组"}]});
 		},
 		getAddFloorBtns : function(){
 			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
@@ -216,7 +216,7 @@ CMS.prototype = {
 						'<div class="sub_btns hid_rx">'+
 							'<div class="choseBtn" style="display: block;">'+
 			                    '<div class="bg"></div>'+
-			                    '<div class="btn_ctn edit_block_btn">编辑块</div>'+
+			                    '<div class="btn_ctn edit_block_btn">编辑块组</div>'+
 			                '</div>'+
 			                '<div class="choseBtn" style="display: block;">'+
 			                    '<div class="bg"></div>'+
@@ -499,7 +499,7 @@ CMS.prototype = {
 				_this.ajax.common({
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
-						//alert(msg);
+						alert(msg);
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
 						$('#chose_layouts_cntr').hide();
 						if(msg){
@@ -510,7 +510,7 @@ CMS.prototype = {
 						}
 						_this.fn.page_reinit();
 					},
-					data : { dataid : dataid},
+					data : { layoutid : dataid,pageid : '6a7ded55-b670-11e5-828f-003067b83487'},
 					dataType : 'html'
 				});
 			}
@@ -732,30 +732,30 @@ CMS.prototype = {
 					}
 				});
 
-				//点击编辑块按钮
+				//点击编辑块组按钮
 				_this.o.$root.delegate('#sys_btns .edit_block_btn','click',function(){
-					//逻辑，点击时，对所有的c_block进行遍历，加上编辑块的按钮，遮罩层的zindex值>编辑楼层的>移动的，但是小于弹出窗口的
+					//逻辑，点击时，对所有的blocks_move进行遍历，加上编辑块组的按钮，遮罩层的zindex值>编辑楼层的>移动的，但是小于弹出窗口的
 					var $this = $(this);
 					var $p_choseBtn = $this.parents('.choseBtn');
 
 					if(!$p_choseBtn.hasClass('active')){
-						var html = _this.html.getEditBlockBtns();
-						_this.o.$content.find('.c_block').append(html);
+						var html = _this.html.getEditBlocksBtns();
+						_this.o.$content.find('.blocks_move').append(html);
 						$p_choseBtn.addClass('active')
 					}else{
-						_this.o.$content.find('.edit_block_mask').remove();
+						_this.o.$content.find('.edit_blocks_mask').remove();
 						$p_choseBtn.removeClass('active')
 					}
 				});
 
 				//点击遮罩层上的编辑块
-				_this.o.$root.delegate('.edit_block_mask .edit','click',function(){
+				_this.o.$root.delegate('.edit_blocks_mask .edit','click',function(){
 					var $this = $(this);
-					$this.parents('.edit_block_mask').find('.edit_group').show();
+					$this.parents('.edit_blocks_mask').find('.edit_group').show();
 				});
 
 				//点击编辑块保存按钮
-				_this.o.$root.delegate('.edit_block_mask .saveBtn','click',function(){
+				_this.o.$root.delegate('.edit_blocks_mask .saveBtn','click',function(){
 					var $this = $(this);
 					var $edit_group = $this.parents('.edit_group');
 					//得到字符串，然后根据bid去更新数据库里相应的列以及当前页面中cntr下面style中的占位符中的相应数据#bid{width:120px;margin-top:10px;margin-bottom:10px;}
@@ -779,24 +779,18 @@ CMS.prototype = {
 
 					var s = 'width:'+width+'px;margin-top:'+margin_top+'px;margin-bottom:'+margin_bottom+'px;';
 					
-					var bid = $this.parents('.c_block').attr('bid');
+					var id = $this.parents('.blocks_move').attr('id');
 					_this.ajax.common({//保存进数据库后，再去操作页面
-
+							
 					});
 
-					var reg_css = /\.css_rx_start\{\}([.\s]*)\.css_rx_end\{\}/;
-					var target_s = $('.cntr > style').html();
-					console.log(target_s);
-					var result = target_s.match(reg_css);
-					/*var test = "#layout1 .cb1{width: 200px;}"+
-"#layout1 .cb2{width: 700px;}"+
-"#layout1 .cb3{width: 300px;}"+
-".css_rx_start{}"+
-"#abc{width:100px;margin-top:100px;margin-bottom:200px;}"+
-"#ccc{width:200px;margin-top:20px;margin-bottom:50px;}"+
-".css_rx_end{}";
-					console.log(test.match(reg_css)[1]);*/
-					console.log(result);
+
+					var target_s = $('.cntr > style').text();
+
+					var find_reg = new RegExp('\\.c_'+id+'\\{.*\\}(?=[\\s\\S]*\\.css_rx_end\\{\\})');
+					var after_reg_html = target_s.replace(find_reg,'.c_'+id+'{'+s+'}');
+
+					$('.cntr > style').empty().append(after_reg_html);
 					$edit_group.hide();
 				});
 
