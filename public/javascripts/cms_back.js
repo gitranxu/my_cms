@@ -16,7 +16,7 @@ function CMS(){
 		blockGroup_move_show : true,
 		floor_move_show : true
 	},
-	this.urls = {
+	this.urls = {//预计接口30个左右
 		layout_query : '/layout/query',
 		layout_query_content_by_id : '/layout/layout_query_content_by_id',
 		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',
@@ -30,7 +30,9 @@ function CMS(){
 		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',
 		data_add : '/data/add',
 		save_data : '/data/save_data',
-		creat_tmp : '/file/creat_tmp'
+		creat_tmp : '/file/creat_tmp',
+		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',
+		update_css_by_id_table_col : '/page/update_css_by_id_table_col' //第16个接口
 	},
 	this.o = {
 		$root : $('#back'),
@@ -66,7 +68,91 @@ CMS.prototype = {
 			            '</div>';
 			return juicer(tmpl,jsondata);
 		},
+		getBEditGroup : function(jsondata){
+			var tmpl = '{@each b_items as it}'+
+							'<div class="edit_group fl_rx" bid="${it.bid}">'+
+		                        '<div class="edit_item ">'+
+		                            '<span>块的宽度 :</span>'+
+		                            '<input type="text" value="${it.width}" class="width edit_input">'+
+		                        '</div>'+
+		                        '<div class="edit_item ">'+
+		                            '<span>左外边距 :</span>'+
+		                            '<input type="text" value="${it.marginA}" class="marginA edit_input">'+
+		                        '</div>'+
+		                        '<div class="edit_item ">'+
+		                            '<span>右外边距 :</span>'+
+		                            '<input type="text" value="${it.marginB}" class="marginB edit_input">'+
+		                        '</div>'+
+		                    '</div>'+
+		                '{@/each}';
+	        return juicer(tmpl,jsondata);
+		},
+		getTypeThree111Btn : function(jsondata){
+			var tmpl = '<div class="${mask} need_remove">'+
+			                '<div class="${bg}"></div>'+
+			                '<div class="btn_group ${c_x_btn_group} clear_rx">'+
+			                    '{@each items as it}'+
+			                        '<div class="choseBtn ${it.hid_rx}">'+
+			                            '<div class="bg"></div>'+
+			                            '<div class="btn_ctn ${it.class_name}">${it.text}</div>'+
+			                        '</div>'+
+			                    '{@/each}'+
+			                '</div>'+
+			                '<div class="edit_group hid_rx">'+
+
+			                    '{@each items as it}'+
+			                        '<div class="edit_item ${it.hid_rx}">'+
+			                            '<span>块的宽度 :</span><input type="text" value="${it.width}" class="width edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item ${it.hid_rx}">'+
+			                            '<span>上外边距 :</span><input type="text" value="${it.marginA}" class="marginA edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item ${it.hid_rx}">'+
+			                            '<span>下外边距 :</span><input type="text" value="${it.marginB}" class="marginB edit_input">'+
+			                        '</div>'+
+			                    '{@/each}'+
+			                    '<div class="saveBtn">保存</div>'+
+			                '</div>'+
+			            '</div>';
+			return juicer(tmpl,jsondata);
+		},
 		getTypeThreeBtn : function(jsondata){
+			var tmpl = '<div class="${mask} need_remove">'+
+		                    '<div class="${bg}">'+
+		                    '</div>'+
+		                    '<div class="btn_group ${c_x_btn_group} clear_rx">'+
+		                        '{@each items as it}'+
+			                        '<div class="choseBtn ${it.hid_rx}">'+
+			                            '<div class="bg"></div>'+
+			                            '<div class="btn_ctn ${it.class_name}">${it.text}</div>'+
+			                        '</div>'+
+			                    '{@/each}'+
+		                    '</div>'+
+		                    '<div class="edit_win hid_rx">'+
+		                    	'<div class="bs_edit_group clear_rx" bsid="">'+
+		                    		'<div class="edit_item fl_rx">'+
+			                            '<span>块组宽度 :</span>'+
+			                            '<input type="text" value="" class="width edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item fl_rx">'+
+			                            '<span>上外边距 :</span>'+
+			                            '<input type="text" value="" class="marginA edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item fl_rx">'+
+			                            '<span>下外边距 :</span>'+
+			                            '<input type="text" value="" class="marginB edit_input">'+
+			                        '</div>'+
+		                    	'</div>'+
+		                    	'<div class="b_edit_groups clear_rx">'+
+		                    	'</div>'+
+		                    	'<div class="saveBtn">保存</div>'
+		                    '</div>'+
+		                '</div>';
+			return juicer(tmpl,jsondata);
+		},
+
+		
+		getFourThreeBtn : function(jsondata){
 			var tmpl = '<div class="${mask} need_remove">'+
 			                '<div class="${bg}"></div>'+
 			                '<div class="btn_group ${c_x_btn_group} clear_rx">'+
@@ -317,6 +403,12 @@ CMS.prototype = {
 				}
 				$('#c_edit_s_win_id').find('img').attr('src',data.imgurl);
 				$('#c_edit_s_win_id').css({top:top,left:left}).show().addClass('bounceInUp');
+			},
+			update_css_by_reg : function(id,css_s){
+				var target_s = $('.cntr > style').text();
+				var find_reg = new RegExp('\\.c_'+id+'\\{[^\\}]*\\}');
+				var after_reg_html = target_s.replace(find_reg,'.c_'+id+'{'+css_s+'}');
+				$('.cntr > style').empty().append(after_reg_html);
 			}
 		}
 		
@@ -495,11 +587,11 @@ CMS.prototype = {
 				$('#chose_layouts_cntr .prev_view img').attr('src',imgurl);
 			},
 			click : function(){
-				var dataid = $(this).attr('dataid');
+				var dataid = $(this).attr('dataid');//这里我应该要页面id
 				_this.ajax.common({
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
-						alert(msg);
+						//alert(msg);
 						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
 						$('#chose_layouts_cntr').hide();
 						if(msg){
@@ -510,7 +602,7 @@ CMS.prototype = {
 						}
 						_this.fn.page_reinit();
 					},
-					data : { layoutid : dataid,pageid : '6a7ded55-b670-11e5-828f-003067b83487'},
+					data : { pageid : '6a7ded55-b670-11e5-828f-003067b83487'},
 					dataType : 'html'
 				});
 			}
@@ -751,47 +843,84 @@ CMS.prototype = {
 				//点击遮罩层上的编辑块
 				_this.o.$root.delegate('.edit_blocks_mask .edit','click',function(){
 					var $this = $(this);
-					$this.parents('.edit_blocks_mask').find('.edit_group').show();
+					//把bsid加上，把bitems加上
+					if($this.hasClass('clicked')){
+						$this.parents('.edit_blocks_mask').find('.edit_win').hide();
+						$this.removeClass('clicked');
+					}else{
+						var bsid = $this.parents('.blocks_move').attr('id');
+						_this.ajax.common({
+							url : _this.urls.get_bs_b_css_by_bsid,
+							data : { bsid : bsid },
+							successFn : function(msg){
+								//alert(msg.msg);
+								if(msg.reCode==1||msg.reCode==10000){
+									var html = _this.html.getBEditGroup(msg.msg);
+									//根据bsid去得到块组及块的CSS样式 
+									var $edit_win = $this.parents('.edit_blocks_mask').find('.edit_win');
+
+									$edit_win.find('.bs_edit_group').attr('bsid',msg.msg.bsid);
+
+									$edit_win.find('.bs_edit_group .width').val(msg.msg.width);
+
+									$edit_win.find('.bs_edit_group .marginA').val(msg.msg.marginA);
+
+									$edit_win.find('.bs_edit_group .marginB').val(msg.msg.marginB);
+
+									$edit_win.find('.b_edit_groups').empty().append(html);
+									$edit_win.show();
+									$this.addClass('clicked');
+								}else{
+									alert(msg.msg);
+								}
+							}
+						});
+						
+					}
+					
+					
 				});
 
 				//点击编辑块保存按钮
 				_this.o.$root.delegate('.edit_blocks_mask .saveBtn','click',function(){
 					var $this = $(this);
-					var $edit_group = $this.parents('.edit_group');
-					//得到字符串，然后根据bid去更新数据库里相应的列以及当前页面中cntr下面style中的占位符中的相应数据#bid{width:120px;margin-top:10px;margin-bottom:10px;}
-					var width = $edit_group.find('.width').val();
-					var margin_top = $edit_group.find('.marginA').val();
-					var margin_bottom = $edit_group.find('.marginB').val();
-					//回头这里在加验证
-					var reg = /^\d*$/;
-					if(!reg.test(width)){
-						alert('【宽度】请输入正整数，不能有空格，负号，小数点');
-						return;
-					}
-					if(!reg.test(margin_top)){
-						alert('【外边距】请输入正整数，不能有空格，负号，小数点');
-						return;
-					}
-					if(!reg.test(margin_bottom)){
-						alert('【外边距】请输入正整数，不能有空格，负号，小数点');
-						return;
-					}
+					var $bs_edit_group = $this.parents('.edit_win').find('.bs_edit_group');
+						var bsid = $bs_edit_group.attr('bsid');
+						var width = $bs_edit_group.find('.width').val();
+						var marginA = $bs_edit_group.find('.marginA').val();
+						var marginB = $bs_edit_group.find('.marginB').val();
+						var bs_css_s = 'width:'+width+'px!important;margin-top:'+marginA+'px!important;margin-bottom:'+marginB+'px!important;';
+						_this.ajax.common({
+							url : _this.urls.update_css_by_id_table_col,
+							method : 'POST',
+							data : {col_name:'c_blocks_id',table:'c_page_blocks',id_val:bsid,update_val:bs_css_s},
+							successFn : function(msg){
+								if(msg.reCode==1){
+									_this.fn.update_css_by_reg(bsid,bs_css_s);
+								}
+							}
+						});
 
-					var s = 'width:'+width+'px;margin-top:'+margin_top+'px;margin-bottom:'+margin_bottom+'px;';
-					
-					var id = $this.parents('.blocks_move').attr('id');
-					_this.ajax.common({//保存进数据库后，再去操作页面
-							
-					});
+					var $b_edit_groups = $this.parents('.edit_win').find('.b_edit_groups');
+						$b_edit_groups.find('.edit_group').each(function(){
+							var $this = $(this);
+							var bid = $this.attr('bid');
+							var width = $this.find('.width').val();
+							var marginA = $this.find('.marginA').val();
+							var marginB = $this.find('.marginB').val();
+							var b_css_s = 'width:'+width+'px!important;margin-left:'+marginA+'px!important;margin-right:'+marginB+'px!important;';
+							_this.ajax.common({
+								url : _this.urls.update_css_by_id_table_col,
+								method : 'POST',
+								data : {col_name:'c_block_id',table:'c_page_block',id_val:bid,update_val:b_css_s},
+								successFn : function(msg){
+									if(msg.reCode==1){
+										_this.fn.update_css_by_reg(bid,b_css_s);
+									}
+								}
+							});
+						});
 
-
-					var target_s = $('.cntr > style').text();
-
-					var find_reg = new RegExp('\\.c_'+id+'\\{.*\\}(?=[\\s\\S]*\\.css_rx_end\\{\\})');
-					var after_reg_html = target_s.replace(find_reg,'.c_'+id+'{'+s+'}');
-
-					$('.cntr > style').empty().append(after_reg_html);
-					$edit_group.hide();
 				});
 
 

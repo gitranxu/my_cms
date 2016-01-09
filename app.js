@@ -15,6 +15,7 @@ var block_manager = require('./routes/block_manager');
 var floor_manager = require('./routes/floor_manager');
 var model_manager = require('./routes/model_manager');
 var data_manager = require('./routes/data_manager');
+var page_manager = require('./routes/page_manager');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use('/floor', floor_manager);
 app.use('/file', file_manager);
 app.use('/model', model_manager);
 app.use('/data', data_manager);
+app.use('/page', page_manager);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

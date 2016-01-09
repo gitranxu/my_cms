@@ -122,11 +122,14 @@ reCode
 2.对bs,f进行操作
 	a.bs进行操作时，窗口显示bs(可编辑上下外边距，根据id进行)，同时判断这个bs下面b的数量，动态显示b的编辑列表(这样即有id又有bid的元素因其下面没有b，所以只能编辑bs的属性)，可编辑b的左右外边距和宽度，但总和不能超过bs的宽度
 	b.f进行操作时，根据f的数量显示，可编辑f的上下外边距
-	c.cntr元素下面的style中(这个style必须有，即使内容为空)，最上面一直到.css_layout_end_rx{}，这之前这些CSS样式都是关于bs,b,f的一些宽，外边距的样式
+	c.cntr元素下面的style中(这个style必须有，即使内容为空)，原则上这里的CSS样式都是关于bs,b,f的一些宽，外边距的样式
 	d.因为一个布局的c_blocks_id,c_block_id是固定的，所以为了区分不同页面，需要加上页面与上述id的关联关系表，因c_floor_id是动态生成的，且是全局唯一的，所以无需建立关系表
 	e.提供一个创建页面的窗口，用于建立页面与布局之间的关系，这个窗口一开始要求用户录入页面所属项目名称，页面名称，页面URL，页面选择的布局等信息，点击保存后，生成c_page记录，根据c_layout_id生成c_page_blocks及c_page_block记录等
+	f.c_page_blocks的style默认值(margin-top:0px!important;margin-bottom:0px!important;width:1200px!important;)
+	  c_page_block默认值(margin-left:0px!important;margin-right:0px!important;width:200px!important;)
+	  c_floor的style默认值(margin-top:0px!important;margin-bottom:0px!important;width:200px!important;)
 
-
+	
 
 
 SELECT 

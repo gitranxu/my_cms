@@ -13,7 +13,7 @@ router.get('/query', function(req, res, next) {
 });
 router.get('/layout_query_content_by_id', function(req, res, next) {
 
-	var layoutid = req.query.layoutid;
+	//var layoutid = req.query.layoutid;'"+layoutid+"'
 	var pageid = req.query.pageid;
 	var sql = "SELECT b.*,cm.id 'mid',cm.content mc,cm.type mtype FROM ( "+
 				" SELECT a.*,f.`content` fc,f.id fid,f.order forder FROM ( "+
@@ -21,7 +21,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				  " FROM c_layout l,c_blocks bs,c_block b   "+
 				 " WHERE l.id = bs.layout_id   "+
 				   " AND bs.id = b.c_blocks_id   "+
-				   " AND l.id = '"+layoutid+"'  "+
+				   " AND l.id = (SELECT c_layout_id FROM c_page WHERE id='"+pageid+"') "+
 				 " ) a LEFT JOIN c_floor f "+
 				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id`,m.type "+
 											    "  FROM c_floor f,c_model m,c_data d "+
@@ -172,7 +172,7 @@ function add_layout_css(sqlclient,pageid,$,res){
 																	    " WHERE bs.layout_id = p.c_layout_id "+
 																	   " AND p.id = '"+pageid+"'))";
 	var css_s = "";
-	console.log(query_bs_style+'-------------------query_bs_style');
+	//console.log(query_bs_style+'-------------------query_bs_style');
 	sqlclient.query(query_bs_style,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
@@ -182,7 +182,7 @@ function add_layout_css(sqlclient,pageid,$,res){
 		}else{
 			console.log('查找块组样式数据为空');
 		}
-		console.log(query_b_style+'-------------------query_b_style')
+		//console.log(query_b_style+'-------------------query_b_style')
 		sqlclient.query(query_b_style,function(err,rows,fields){
 			if(err) throw err;
 			if(rows.length){
@@ -192,7 +192,7 @@ function add_layout_css(sqlclient,pageid,$,res){
 			}else{
 				console.log('查找块样式数据为空');
 			}
-			console.log(query_f_style+'-------------------query_f_style')
+			//console.log(query_f_style+'-------------------query_f_style')
 			sqlclient.query(query_f_style,function(err,rows,fields){
 				if(err) throw err;
 				if(rows.length){
@@ -202,7 +202,6 @@ function add_layout_css(sqlclient,pageid,$,res){
 				}else{
 					console.log('查找楼层样式数据为空');
 				}
-				console.log('-------------------55555555')
 				css_s += '.css_layout_end_rx{}';
 				//这里还要把css_s入到$.html中去
 				$('.cntr > style').prepend(css_s);
