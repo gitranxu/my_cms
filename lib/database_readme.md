@@ -127,7 +127,7 @@ reCode
 	e.提供一个创建页面的窗口，用于建立页面与布局之间的关系，这个窗口一开始要求用户录入页面所属项目名称，页面名称，页面URL，页面选择的布局等信息，点击保存后，生成c_page记录，根据c_layout_id生成c_page_blocks及c_page_block记录等
 	f.c_page_blocks的style默认值(margin-top:0px!important;margin-bottom:0px!important;width:1200px!important;)
 	  c_page_block默认值(margin-left:0px!important;margin-right:0px!important;width:200px!important;)
-	  c_floor的style默认值(margin-top:0px!important;margin-bottom:0px!important;width:200px!important;)
+	  c_floor的style默认值(margin-top:0px!important;margin-bottom:0px!important;),c_floor不编辑宽度,宽度始终等于c_block的宽度
 
 	
 

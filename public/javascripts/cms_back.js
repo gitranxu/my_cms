@@ -32,7 +32,9 @@ function CMS(){
 		save_data : '/data/save_data',
 		creat_tmp : '/file/creat_tmp',
 		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',
-		update_css_by_id_table_col : '/page/update_css_by_id_table_col' //第16个接口
+		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口
+		get_f_css_by_fid : '/page/get_f_css_by_fid',
+		set_f_css_by_fid :'/page/set_f_css_by_fid'
 	},
 	this.o = {
 		$root : $('#back'),
@@ -87,35 +89,6 @@ CMS.prototype = {
 		                '{@/each}';
 	        return juicer(tmpl,jsondata);
 		},
-		getTypeThree111Btn : function(jsondata){
-			var tmpl = '<div class="${mask} need_remove">'+
-			                '<div class="${bg}"></div>'+
-			                '<div class="btn_group ${c_x_btn_group} clear_rx">'+
-			                    '{@each items as it}'+
-			                        '<div class="choseBtn ${it.hid_rx}">'+
-			                            '<div class="bg"></div>'+
-			                            '<div class="btn_ctn ${it.class_name}">${it.text}</div>'+
-			                        '</div>'+
-			                    '{@/each}'+
-			                '</div>'+
-			                '<div class="edit_group hid_rx">'+
-
-			                    '{@each items as it}'+
-			                        '<div class="edit_item ${it.hid_rx}">'+
-			                            '<span>块的宽度 :</span><input type="text" value="${it.width}" class="width edit_input">'+
-			                        '</div>'+
-			                        '<div class="edit_item ${it.hid_rx}">'+
-			                            '<span>上外边距 :</span><input type="text" value="${it.marginA}" class="marginA edit_input">'+
-			                        '</div>'+
-			                        '<div class="edit_item ${it.hid_rx}">'+
-			                            '<span>下外边距 :</span><input type="text" value="${it.marginB}" class="marginB edit_input">'+
-			                        '</div>'+
-			                    '{@/each}'+
-			                    '<div class="saveBtn">保存</div>'+
-			                '</div>'+
-			            '</div>';
-			return juicer(tmpl,jsondata);
-		},
 		getTypeThreeBtn : function(jsondata){
 			var tmpl = '<div class="${mask} need_remove">'+
 		                    '<div class="${bg}">'+
@@ -162,7 +135,7 @@ CMS.prototype = {
 		},
 
 		
-		getFourThreeBtn : function(jsondata){
+		getTypeFourBtn : function(jsondata){
 			var tmpl = '<div class="${mask} need_remove">'+
 			                '<div class="${bg}"></div>'+
 			                '<div class="btn_group ${c_x_btn_group} clear_rx">'+
@@ -175,9 +148,6 @@ CMS.prototype = {
 			                '</div>'+
 			                '<div class="edit_group hid_rx">'+
 			                    '{@each items as it}'+
-			                        '<div class="edit_item ${it.hid_rx}">'+
-			                            '<span>块的宽度 :</span><input type="text" value="${it.width}" class="width edit_input">'+
-			                        '</div>'+
 			                        '<div class="edit_item ${it.hid_rx}">'+
 			                            '<span>上外边距 :</span><input type="text" value="${it.marginA}" class="marginA edit_input">'+
 			                        '</div>'+
@@ -202,6 +172,9 @@ CMS.prototype = {
 		},
 		getEditBlocksBtns : function(){
 			return this.getTypeThreeBtn({mask:"edit_blocks_mask",bg:"edit_blocks_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑块组"}]});
+		},
+		getEditFloorBtns : function(){
+			return this.getTypeFourBtn({mask:"edit_floor_mask",bg:"edit_floor_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑楼层"}]});
 		},
 		getAddFloorBtns : function(){
 			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
@@ -862,7 +835,7 @@ CMS.prototype = {
 					}
 				});
 
-				//点击遮罩层上的编辑块
+				//点击遮罩层上的编辑块组
 				_this.o.$root.delegate('.edit_blocks_mask .edit','click',function(){
 					var $this = $(this);
 					//把bsid加上，把bitems加上
@@ -876,7 +849,7 @@ CMS.prototype = {
 							data : { bsid : bsid },
 							successFn : function(msg){
 								//alert(msg.msg);
-								if(msg.reCode==1||msg.reCode==10000){
+								if(msg.reCode==1){
 									var html = _this.html.getBEditGroup(msg.msg);
 									//根据bsid去得到块组及块的CSS样式 
 									var $edit_win = $this.parents('.edit_blocks_mask').find('.edit_win');
@@ -913,12 +886,12 @@ CMS.prototype = {
 				});
 
 				//只能输入正整数或0
-				_this.o.$root.delegate('.edit_win .edit_input','blur',function(){
+				_this.o.$root.delegate('.edit_win .edit_input,.edit_floor_mask .edit_input','blur',function(){
 					var val = $(this).val();
 					if(!/^\d+$/.test(val)){
 						$(this).addClass('unvalidate');
 					}else{
-						$(this).removeClass('unvalidate').attr('old_value',val);
+						$(this).removeClass('unvalidate');
 					}
 				});
 
@@ -930,7 +903,7 @@ CMS.prototype = {
 					}
 				});
 
-				//点击编辑块保存按钮
+				//点击编辑块组保存按钮
 				_this.o.$root.delegate('.edit_blocks_mask .saveBtn','click',function(){
 					var $this = $(this);
 
@@ -991,7 +964,85 @@ CMS.prototype = {
 
 				//点击编辑楼层按钮
 				_this.o.$root.delegate('#sys_btns .edit_floor_btn','click',function(){
-					alert(2)
+					
+					var $this = $(this);
+					var $p_choseBtn = $this.parents('.choseBtn');
+
+					if(!$p_choseBtn.hasClass('active')){
+						var html = _this.html.getEditFloorBtns();
+						_this.o.$content.find('.c_floor').append(html);
+						$p_choseBtn.addClass('active')
+					}else{
+						_this.o.$content.find('.edit_floor_mask').remove();
+						$p_choseBtn.removeClass('active')
+					}
+				});
+
+				//点击遮罩层上的编辑楼层
+				_this.o.$root.delegate('.edit_floor_mask .edit','click',function(){
+					var $this = $(this);
+					//把bsid加上，把bitems加上
+					if($this.hasClass('clicked')){
+						$this.parents('.edit_floor_mask').find('.edit_group').hide();
+						$this.removeClass('clicked');
+					}else{
+						var fid = $this.parents('.c_floor').attr('fid');
+						_this.ajax.common({
+							url : _this.urls.get_f_css_by_fid,
+							data : { fid : fid },
+							successFn : function(msg){
+
+								if(msg.reCode==1){
+
+									var $edit_group = $this.parents('.edit_floor_mask').find('.edit_group');
+
+									$edit_group.attr('fid',msg.msg.fid);
+
+									//$edit_group.find('.width').val(msg.msg.width);
+
+									$edit_group.find('.marginA').val(msg.msg.marginA);
+
+									$edit_group.find('.marginB').val(msg.msg.marginB);
+
+									$edit_group.show();
+									$this.addClass('clicked');
+								}else{
+									alert(msg.msg);
+								}
+							}
+						});
+						
+					}
+					
+					
+				});
+
+				//点击编辑楼层保存按钮
+				_this.o.$root.delegate('.edit_floor_mask .saveBtn','click',function(){
+					var $this = $(this);
+
+					if($this.parents('.edit_floor_mask').find('.unvalidate').length){
+						alert('请检查，只能输入正整数或0');
+						return;
+					}
+
+					var $edit_group = $this.parents('.edit_group');
+						var fid = $edit_group.attr('fid');
+						//var width = $edit_group.find('.width').val();
+						var marginA = $edit_group.find('.marginA').val();
+						var marginB = $edit_group.find('.marginB').val();
+						var f_css_s = 'margin-top:'+marginA+'px!important;margin-bottom:'+marginB+'px!important;';
+						_this.ajax.common({
+							url : _this.urls.set_f_css_by_fid,
+							method : 'POST',
+							data : {fid:fid,update_val:f_css_s},
+							successFn : function(msg){
+								if(msg.reCode==1){
+									_this.fn.update_css_by_reg(fid,f_css_s);
+								}
+							}
+						});
+
 				});
 			}
 		};

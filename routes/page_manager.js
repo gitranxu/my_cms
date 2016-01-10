@@ -49,6 +49,30 @@ router.get('/get_bs_b_css_by_bsid', function(req, res, next) {
 
 });
 
+router.get('/get_f_css_by_fid', function(req, res, next) {
+
+	var fid = req.query.fid;
+
+	var sql = " SELECT f.id,f.style fstyle FROM c_floor f WHERE f.id='"+fid+"'; ";
+	console.log(sql+'-----------------get_f_css_by_fid');
+	var result = {};
+	sqlclient.init();
+	sqlclient.query(sql,function(err,rows,fields){
+		if(err) throw err;
+		if(rows.length){
+			var fid = rows[0].id;add_attr(result,fid,"fid");
+			//var f_width = get_value_by_name(rows[0].fstyle,"width");add_attr(result,f_width,"width");
+			var f_margin_top = get_value_by_name(rows[0].fstyle,"margin-top");add_attr(result,f_margin_top,"marginA");
+			var f_margin_bottom = get_value_by_name(rows[0].fstyle,"margin-bottom");add_attr(result,f_margin_bottom,"marginB");
+
+			res.json({reCode:1,msg:result});
+		}else{
+			res.json({reCode:10000,msg:"没有数据"});
+		}
+	});
+
+});
+
 router.post('/update_css_by_id_table_col', function(req, res, next) {
 	var col_name = req.body.col_name;
 	var table = req.body.table;
@@ -56,6 +80,19 @@ router.post('/update_css_by_id_table_col', function(req, res, next) {
 	var update_val = req.body.update_val;
 	var sql = "UPDATE "+table+" SET style = '"+update_val+"' WHERE "+col_name+" = '"+id_val+"'";
 	console.log(sql+'--------------------update_css_by_id_table_col');
+	sqlclient.init();
+	sqlclient.query(sql,function(err,rows,fields){
+		if(err) throw err;
+		res.json({reCode:1,msg:'更新成功'});
+	});
+});
+
+router.post('/set_f_css_by_fid', function(req, res, next) {
+	var fid = req.body.fid;
+	var update_val = req.body.update_val;
+
+	var sql = "UPDATE c_floor SET style='"+update_val+"' WHERE id='"+fid+"'";
+	console.log(sql+'--------------------set_f_css_by_fid');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
