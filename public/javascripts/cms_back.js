@@ -129,6 +129,16 @@ CMS.prototype = {
 			                    '{@/each}'+
 		                    '</div>'+
 		                    '<div class="edit_win hid_rx">'+
+		                    	'<div class="help_group hid_rx clear_rx">'+
+		                    		'<div class="edit_item fl_rx">'+
+			                            '<span title="即块组的宽度">参考宽度 :</span>'+
+			                            '<input type="text" disabled value="" class="disable_input cankao_val edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item fl_rx">'+
+			                            '<span title="即所有块及其外边距总和">当前宽度 :</span>'+
+			                            '<input type="text" disabled value="" class="disable_input cur_val edit_input">'+
+			                        '</div>'+
+			                    '</div>'+
 		                    	'<div class="bs_edit_group clear_rx" bsid="">'+
 		                    		'<div class="edit_item fl_rx">'+
 			                            '<span>块组宽度 :</span>'+
@@ -409,6 +419,18 @@ CMS.prototype = {
 				var find_reg = new RegExp('\\.c_'+id+'\\{[^\\}]*\\}');
 				var after_reg_html = target_s.replace(find_reg,'.c_'+id+'{'+css_s+'}');
 				$('.cntr > style').empty().append(after_reg_html);
+			},
+			set_total_width : function($input_btn){
+				var total = 0;
+				var $edit_win = $input_btn.parents('.edit_win');
+				$edit_win.find('.b_edit_groups .edit_group').each(function(){
+					var $this = $(this);
+					var width = $this.find('.width').val();
+					var marginA = $this.find('.marginA').val();
+					var marginB = $this.find('.marginB').val();
+					total += parseInt(width)+parseInt(marginA)+parseInt(marginB);
+				});
+				$edit_win.find('.cur_val').val(total);
 			}
 		}
 		
@@ -868,6 +890,15 @@ CMS.prototype = {
 									$edit_win.find('.bs_edit_group .marginB').val(msg.msg.marginB);
 
 									$edit_win.find('.b_edit_groups').empty().append(html);
+
+									if($edit_win.find('.b_edit_groups .edit_group').length){
+										$edit_win.find('.help_group').show();
+										_this.fn.set_total_width($edit_win.find('.bs_edit_group'));
+									}
+
+									var cankao_val = $this.parents('.blocks_move').width();
+									$edit_win.find('.cankao_val').val(cankao_val);
+
 									$edit_win.show();
 									$this.addClass('clicked');
 								}else{
@@ -881,9 +912,43 @@ CMS.prototype = {
 					
 				});
 
+				//只能输入正整数或0
+				_this.o.$root.delegate('.edit_win .edit_input','blur',function(){
+					var val = $(this).val();
+					if(!/^\d+$/.test(val)){
+						$(this).addClass('unvalidate');
+					}else{
+						$(this).removeClass('unvalidate').attr('old_value',val);
+					}
+				});
+
+				//块的输入框的值可以改变当前值
+				_this.o.$root.delegate('.edit_win .b_edit_groups .edit_input','blur',function(){
+					var val = $(this).val();
+					if(/^\d+$/.test(val)){
+						_this.fn.set_total_width($(this));
+					}
+				});
+
 				//点击编辑块保存按钮
 				_this.o.$root.delegate('.edit_blocks_mask .saveBtn','click',function(){
 					var $this = $(this);
+
+					if($this.parents('.edit_win').find('.unvalidate').length){
+						alert('请检查，只能输入正整数或0');
+						return;
+					}
+
+
+					var cankao_width = $this.parents('.edit_win').find('.cankao_val').val();
+					var b_total_width = $this.parents('.edit_win').find('.cur_val').val();
+					if(b_total_width > cankao_width){
+						alert('所有块的宽度及外边距之和不能大于参考宽度！');
+						return;
+					}
+
+
+
 					var $bs_edit_group = $this.parents('.edit_win').find('.bs_edit_group');
 						var bsid = $bs_edit_group.attr('bsid');
 						var width = $bs_edit_group.find('.width').val();
