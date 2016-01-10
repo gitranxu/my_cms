@@ -20,6 +20,7 @@
 周一任务：将bs,b的order从c_blocks,c_block换到c_page_blocks,c_page_block
 
 get_bs_b_css_by_bsid先把这个SQL改了，order取的位置要变
+还有一个更新操作没有完成，只完成了增加操作
 
 BUG：
 a.暂没有楼层，暂没有模板，显示隐藏不对
