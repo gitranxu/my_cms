@@ -6,7 +6,7 @@ var sqlclient = require('../lib/mysql_cli');
 /* GET users listing. */
 router.get('/query', function(req, res, next) {
 	sqlclient.init();
-	sqlclient.query('SELECT id,name FROM  c_layout',function(err,rows,fields){
+	sqlclient.query('SELECT id,name,img_url t_url FROM  c_layout',function(err,rows,fields){
 		if(err) throw err;
 		res.status(200).json({ list: rows });
 	});

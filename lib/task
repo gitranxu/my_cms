@@ -17,7 +17,9 @@
 				之前做过收集的页面信息有一个列表，点击列表中的记录则提取出该页的HTML信息
 			以上3步如果做完，功能基本上就全通了
 
+周一任务：将bs,b的order从c_blocks,c_block换到c_page_blocks,c_page_block
 
+get_bs_b_css_by_bsid先把这个SQL改了，order取的位置要变
 
 BUG：
 a.暂没有楼层，暂没有模板，显示隐藏不对

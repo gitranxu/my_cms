@@ -8,21 +8,71 @@
     <link rel="stylesheet" href="/stylesheets/animate.min.css">
     <link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">
     <style>
-	.1{width:100px;height: 100px;background: red;}
     </style>
 </head>
 <body>
     
-    
-	<script type="text/javascript">
-	var s = "margin-top:10px!important;margin-bottom:20px!important;";
-	var a = s.match(/width\s*:\s*(\d*)px/);
-	if(a){
-		a = a[1];
-		alert(a);
-	}
-	
-	</script>
+    <div id="chose_page_cntr" class="hid_rx need_remove" style="display: block;">
+        <div class="win_bg"></div>
+        <div class="chose_win">
+            <div class="bg2"></div>
+            <div class="content">
+            	<div class="c_top clear_rx">
+            		<div class="layoutlist fl_rx">
+	                    <h3 class="c_title">可选的布局有：</h3>
+	                    <ul class="piece_ul">
+	                        <li class="border_top_none" imgurl="" dataid="097aa415-b53e-11e5-a9bb-003067b83487">
+	                            <div class="bgli"></div>
+	                            <div class="ctnli">第4种布局</div>
+	                        </li>
+	                    </ul>
+	                </div>
+	                <div class="prevview fl_rx">
+	                    <h3 class="c_title">效果预览：</h3>
+	                    <div class="prev_view"><img src="/images/upload/1.jpg" alt="暂无图片效果"></div>
+	                </div>
+	                <div class="pageinfo fl_rx">
+	                	<h3 class="c_title">页面信息：</h3>
+	                    <div class="edit_group">
+						    <div class="edit_item">
+						        <span>页面名称 :</span>
+						        <input type="text" value="" class="p_name edit_input">
+						    </div>
+						    <div class="edit_item">
+						        <span>url :</span>
+						        <input type="text" value="" class="p_url edit_input">
+						    </div>
+						    <div class="edit_item">
+						        <span>所属项目 :</span>
+						        <input type="text" value="" class="p_project edit_input">
+						    </div>
+						    <div class="edit_item" layoutid="">
+						        <span>关联布局 :</span>
+						        <input type="text" value="" placeholder="请点击左则布局列表" disabled class="p_layout disable_input">
+						    </div>
+						    <div class="saveBtn">保存</div>
+						</div>
+	                </div>
+            	</div>
+	                
+                <div class="c_bottom">
+                    <div class="c_bottom_content">
+						<ul class="page_ul clear_rx">
+	                        <li pid="097aa415-b53e-11e5-a9bb-003067b83487">
+	                            <div class="bgli"></div>
+	                            <div class="ctnli">第4种布局</div>
+	                        </li>
+	                        <li pid="097aa415-b53e-11e5-a9bb-003067b83487">
+	                            <div class="bgli"></div>
+	                            <div class="ctnli">第4种布局</div>
+	                        </li>
+	                    </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
 
    
     
