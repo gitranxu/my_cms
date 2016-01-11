@@ -2,7 +2,7 @@ var mysqlConfig = {
 	host : "localhost",
 	user : "root",
 	password : "",
-	database : "cms"
+	database : "cms2"
 };
 
 module.exports = mysqlConfig;

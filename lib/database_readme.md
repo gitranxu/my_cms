@@ -59,39 +59,40 @@ c_blocks的content的内容可以为空,可以不为空，不为空的时候,如
 	{imgurl:"sys/default128X128.jpg",name:"默认图片",href:"www.baidu.com",new_open:true,zone_key:"3jk"}
 ]
 
-c_page		页面表
-id		name		url		create_time		project_name		c_layout_id		last_edit_time
+c_page		页面表				(页面的名字不可以变，但url,project_name可以因不同的布局而不同)
+id		name		create_time
 
 c_layout	布局表
-id		name		content		create_time
+id		name		content		img_url		create_time
 												
 c_blocks	块组表
-id		order		content		layout_id		c_page_id		style 		create_time		last_edit_time
+id		content		c_layout_id		create_time
 
 c_block		块表
-id		order		content		c_blocks_id		c_page_id		style 		create_time		last_edit_time
+id		content		c_blocks_id		create_time
 
 c_floor		楼层表
-id		order		content		c_block_id		c_page_id		style 		create_time		last_edit_time
+id		content		c_block_id		create_time
+
+c_page_layout
+id		c_layout_id		c_page_id		url			project_name		create_time		last_edit_time
+
+c_page_blocks
+id		c_blocks_id		c_page_id		order		style 		create_time		last_edit_time		
+
+c_page_block
+id		c_block_id		c_page_id		order		style 		create_time		last_edit_time
+
+c_page_floor
+id		c_floor_id		c_page_id		order		style 		create_time		last_edit_time
+
 
 c_model		模板表(juicer) 						#模板表中含有区域属性zone(1,2,3)【例如八宫格模板】,zone(all)【轮播图】
-id		name		content		data_model【该字段将来可以用于校验】
+id		name		content		data_model		img_url		type		create_time
 
 c_data		数据表								#不同楼层(id唯一)不同模板的数据不一样
 id		c_model_id		c_floor_id		c_floor_model_id		data
 
-
-
-
-
-
-
-
-c_page_blocks	页面块组表
-id		c_page_id		c_blocks_id		style 		create_time		last_edit_time
-
-c_page_block	页面块表
-id		c_page_id		c_block_id		style 		create_time		last_edit_time
 
 
 

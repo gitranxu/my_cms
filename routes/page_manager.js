@@ -4,6 +4,27 @@ var router = express.Router();
 var uuid = require('node-uuid'); 
 var sqlclient = require('../lib/mysql_cli');
 
+
+router.get('/get_all_pages', function(req, res, next) {
+	var get_all_pages = "SELECT p.name,pl.* "+
+						" FROM c_page p,c_page_layout pl "+
+						" WHERE p.id = pl.`c_page_id` "+
+  						  " AND pl.`last_edit_time` = (SELECT MAX(last_edit_time) FROM c_page_layout WHERE c_page_id = p.id)";
+
+	console.log(get_all_pages+'------------------------get_all_pages');
+	sqlclient.init();
+	sqlclient.query(get_all_pages,function(err,rows,fields){
+		if(err) throw err;
+		if(rows.length){
+			res.json({reCode:1,msg:rows});
+		}else{
+			res.json({reCode:10000,msg:"没有数据"});
+		}
+	});
+
+});
+
+
 router.get('/get_bs_b_css_by_bsid', function(req, res, next) {
 
 	var bsid = req.query.bsid;
@@ -74,22 +95,6 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 
 });
 
-router.get('/get_all_pages', function(req, res, next) {
-
-	var sql = " SELECT name,id pid,url,project_name,c_layout_id FROM c_page ";
-	
-	sqlclient.init();
-	sqlclient.query(sql,function(err,rows,fields){
-		if(err) throw err;
-		if(rows.length){
-			res.json({reCode:1,msg:rows});
-		}else{
-			res.json({reCode:10000,msg:"没有数据"});
-		}
-	});
-
-});
-
 router.post('/update_css_by_id_table_col', function(req, res, next) {
 	var col_name = req.body.col_name;
 	var table = req.body.table;
@@ -117,6 +122,7 @@ router.post('/set_f_css_by_fid', function(req, res, next) {
 	});
 });
 
+//主要操作c_page,c_blocks,c_block三张表
 router.post('/save_or_update_page_info', function(req, res, next) {
 	var name = req.body.name;
 	var url = req.body.url;
@@ -124,7 +130,13 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 	var layout_id = req.body.layout_id;
 	var page_id = req.body.page_id;
 
-	//首先根据layout_id得到bs_id及b_id
+	if(page_id){//更新操作
+		update_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+	}else{//新增操作
+		add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+	}
+
+	/*//首先根据layout_id得到bs_id及b_id
 	var get_bs_b_ids_sql = "SELECT l.id lid,bs.id bsid,bs.content bsc,b.`id` bid FROM c_layout l,c_blocks bs,c_block b "+
 				" WHERE l.`id` = bs.`layout_id` "+
 			    " AND bs.`id` = b.`c_blocks_id` "+
@@ -155,7 +167,7 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 			console.log('该布局记录没有对应的bs,b信息');
 		}
 
-	});
+	});*/
 
 
 });
