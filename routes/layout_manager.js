@@ -17,37 +17,99 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 
 	//var layoutid = req.query.layoutid;'"+layoutid+"'
 	var pageid = req.query.pid;
-	var sql = "SELECT b.*,cm.id 'mid',cm.content mc,cm.type mtype FROM ( "+
-				" SELECT a.*,f.`content` fc,f.id fid,f.order forder FROM ( "+
-				" SELECT l.content lc,bs.content bsc,bs.order bsorder,bs.id bsid,b.content bc,b.order border,b.id bid   "+
-				  " FROM c_layout l,c_blocks bs,c_block b   "+
-				 " WHERE l.id = bs.layout_id   "+
-				   " AND bs.id = b.c_blocks_id   "+
-				   " AND l.id = (SELECT c_layout_id FROM c_page WHERE id='"+pageid+"') "+
-				 " ) a LEFT JOIN c_floor f "+
-				 " ON a.bid = f.`c_block_id`) b LEFT JOIN (SELECT f.`id` c_floor_id,m.`content`,m.`id`,m.type "+
-											    "  FROM c_floor f,c_model m,c_data d "+
-											    " WHERE f.`id` = d.`c_floor_id` "+
-											    "   AND d.`c_model_id` = m.`id` "+
-											    " 	AND d.`connect_time` = (SELECT MAX(d1.connect_time) "+
-																		" 	FROM c_data d1 "+
-																		" 	WHERE d1.`c_floor_id`=f.`id`)) cm "+
-				 " ON b.fid = cm.c_floor_id "+
-				 " ORDER BY b.bsorder ASC,b.border ASC,b.forder ASC";
+	var layoutid = req.query.lid;
+	var core_sql = "SELECT "+
+					  " b.*, "+
+					  " cm.id 'mid', "+
+					  " cm.content mc, "+
+					  " cm.type mtype  "+
+					" FROM "+
+					  " (SELECT  "+
+					    " a.*, "+
+					    " f.`content` fc, "+
+					    " f.id fid, "+
+					    " f.order forder, "+
+					    " f.style fstyle  "+
+					  " FROM "+
+					    " (SELECT  "+
+					      " l.content lc, "+
+					      " bs.content bsc, "+
+					      " pbs.order bsorder, "+
+					      " pbs.`style` bsstyle, "+
+					      " bs.id bsid, "+
+					      " b.content bc, "+
+					      " pb.order border, "+
+					      " pb.`style` bstyle, "+
+					      " b.id bid  "+
+					    " FROM "+
+					      " c_layout l, "+
+					      " c_blocks bs, "+
+					      " c_block b, "+
+					      " c_page_blocks pbs, "+
+					      " c_page_block pb  "+
+					    " WHERE l.id = bs.c_layout_id  "+
+					      " AND bs.id = b.c_blocks_id  "+
+					      " AND bs.id = pbs.`c_blocks_id` "+ 
+					      " AND b.id = pb.c_block_id  "+
+					      " AND l.id = '"+layoutid+"'  "+
+					      " AND pbs.`c_page_id` = '"+pageid+"'  "+
+					      " AND pb.`c_page_id` = '"+pageid+"') a "+ 
+					    " LEFT JOIN  "+
+					      " (SELECT  "+
+					        " cf.`content`, "+
+					        " cf.`id`, "+
+					        " cf.`c_block_id`, "+
+					        " pf.`order`, "+
+					        " pf.`style`  "+
+					      " FROM "+
+					        " c_floor cf, "+
+					        " c_page_floor pf  "+
+					      " WHERE cf.`id` = pf.`c_floor_id` "+ 
+					        " AND pf.`c_page_id` = '"+pageid+"') f "+ 
+					      " ON a.bid = f.`c_block_id`) b  "+
+					  " LEFT JOIN  "+
+					    " (SELECT  "+
+					      " f.`id` c_floor_id, "+
+					      " m.`content`, "+
+					      " m.`id`, "+
+					      " m.type  "+
+					    " FROM "+
+					      " c_floor f, "+
+					      " c_model m, "+
+					      " c_data d  "+
+					    " WHERE f.`id` = d.`c_floor_id`  "+
+					      " AND d.`c_model_id` = m.`id` "+ 
+					      " AND d.`connect_time` =  "+
+					      " (SELECT  "+
+					        " MAX(d1.connect_time)  "+
+					      " FROM "+
+					        " c_data d1  "+
+					      " WHERE d1.`c_floor_id` = f.`id`)) cm  "+
+					    " ON b.fid = cm.c_floor_id  "+
+					" ORDER BY b.bsorder ASC, "+
+					  " b.border ASC, "+
+					 " b.forder ASC ";
 				 
-		console.log(sql+'-----layout_query_content_by_id');
+		console.log(core_sql+'-----layout_query_content_by_id(core_sql)');
 	sqlclient.init();
-	sqlclient.query(sql,function(err,rows,fields){
+	sqlclient.query(core_sql,function(err,rows,fields){
 		if(err) throw err;
 
 		if(rows.length){
 			var $ = cheerio.load(rows[0].lc);//layout的主体
 
+			var css_obj = {};
+			var css_s = "";
 			for(var i = 0,j = rows.length;i < j;i++){
 
 				var bs_content = rows[i].bsc;
 				var bsid = rows[i].bsid;
 				var bid = rows[i].bid;
+
+				css_obj[rows[i].bsid] = rows[i].bsstyle;
+				css_obj[rows[i].bid] = rows[i].bstyle;
+				css_obj[rows[i].fid] = rows[i].fstyle;
+
 
 				if(bs_content){ //如果bs_content存在
 
@@ -89,9 +151,16 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				}
 			}
 
-			//查找CSS样式，最后再返回
-			add_layout_css(sqlclient,pageid,$,res);
-			//res.status(200).send($.html());
+			for(var i in css_obj){
+
+				if(i=='null'||i==null){
+					continue;
+				}
+				css_s += '.c_'+i+'{'+css_obj[i]+'}';
+			}
+			$('.cntr > style').prepend(css_s);
+			$('.cntr').attr('pid',pageid).attr('lid',layoutid);
+			res.status(200).send($.html());
 			
 		}else{
 			res.send('');

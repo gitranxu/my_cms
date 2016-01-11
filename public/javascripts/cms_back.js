@@ -36,7 +36,8 @@ function CMS(){
 		get_f_css_by_fid : '/page/get_f_css_by_fid',
 		set_f_css_by_fid :'/page/set_f_css_by_fid',
 		save_or_update_page_info : '/page/save_or_update_page_info',
-		get_all_pages : '/page/get_all_pages'
+		get_all_pages : '/page/get_all_pages',
+		get_page_layout_info_by_pid_lid : '/page/get_page_layout_info_by_pid_lid'
 	},
 	this.o = {
 		$root : $('#back'),
@@ -171,7 +172,7 @@ CMS.prototype = {
 		},
 		getPageLis : function(jsondata){//name,id pid,url,project_name,c_layout_id
 			var tmpl = 	'{@each pagelist as it}'+
-							'<li pid="${it.pid}" p_name="${it.name}" p_url="${it.url}" p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
+							'<li pid="${it.c_page_id}" p_name="${it.name}" p_url="${it.url}" p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
 	                            '<div class="bgli"></div>'+
 	                            '<div class="ctnli">${it.name}</div>'+
 	                        '</li>'+
@@ -510,7 +511,7 @@ CMS.prototype = {
 					}
 				});
 			},
-			parse_page : function(pid){
+			parse_page : function(pid,lid){
 				_this.ajax.common({
 					url : _this.urls.layout_query_content_by_id,
 					successFn : function(msg){
@@ -524,7 +525,7 @@ CMS.prototype = {
 						}
 						_this.fn.page_reinit();
 					},
-					data : { pid : pid},
+					data : { pid : pid,lid : lid},
 					dataType : 'html'
 				});
 			}
@@ -1166,13 +1167,35 @@ CMS.prototype = {
 					//2.换图片
 					var imgurl = $this.attr('imgurl');
 					imgurl && $this.parents('.content').find('.prev_view img').attr('src',imgurl);
+
 					//3.存信息
-					var layout_name = $this.find('.ctnli').text();
+					//如果下面的pagelist有高亮的，则获取高亮pageid，然后得到相应的pageinfo信息进行显示，如果没有高亮，则仅存layout相关信息
+					var $page_active = $('#chose_page_cntr .page_ul li.active');
 					var layout_id = $this.attr('dataid');
-					var $p_layout = $this.parents('.content').find('.pageinfo .p_layout');
+					var layout_name = $this.find('.ctnli').text();
+					var $pageinfo = $this.parents('.content').find('.pageinfo');
+
+					if($page_active.length){
+						var pid = $page_active.attr('pid');
+						_this.ajax.common({
+							url : _this.urls.get_page_layout_info_by_pid_lid,
+							data : {pid : pid,lid : layout_id},
+							successFn : function(msg){
+								if(msg.reCode==1){
+									$pageinfo.find('.p_url').val(msg.url);
+									$pageinfo.find('.p_project').val(msg.project_name);
+								}else if(msg.reCode==10000){ //如果没有数据，则清空
+									$pageinfo.find('.p_url').val('');
+									$pageinfo.find('.p_project').val('');
+								}else{
+									alert(msg.msg);
+								}
+							}
+						});
+					}
+					var $p_layout = $pageinfo.find('.p_layout');
 					$p_layout.val(layout_name);
 					$p_layout.attr('layoutid',layout_id);
-
 					
 				});
 
@@ -1200,7 +1223,7 @@ CMS.prototype = {
 							if(msg.reCode==1){
 								//如果成功应该将pageid返回回来
 								//console.log(msg.pid+'-------------------msg.pid');
-								_this.fn.parse_page(msg.pid);
+								_this.fn.parse_page(msg.pid,layout_id);
 							}
 						}
 					});
@@ -1231,8 +1254,9 @@ CMS.prototype = {
 
 				//双击page列表时
 				_this.o.$root.delegate('#chose_page_cntr .c_bottom .page_ul li','dblclick',function(){
+					var layout_id = $(this).parents('.content').find('.pageinfo .p_layout').attr('layoutid');
 					var pid = $(this).attr('pid');
-					_this.fn.parse_page(pid);
+					_this.fn.parse_page(pid,layout_id);
 				});
 
 			}
