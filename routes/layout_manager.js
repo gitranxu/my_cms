@@ -14,7 +14,7 @@ router.get('/query', function(req, res, next) {
 router.get('/layout_query_content_by_id', function(req, res, next) {
 
 	//var layoutid = req.query.layoutid;'"+layoutid+"'
-	var pageid = req.query.pageid;
+	var pageid = req.query.pid;
 	var sql = "SELECT b.*,cm.id 'mid',cm.content mc,cm.type mtype FROM ( "+
 				" SELECT a.*,f.`content` fc,f.id fid,f.order forder FROM ( "+
 				" SELECT l.content lc,bs.content bsc,bs.order bsorder,bs.id bsid,b.content bc,b.order border,b.id bid   "+
@@ -205,6 +205,7 @@ function add_layout_css(sqlclient,pageid,$,res){
 				css_s += '.css_layout_end_rx{}';
 				//这里还要把css_s入到$.html中去
 				$('.cntr > style').prepend(css_s);
+				$('.cntr').attr('pid',pageid);
 				res.status(200).send($.html());
 			});
 		});

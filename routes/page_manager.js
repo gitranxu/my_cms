@@ -146,7 +146,7 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 				
 			}
 			if(page_id){//更新操作
-				update_page();
+				update_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 			}else{//新增操作
 				add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 			}
@@ -158,15 +158,6 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 	});
 
 
-			
-
-	/*var sql = "UPDATE "+table+" SET style = '"+update_val+"' WHERE "+col_name+" = '"+id_val+"'";
-	console.log(sql+'--------------------update_css_by_id_table_col');
-	sqlclient.init();
-	sqlclient.query(sql,function(err,rows,fields){
-		if(err) throw err;
-		res.json({reCode:1,msg:'更新成功'});
-	});*/
 });
 
 //操作c_page,c_page_blocks,c_page_block三张表
@@ -204,8 +195,47 @@ function add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sql
 }
 
 //操作c_page,c_page_blocks,c_page_block三张表
+//c_page直接更新，c_page_blocks,c_page_block两张表先删除再增加
 function update_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
+	var update_to_page_sql = "UPDATE c_page SET name = '"+name+"',url = '"+url+"',project_name='"+project_name+"',c_layout_id='"+layout_id+"',last_edit_time = NOW()  WHERE id = '"+page_id+"'";
+	
+	console.log(update_to_page_sql+'-----------------update_to_page_sql');
+	sqlclient.query(update_to_page_sql,function(err,rows,fields){
+		if(err) throw err;
+		console.log('c_page更新成功！');
+	});
 
+	var del_c_page_blocks_sql = "DELETE FROM c_page_blocks WHERE c_page_id = '"+page_id+"'";
+	sqlclient.query(del_c_page_blocks_sql,function(err,rows,fields){
+		if(err) throw err;
+		console.log('c_page_blocks删除成功！');
+		for(var i in bs_id_obj){
+			var bsid = bs_id_obj[i];
+			var insert_to_page_blocks_sql = "INSERT INTO c_page_blocks(id,c_page_id,c_blocks_id,create_time) VALUES(UUID(),'"+page_id+"','"+bsid+"',NOW());";
+			console.log(insert_to_page_blocks_sql+'-----------------insert_to_page_blocks_sql');
+			sqlclient.query(insert_to_page_blocks_sql,function(err,rows,fields){
+				if(err) throw err;
+				console.log('c_page_blocks更新插入成功！');
+			});
+		}
+	});
+
+	var del_c_page_block_sql = "DELETE FROM c_page_block WHERE c_page_id = '"+page_id+"'";
+	sqlclient.query(del_c_page_block_sql,function(err,rows,fields){
+		if(err) throw err;
+		console.log('c_page_block删除成功！');
+		for(var i in b_id_obj){ //这里不能所有的都增加
+			var bid = b_id_obj[i];
+			var insert_to_page_block_sql = "INSERT INTO c_page_block(id,c_page_id,c_block_id,create_time) VALUES(UUID(),'"+page_id+"','"+bid+"',NOW());";
+			console.log(insert_to_page_block_sql+'-----------------insert_to_page_block_sql');
+			sqlclient.query(insert_to_page_block_sql,function(err,rows,fields){
+				if(err) throw err;
+				console.log('c_page_block更新插入成功！');
+			});
+		}
+	});
+
+	res.json({reCode:1,msg:'更新成功',pid:page_id});
 }
 
 

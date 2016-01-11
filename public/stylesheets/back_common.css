@@ -154,8 +154,8 @@ html,body{height: 100%;}
 
 #chose_page_cntr .piece_ul{height: 192px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .piece_ul li.active{background: #479F03;color: #00FB0B;}
-#chose_page_cntr .prevview{height: 226px;overflow: auto;width: 260px;margin-left: 10px;background: orange;}
-#chose_page_cntr .prevview .prev_view{height: 192px;}
+#chose_page_cntr .prevview{height: 226px;overflow: auto;width: 260px;margin-left: 10px;}
+#chose_page_cntr .prevview .prev_view{height: 192px;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .prevview .prev_view img{height: 192px;width: 260px;}
 #chose_page_cntr .layoutlist{height: 226px;overflow: auto;width:160px;}
 #chose_page_cntr .pageinfo{height: 226px;width: 360px;margin-left: 10px;position: relative;}

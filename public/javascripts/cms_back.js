@@ -248,7 +248,7 @@ CMS.prototype = {
 					                '</div>'+
 					                '<div class="prevview fl_rx">'+
 					                    '<h3 class="c_title">效果预览：</h3>'+
-					                    '<div class="prev_view"><img src="/images/upload/1.jpg" alt="暂无图片效果"></div>'+
+					                    '<div class="prev_view"><img src="http://pic.shop.lenovo.com.cn/g1/M00/00/ED/CmBZD1ZyXoaAbHeEAAAERQXbP14680.gif" alt="暂无图片效果"></div>'+
 					                '</div>'+
 					                '<div class="pageinfo fl_rx">'+
 					                	'<h3 class="c_title">页面信息：</h3>'+
@@ -524,7 +524,7 @@ CMS.prototype = {
 						}
 						_this.fn.page_reinit();
 					},
-					data : { pageid : pid},
+					data : { pid : pid},
 					dataType : 'html'
 				});
 			}
@@ -1215,6 +1215,8 @@ CMS.prototype = {
 					$edit_group.find('.p_name').val($this.attr('p_name'));
 					$edit_group.find('.p_url').val($this.attr('p_url'));
 					$edit_group.find('.p_project').val($this.attr('p_project_name'));
+					$edit_group.attr('pid',$this.attr('pid'));
+
 					var c_layout_id = $this.attr('p_c_layout_id');
 					$edit_group.find('.p_layout').attr('layoutid',c_layout_id);
 
