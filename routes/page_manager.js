@@ -136,7 +136,9 @@ router.post('/update_css_by_id_table_col', function(req, res, next) {
 	var table = req.body.table;
 	var id_val = req.body.id_val;
 	var update_val = req.body.update_val;
-	var sql = "UPDATE "+table+" SET style = '"+update_val+"' WHERE "+col_name+" = '"+id_val+"'";
+	var pid = req.body.pid;
+
+	var sql = "UPDATE "+table+" SET style = '"+update_val+"' WHERE "+col_name+" = '"+id_val+"' AND c_page_id = '"+pid+"'";
 	console.log(sql+'--------------------update_css_by_id_table_col');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){

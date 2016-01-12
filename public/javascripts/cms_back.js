@@ -27,17 +27,17 @@ function CMS(){
 		create_floor_by_block_id : '/block/create_floor_by_block_id',//改过
 		model_query : '/model/query',//不需要改
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',//改过
-		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',
+		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',//不需要改
 		data_add : '/data/add',//改过
 		save_data : '/data/save_data',//不需要改
 		creat_tmp : '/file/creat_tmp',//不需要改
 		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',//改过
-		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口
+		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口 //改过
 		get_f_css_by_fid : '/page/get_f_css_by_fid',//改过
 		set_f_css_by_fid :'/page/set_f_css_by_fid',//改过
 		save_or_update_page_info : '/page/save_or_update_page_info',//改过
 		get_all_pages : '/page/get_all_pages',//改过
-		get_page_layout_info_by_pid_lid : '/page/get_page_layout_info_by_pid_lid'
+		get_page_layout_info_by_pid_lid : '/page/get_page_layout_info_by_pid_lid'//不需要改
 	},
 	this.o = {
 		$root : $('#back'),
@@ -1037,7 +1037,7 @@ CMS.prototype = {
 					}
 
 
-
+					var pid = _this.o.$content.find('.cntr').attr('pid');
 					var $bs_edit_group = $this.parents('.edit_win').find('.bs_edit_group');
 						var bsid = $bs_edit_group.attr('bsid');
 						var width = $bs_edit_group.find('.width').val();
@@ -1047,7 +1047,7 @@ CMS.prototype = {
 						_this.ajax.common({
 							url : _this.urls.update_css_by_id_table_col,
 							method : 'POST',
-							data : {col_name:'c_blocks_id',table:'c_page_blocks',id_val:bsid,update_val:bs_css_s},
+							data : {col_name:'c_blocks_id',table:'c_page_blocks',id_val:bsid,update_val:bs_css_s,pid:pid},
 							successFn : function(msg){
 								if(msg.reCode==1){
 									_this.fn.update_css_by_reg(bsid,bs_css_s);
@@ -1066,7 +1066,7 @@ CMS.prototype = {
 							_this.ajax.common({
 								url : _this.urls.update_css_by_id_table_col,
 								method : 'POST',
-								data : {col_name:'c_block_id',table:'c_page_block',id_val:bid,update_val:b_css_s},
+								data : {col_name:'c_block_id',table:'c_page_block',id_val:bid,update_val:b_css_s,pid:pid},
 								successFn : function(msg){
 									if(msg.reCode==1){
 										_this.fn.update_css_by_reg(bid,b_css_s);
@@ -1237,6 +1237,12 @@ CMS.prototype = {
 						},
 						successFn : function(msg){
 							if(msg.reCode==1){
+								//如果成功，则将对应的pagelist中的相应信息改成最新的
+								var $cur_page = $this.parents('.content').find('.c_bottom .page_ul li.active');
+								$cur_page.attr('p_url',url);
+								$cur_page.attr('p_project_name',project_name);
+								$cur_page.attr('p_c_layout_id',layout_id);
+
 								//如果成功应该将pageid返回回来
 								_this.fn.parse_page(msg.pid,layout_id);
 							}
