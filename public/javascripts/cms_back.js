@@ -19,7 +19,7 @@ function CMS(){
 	this.urls = {//预计接口30个左右
 		layout_query : '/layout/query',//改过
 		layout_query_content_by_id : '/layout/layout_query_content_by_id',//改过
-		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',
+		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',//不需要改
 		blocks_save_orders : '/blocks/blocks_save_orders',//改过
 		block_save_orders : '/block/block_save_orders',//改过
 		floor_save_orders : '/floor/floor_save_orders',//改过
@@ -31,10 +31,10 @@ function CMS(){
 		data_add : '/data/add',//改过
 		save_data : '/data/save_data',//不需要改
 		creat_tmp : '/file/creat_tmp',//不需要改
-		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',
+		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',//改过
 		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口
-		get_f_css_by_fid : '/page/get_f_css_by_fid',
-		set_f_css_by_fid :'/page/set_f_css_by_fid',
+		get_f_css_by_fid : '/page/get_f_css_by_fid',//改过
+		set_f_css_by_fid :'/page/set_f_css_by_fid',//改过
 		save_or_update_page_info : '/page/save_or_update_page_info',//改过
 		get_all_pages : '/page/get_all_pages',//改过
 		get_page_layout_info_by_pid_lid : '/page/get_page_layout_info_by_pid_lid'
@@ -959,9 +959,10 @@ CMS.prototype = {
 						$this.removeClass('clicked');
 					}else{
 						var bsid = $this.parents('.blocks_move').attr('id');
+						var pid = _this.o.$content.find('.cntr').attr('pid');
 						_this.ajax.common({
 							url : _this.urls.get_bs_b_css_by_bsid,
-							data : { bsid : bsid },
+							data : { bsid : bsid , pid : pid },
 							successFn : function(msg){
 								//alert(msg.msg);
 								if(msg.reCode==1){
@@ -1102,9 +1103,10 @@ CMS.prototype = {
 						$this.removeClass('clicked');
 					}else{
 						var fid = $this.parents('.c_floor').attr('fid');
+						var pid = _this.o.$content.find('.cntr').attr('pid');
 						_this.ajax.common({
 							url : _this.urls.get_f_css_by_fid,
-							data : { fid : fid },
+							data : { fid : fid , pid : pid },
 							successFn : function(msg){
 
 								if(msg.reCode==1){
@@ -1143,6 +1145,7 @@ CMS.prototype = {
 
 					var $edit_group = $this.parents('.edit_group');
 						var fid = $edit_group.attr('fid');
+						var pid = _this.o.$content.find('.cntr').attr('pid');
 						//var width = $edit_group.find('.width').val();
 						var marginA = $edit_group.find('.marginA').val();
 						var marginB = $edit_group.find('.marginB').val();
@@ -1150,10 +1153,21 @@ CMS.prototype = {
 						_this.ajax.common({
 							url : _this.urls.set_f_css_by_fid,
 							method : 'POST',
-							data : {fid:fid,update_val:f_css_s},
+							data : {fid:fid,update_val:f_css_s , pid : pid },
 							successFn : function(msg){
 								if(msg.reCode==1){
-									_this.fn.update_css_by_reg(fid,f_css_s);
+									//对于新增的楼层来说，这里需要先把楼层的样式放到style中去
+									var style_s = $('.cntr > style').text().replace(/[\s]*/," ");
+									var reg = new RegExp(fid+"\\{.*\\}");
+									if(!reg.test(style_s)){//如果没匹配上，则说明楼层是刚刚新增的，需要先将样式添加进style中去
+										var fstyle = '.c_'+fid+'{'+f_css_s+'}';
+										$this.parents('.c_floor').addClass('c_'+fid);
+										style_s += fstyle;
+										$('.cntr > style').empty().append(style_s);
+									}else{//如果匹配上，只需更新成最新的就行了
+										_this.fn.update_css_by_reg(fid,f_css_s);
+									}
+									
 								}
 							}
 						});
@@ -1373,7 +1387,7 @@ CMS.prototype = {
 				$scope.find('.c_edit').append(c_edit_zone_html);
 			},
 			parse_c_model : function(json){
-				console.log(JSON.stringify(json));
+				//console.log(JSON.stringify(json));
 				var that = this;
 				if(json.length){
 					_this.o.$content.find('.c_model').each(function(){

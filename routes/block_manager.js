@@ -60,11 +60,12 @@ router.get('/create_floor_by_block_id',function(req,res,next){
 function addFloor(block_id,page_id,order,sqlclient,res){
 	var rand18 = GetRandomNum(1,18);
 	var uuid_s = uuid.v1();
-	var content = '<div class="c_floor h200 c'+rand18+'" fid="'+uuid_s+'" f_order="'+order+'"></div>';
+	var content_save = '<div class="c_floor h200 c'+rand18+'"></div>';
+	var content_show = '<div class="c_floor h200 c'+rand18+'" fid="'+uuid_s+'" f_order="'+order+'"></div>';
 
 	howdo
 		.task(function(done){
-			var insert_to_c_floor_sql = "INSERT INTO c_floor(id,content,c_block_id,create_time) VALUES('"+uuid_s+"','"+content+"','"+block_id+"',NOW())";
+			var insert_to_c_floor_sql = "INSERT INTO c_floor(id,content,c_block_id,create_time) VALUES('"+uuid_s+"','"+content_save+"','"+block_id+"',NOW())";
 			console.log(insert_to_c_floor_sql+'------------------insert_to_c_floor_sql');
 			sqlclient.query(insert_to_c_floor_sql,function(err,rows,fields){
 				if(err) done(err,'c_floor插入失败！');
@@ -83,7 +84,7 @@ function addFloor(block_id,page_id,order,sqlclient,res){
 		})
 		.together()
 		.try(function(m1,m2){
-			res.json({reCode:1,msg:content});
+			res.json({reCode:1,msg:content_show});
 		})
 		.catch(function(err){
 			res.json({reCode:10002,msg:'楼层增加失败'});

@@ -47,15 +47,16 @@ router.get('/get_page_layout_info_by_pid_lid', function(req, res, next) {
 router.get('/get_bs_b_css_by_bsid', function(req, res, next) {
 
 	var bsid = req.query.bsid;
+	var pid = req.query.pid;
 	var sql = " SELECT pbs.`c_blocks_id` bsid,pbs.`style` bsstyle,m.bid,m.bstyle,m.border "+
 				  " FROM c_page_blocks pbs  "+
 			      " LEFT JOIN  "+
-				    " (SELECT pb.c_block_id bid,pb.style bstyle,b.c_blocks_id bsid,b.order border  "+
+				    " (SELECT pb.c_block_id bid,pb.style bstyle,b.c_blocks_id bsid,pb.order border  "+
 				    	" FROM c_page_block pb,c_block b  "+
 				      " WHERE pb.`c_block_id` = b.`id`  "+
-				        " AND b.c_blocks_id = '"+bsid+"') m  "+
+				        " AND b.c_blocks_id = '"+bsid+"' AND pb.c_page_id='"+pid+"') m  "+
 				  " ON pbs.c_blocks_id = m.bsid  "+
-				 " WHERE pbs.`c_blocks_id` = '"+bsid+"' ORDER BY m.border ASC ";
+				 " WHERE pbs.`c_blocks_id` = '"+bsid+"' AND pbs.c_page_id='"+pid+"' ORDER BY m.border ASC ";
 	console.log(sql+'-----------------get_bs_b_css_by_bsid');
 	var result = {b_items:[]};
 	sqlclient.init();
@@ -93,12 +94,13 @@ router.get('/get_bs_b_css_by_bsid', function(req, res, next) {
 router.get('/get_f_css_by_fid', function(req, res, next) {
 
 	var fid = req.query.fid;
+	var pid = req.query.pid;
 
-	var sql = " SELECT f.id,f.style fstyle FROM c_floor f WHERE f.id='"+fid+"'; ";
-	console.log(sql+'-----------------get_f_css_by_fid');
+	var get_f_css_by_fid_sql = " SELECT f.c_floor_id id,f.style fstyle FROM c_page_floor f WHERE f.`c_floor_id` = '"+fid+"' AND f.`c_page_id` = '"+pid+"'";
+	console.log(get_f_css_by_fid_sql+'-----------------get_f_css_by_fid');
 	var result = {};
 	sqlclient.init();
-	sqlclient.query(sql,function(err,rows,fields){
+	sqlclient.query(get_f_css_by_fid_sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
 			var fid = rows[0].id;add_attr(result,fid,"fid");
@@ -112,6 +114,21 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 		}
 	});
 
+});
+
+router.post('/set_f_css_by_fid', function(req, res, next) {
+	var fid = req.body.fid;
+	var pid = req.body.pid;
+
+	var update_val = req.body.update_val;
+
+	var sql = "UPDATE c_page_floor pf SET pf.style = '"+update_val+"',last_edit_time = NOW() WHERE pf.`c_floor_id` = '"+fid+"' AND pf.`c_page_id` = '"+pid+"'";
+	console.log(sql+'--------------------set_f_css_by_fid');
+	sqlclient.init();
+	sqlclient.query(sql,function(err,rows,fields){
+		if(err) throw err;
+		res.json({reCode:1,msg:'更新成功'});
+	});
 });
 
 router.post('/update_css_by_id_table_col', function(req, res, next) {
@@ -128,18 +145,7 @@ router.post('/update_css_by_id_table_col', function(req, res, next) {
 	});
 });
 
-router.post('/set_f_css_by_fid', function(req, res, next) {
-	var fid = req.body.fid;
-	var update_val = req.body.update_val;
 
-	var sql = "UPDATE c_floor SET style='"+update_val+"' WHERE id='"+fid+"'";
-	console.log(sql+'--------------------set_f_css_by_fid');
-	sqlclient.init();
-	sqlclient.query(sql,function(err,rows,fields){
-		if(err) throw err;
-		res.json({reCode:1,msg:'更新成功'});
-	});
-});
 
 //主要操作c_page,c_blocks,c_block三张表
 router.post('/save_or_update_page_info', function(req, res, next) {
