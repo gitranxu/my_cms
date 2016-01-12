@@ -1,5 +1,6 @@
 var express = require('express');
 var cheerio = require('cheerio');//后台经量的jquery
+var howdo = require('howdo');
 var router = express.Router();
 var uuid = require('node-uuid'); 
 var sqlclient = require('../lib/mysql_cli');
@@ -9,7 +10,7 @@ router.get('/get_all_pages', function(req, res, next) {
 	var get_all_pages = "SELECT p.name,pl.* "+
 						" FROM c_page p,c_page_layout pl "+
 						" WHERE p.id = pl.`c_page_id` "+
-  						  " AND pl.`last_edit_time` = (SELECT MAX(last_edit_time) FROM c_page_layout WHERE c_page_id = p.id)";
+  						  " AND pl.`last_edit_time` = (SELECT MAX(last_edit_time) FROM c_page_layout WHERE c_page_id = p.id) ORDER BY last_edit_time DESC";
 
 	console.log(get_all_pages+'------------------------get_all_pages');
 	sqlclient.init();
@@ -18,7 +19,7 @@ router.get('/get_all_pages', function(req, res, next) {
 		if(rows.length){
 			res.json({reCode:1,msg:rows});
 		}else{
-			res.json({reCode:10000,msg:"没有数据"});
+			res.json({reCode:10000,msg:"没有页面列表数据"});
 		}
 	});
 
@@ -163,10 +164,11 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 		if(rows.length){
 			for(var i = 0,j = rows.length;i < j;i++){
 				bs_id_obj[rows[i].bsid] = rows[i].bsid;
-				var bsc = rows[i].bsc;
+				b_id_obj[rows[i].bid] = rows[i].bid;//如果是blocks_move.c_block这种情况，因下面没有c_block，所以这个元素的c_block样式无法编辑，同时这个元素的类中也只会加入c_blocks_id的类名，不会加入c_block_id，所以第二个类样式也不会起作用
+				/*var bsc = rows[i].bsc;
 				if(bsc){
 					b_id_obj[rows[i].bid] = rows[i].bid;
-				}
+				}*/
 				
 			}
 			if(page_id){//更新操作
@@ -187,48 +189,150 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 //新增操作，操作c_page,c_page_layout,c_page_blocks,c_page_block四张表
 function add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
 	//对于新增来说，传过来的page_id是undefined
-	console.log(page_id+'-----------------page_id1');
-	if(!page_id){ //如果新增页面，该id为空，如果是更新（可能是页面已有，但选择了另外的布局，这时候也是新增，但该id有值）
-		console.log(page_id+'-----------------page_id4');
-		page_id = uuid.v1();
-		console.log(page_id+'-----------------page_id5');
-		var insert_to_page_sql = "INSERT INTO c_page(id,name,create_time) VALUES('"+page_id+"','"+name+"',NOW())";
-		console.log(insert_to_page_sql+'-----------------insert_to_page_sql');
-		sqlclient.query(insert_to_page_sql,function(err,rows,fields){
-			if(err) throw err;
-			console.log('c_page插入成功！');
+	howdo
+		.task(function(done){
+			if(!page_id){ //如果新增页面，该id为空，如果是更新（可能是页面已有，但选择了另外的布局，这时候也是新增，但该id有值）
+				page_id = uuid.v1();
+				var insert_to_page_sql = "INSERT INTO c_page(id,name,create_time) VALUES('"+page_id+"','"+name+"',NOW())";
+				console.log(insert_to_page_sql+'-----------------insert_to_page_sql');
+				sqlclient.query(insert_to_page_sql,function(err,rows,fields){
+					if(err) throw err;
+					console.log('c_page插入成功！');
+					done(null,'c_page插入成功！');
+				});
+			}
+		})
+		.task(function(done){
+			var insert_to_page_layout_sql = "INSERT INTO c_page_layout(id,c_layout_id,c_page_id,url,project_name,create_time,last_edit_time) VALUES(UUID(),'"+layout_id+"','"+page_id+"','"+url+"','"+project_name+"',NOW(),NOW());";
+			console.log(insert_to_page_layout_sql+'-----------------insert_to_page_layout_sql');
+			sqlclient.query(insert_to_page_layout_sql,function(err,rows,fields){
+				if(err) throw err;
+				console.log('c_page_layout插入成功！');
+				done(null,'c_page_layout插入成功！');
+			});
+		})
+		.task(function(done){
+			var list = [];
+			for(var i in bs_id_obj){
+				list.push(bs_id_obj[i]);
+			}
+
+			howdo
+				.each(list,function(key,val,next,bsid){
+					if(bsid){
+						//第一步，先得到默认order
+						//第二步，再插入到相应表中
+						var get_default_order_sql = "SELECT bs.default_order FROM c_blocks bs WHERE bs.`id` = '"+bsid+"'";
+						console.log(get_default_order_sql+'-----------------get_default_order_sql');
+						sqlclient.query(get_default_order_sql,function(err,rows,fields){
+							if(err) throw err;
+							if(rows.length){
+								var default_order = rows[0].default_order;
+								var insert_to_page_blocks_sql = "INSERT INTO c_page_blocks(id,c_blocks_id,c_page_id,`order`,create_time,last_edit_time) VALUES(UUID(),'"+bsid+"','"+page_id+"',"+default_order+",NOW(),NOW());";
+								console.log(insert_to_page_blocks_sql+'-----------------insert_to_page_blocks_sql');
+								sqlclient.query(insert_to_page_blocks_sql,function(err,rows,fields){
+									if(err) throw err;
+									console.log('c_page_blocks插入成功！');
+								});
+
+							}else{
+								console.log('查询c_blocks记录默认order，未查到数据');
+							}
+							
+						});
+
+								
+					}
+					next(null,val);
+				})
+				.follow()
+				.try(function(bsid){
+					var get_default_order_sql = "SELECT bs.default_order FROM c_blocks bs WHERE bs.`id` = '"+bsid+"'";
+					console.log(get_default_order_sql+'-----------------get_default_order_sql');
+					sqlclient.query(get_default_order_sql,function(err,rows,fields){
+						if(err) throw err;
+						if(rows.length){
+							var default_order = rows[0].default_order;
+							var insert_to_page_blocks_sql = "INSERT INTO c_page_blocks(id,c_blocks_id,c_page_id,`order`,create_time,last_edit_time) VALUES(UUID(),'"+bsid+"','"+page_id+"',"+default_order+",NOW(),NOW());";
+							console.log(insert_to_page_blocks_sql+'-----------------insert_to_page_blocks_sql');
+							sqlclient.query(insert_to_page_blocks_sql,function(err,rows,fields){
+								if(err) throw err;
+								console.log('c_page_blocks插入成功！');
+								done(null,'c_page_blocks插入成功！');
+							});
+
+						}else{
+							console.log('查询c_blocks记录默认order，未查到数据');
+							done('查询c_blocks记录默认order，未查到数据');
+						}
+						
+					});
+				});
+			
+		})
+		.task(function(done){
+			var list = [];
+			for(var i in b_id_obj){
+				list.push(b_id_obj[i]);
+			}
+
+			howdo
+				.each(list,function(key,val,next,bid){
+					if(bid){
+						var get_default_order_sql = "SELECT b.default_order FROM c_block b WHERE b.`id` = '"+bid+"'";
+						console.log(get_default_order_sql+'-----------------get_default_order_sql');
+						sqlclient.query(get_default_order_sql,function(err,rows,fields){
+							if(err) throw err;
+							if(rows.length){
+								var default_order = rows[0].default_order;
+								var insert_to_page_block_sql = "INSERT INTO c_page_block(id,c_block_id,c_page_id,`order`,create_time,last_edit_time) VALUES(UUID(),'"+bid+"','"+page_id+"',"+default_order+",NOW(),NOW());";
+								console.log(insert_to_page_block_sql+'-----------------insert_to_page_block_sql');
+								sqlclient.query(insert_to_page_block_sql,function(err,rows,fields){
+									if(err) throw err;
+									console.log('c_page_block插入成功！');
+								});
+
+							}else{
+								console.log('查询c_block记录默认order，未查到数据');
+							}
+							
+						});
+					}
+					next(null,val);
+				})
+				.follow()
+				.try(function(bid){
+					var get_default_order_sql = "SELECT b.default_order FROM c_block b WHERE b.`id` = '"+bid+"'";
+					console.log(get_default_order_sql+'-----------------get_default_order_sql');
+					sqlclient.query(get_default_order_sql,function(err,rows,fields){
+						if(err) throw err;
+						if(rows.length){
+							var default_order = rows[0].default_order;
+							var insert_to_page_block_sql = "INSERT INTO c_page_block(id,c_block_id,c_page_id,`order`,create_time,last_edit_time) VALUES(UUID(),'"+bid+"','"+page_id+"',"+default_order+",NOW(),NOW());";
+							console.log(insert_to_page_block_sql+'-----------------insert_to_page_block_sql');
+							sqlclient.query(insert_to_page_block_sql,function(err,rows,fields){
+								if(err) throw err;
+								console.log('c_page_block插入成功！');
+								done(null,'c_page_block插入成功！');
+							});
+
+						}else{
+							console.log('查询c_block记录默认order，未查到数据');
+							done('查询c_block记录默认order，未查到数据');
+						}
+						
+					});
+				});
+			
+		})
+		.together()
+		.try(function(m1,m2,m3,m4){
+			res.json({reCode:1,msg:'插入成功',pid:page_id});
+		})
+		.catch(function(err){
+			res.json({reCode:10002,msg:'插入失败',pid:page_id});
 		});
-	}
-		
-	console.log(page_id+'-----------------page_id2');
-	var insert_to_page_layout_sql = "INSERT INTO c_page_layout(id,c_layout_id,c_page_id,url,project_name,create_time,last_edit_time) VALUES(UUID(),'"+layout_id+"','"+page_id+"','"+url+"','"+project_name+"',NOW(),NOW());";
-	console.log(insert_to_page_layout_sql+'-----------------insert_to_page_layout_sql');
-	sqlclient.query(insert_to_page_layout_sql,function(err,rows,fields){
-		if(err) throw err;
-		console.log('c_page_layout插入成功！');
-	});
 	
-	for(var i in bs_id_obj){
-		var bsid = bs_id_obj[i];
-		var insert_to_page_blocks_sql = "INSERT INTO c_page_blocks(id,c_blocks_id,c_page_id,create_time,last_edit_time) VALUES(UUID(),'"+bsid+"','"+page_id+"',NOW(),NOW());";
-		console.log(insert_to_page_blocks_sql+'-----------------insert_to_page_blocks_sql');
-		sqlclient.query(insert_to_page_blocks_sql,function(err,rows,fields){
-			if(err) throw err;
-			console.log('c_page_blocks插入成功！');
-		});
-	}
-
-	for(var i in b_id_obj){ //这里不能所有的都增加
-		var bid = b_id_obj[i];
-		var insert_to_page_block_sql = "INSERT INTO c_page_block(id,c_block_id,c_page_id,create_time,last_edit_time) VALUES(UUID(),'"+bid+"','"+page_id+"',NOW(),NOW());";
-		console.log(insert_to_page_block_sql+'-----------------insert_to_page_block_sql');
-		sqlclient.query(insert_to_page_block_sql,function(err,rows,fields){
-			if(err) throw err;
-			console.log('c_page_block插入成功！');
-		});
-	}
-
-	res.json({reCode:1,msg:'插入成功',pid:page_id});
 }
 
 //操作c_page_layout,c_page_blocks,c_page_block三张表
@@ -249,7 +353,6 @@ function update_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,
 			});
 
 		}else{//如果未查到，直接添加
-			console.log(page_id+'-----------------page_id3');
 			add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 		}
 	});

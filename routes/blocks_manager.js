@@ -9,21 +9,19 @@ router.get('/blocks_save_orders', function(req, res, next) {
 	var target_blocks_id = req.query.target_blocks_id;
 	var current_blocks_order = req.query.current_blocks_order;
 	var target_blocks_order = req.query.target_blocks_order;
-	var sql = " UPDATE c_blocks cb SET cb.order = CASE cb.id WHEN '"+current_blocks_id+"' THEN "+target_blocks_order+
+	var page_id = req.query.pid;
+
+	var blocks_save_orders_sql = " UPDATE c_page_blocks pbs SET pbs.order = CASE pbs.c_blocks_id WHEN '"+current_blocks_id+"' THEN "+target_blocks_order+
 			" WHEN '"+target_blocks_id+"' THEN "+current_blocks_order+
-			" ELSE cb.order END";
-	//console.log(sql+'-----------bb');
+			" ELSE pbs.order END WHERE pbs.c_page_id='"+page_id+"'";
+
+	console.log(blocks_save_orders_sql+'-----------blocks_save_orders_sql');
 	sqlclient.init();
-	sqlclient.query(sql,function(err,rows,fields){
+	sqlclient.query(blocks_save_orders_sql,function(err,rows,fields){
 		if(err) throw err;
 		res.json({changedRows:rows.changedRows});
 	});
 
-
-
-	//1.通过dataid得到layout.content及cb_id数组
-	//2.通过cb_id数组得到cb_content,及b_content,如果有cb_content则将其对应的b_content放入其中
-		
 });
 
 module.exports = router;

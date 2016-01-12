@@ -75,7 +75,8 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 				if(!data){
 					data = rows[0].data_model;
 				}
-
+				console.log(data+'---------------------data');
+				console.log(tmpl+'---------------------tmpl');
 				var html = juicer(tmpl,{model_list : eval('('+data+')')});
 				$('.tmpl').remove();
 				$('.translated').append(html);

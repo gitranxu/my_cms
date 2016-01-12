@@ -17,15 +17,15 @@ function CMS(){
 		floor_move_show : true
 	},
 	this.urls = {//预计接口30个左右
-		layout_query : '/layout/query',
-		layout_query_content_by_id : '/layout/layout_query_content_by_id',
+		layout_query : '/layout/query',//改过
+		layout_query_content_by_id : '/layout/layout_query_content_by_id',//改过
 		get_floor_model_datas_of_layout : '/layout/get_floor_model_datas_of_layout',
-		blocks_save_orders : '/blocks/blocks_save_orders',
-		block_save_orders : '/block/block_save_orders',
-		floor_save_orders : '/floor/floor_save_orders',
-		floor_delete : '/floor/floor_delete',
-		create_floor_by_block_id : '/block/create_floor_by_block_id',
-		model_query : '/model/query',
+		blocks_save_orders : '/blocks/blocks_save_orders',//改过
+		block_save_orders : '/block/block_save_orders',//改过
+		floor_save_orders : '/floor/floor_save_orders',//改过
+		floor_delete : '/floor/floor_delete',//改过
+		create_floor_by_block_id : '/block/create_floor_by_block_id',//改过
+		model_query : '/model/query',//不需要改
 		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
 		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',
 		data_add : '/data/add',
@@ -35,8 +35,8 @@ function CMS(){
 		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口
 		get_f_css_by_fid : '/page/get_f_css_by_fid',
 		set_f_css_by_fid :'/page/set_f_css_by_fid',
-		save_or_update_page_info : '/page/save_or_update_page_info',
-		get_all_pages : '/page/get_all_pages',
+		save_or_update_page_info : '/page/save_or_update_page_info',//改过
+		get_all_pages : '/page/get_all_pages',//改过
 		get_page_layout_info_by_pid_lid : '/page/get_page_layout_info_by_pid_lid'
 	},
 	this.o = {
@@ -412,7 +412,6 @@ CMS.prototype = {
 						url : _this.urls.get_all_pages,
 						successFn : function(msg){
 							if(msg.reCode==1){
-								console.log(JSON.stringify(msg));
 								var rows = msg.msg;
 								var html = _this.html.getPageLis({pagelist:rows});
 								
@@ -729,10 +728,11 @@ CMS.prototype = {
 				console.log('得到的fid值为：'+fid+',请仔细检查');
 				return;
 			}
+			var pid = _this.o.$content.find('.cntr').attr('pid');
 			_this.ajax.common({
 				url : _this.urls.floor_delete,
 				method : 'POST',
-				data : {fid : fid},
+				data : {fid : fid,pid : pid},
 				successFn : function(msg){
 					if(msg.reCode==1){
 						alert(msg.msg);
@@ -806,9 +806,10 @@ CMS.prototype = {
 			//先发后台请求，成功后再进行dom操作
 			var $c_block = $(this).parents('.c_block');
 			var block_id = $c_block.attr('bid');
+			var pid = _this.o.$content.find('.cntr').attr('pid');
 			_this.ajax.common({
 				url : _this.urls.create_floor_by_block_id,
-				data : {block_id : block_id,order_direct : "bottom"},
+				data : {block_id : block_id,order_direct : "bottom",pid:pid},
 				successFn : function(msg){
 					if(msg.reCode==1){
 						_this.move_unit.f_to_absolute($c_block);
@@ -824,9 +825,10 @@ CMS.prototype = {
 			//先发后台请求，成功后再进行dom操作
 			var $c_block = $(this).parents('.c_block');
 			var block_id = $c_block.attr('bid');
+			var pid = _this.o.$content.find('.cntr').attr('pid');
 			_this.ajax.common({
 				url : _this.urls.create_floor_by_block_id,
-				data : {block_id : block_id,order_direct : "top"},
+				data : {block_id : block_id,order_direct : "top",pid:pid},
 				successFn : function(msg){
 					if(msg.reCode==1){
 						_this.move_unit.f_to_absolute($c_block); //先absolute化
@@ -1222,7 +1224,6 @@ CMS.prototype = {
 						successFn : function(msg){
 							if(msg.reCode==1){
 								//如果成功应该将pageid返回回来
-								//console.log(msg.pid+'-------------------msg.pid');
 								_this.fn.parse_page(msg.pid,layout_id);
 							}
 						}
@@ -1846,6 +1847,8 @@ CMS.prototype = {
 						return;
 					}
 
+					var pid = _this.o.$content.find('.cntr').attr('pid');
+
 					_this.ajax.common({
 						url : _this.urls.blocks_save_orders,
 						successFn : function(msg){
@@ -1858,7 +1861,8 @@ CMS.prototype = {
 							current_blocks_id : current_blocks_id,
 							target_blocks_id : target_blocks_id,
 							current_blocks_order : current_blocks_order,
-							target_blocks_order : target_blocks_order
+							target_blocks_order : target_blocks_order,
+							pid : pid
 						}
 					});
 				});
@@ -1877,7 +1881,6 @@ CMS.prototype = {
 						direct = 'right';
 					}
 					
-					console.log(11111111111);
 					var current_block_order = $current_block.attr('b_order');
 					var target_block_order = $target_block.attr('b_order');
 					var current_block_id = $current_block.attr('bid');
@@ -1886,6 +1889,8 @@ CMS.prototype = {
 						console.log('current_block_id:'+current_block_id+',target_block_id:'+target_block_id+',current_block_order:'+current_block_order+',target_block_order:'+target_block_order+',排序用到的四个参数中有值为假的参数，请检查...');
 						return;
 					}
+
+					var pid = _this.o.$content.find('.cntr').attr('pid');
 
 					_this.ajax.common({
 						url : _this.urls.block_save_orders,
@@ -1899,7 +1904,8 @@ CMS.prototype = {
 							current_block_id : current_block_id,
 							target_block_id : target_block_id,
 							current_block_order : current_block_order,
-							target_block_order : target_block_order
+							target_block_order : target_block_order,
+							pid : pid
 						}
 					});
 				});
@@ -1927,6 +1933,7 @@ CMS.prototype = {
 						console.log('current_floor_id:'+current_floor_id+',target_floor_id:'+target_floor_id+',current_floor_order:'+current_floor_order+',target_floor_order:'+target_floor_order+',排序用到的四个参数中有值为假的参数，请检查...');
 						return;
 					}
+					var pid = _this.o.$content.find('.cntr').attr('pid');
 
 					_this.ajax.common({
 						url : _this.urls.floor_save_orders,
@@ -1940,7 +1947,8 @@ CMS.prototype = {
 							current_floor_id : current_floor_id,
 							target_floor_id : target_floor_id,
 							current_floor_order : current_floor_order,
-							target_floor_order : target_floor_order
+							target_floor_order : target_floor_order,
+							pid : pid
 						}
 					});
 				});
