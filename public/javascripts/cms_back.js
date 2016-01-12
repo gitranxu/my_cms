@@ -26,11 +26,11 @@ function CMS(){
 		floor_delete : '/floor/floor_delete',//改过
 		create_floor_by_block_id : '/block/create_floor_by_block_id',//改过
 		model_query : '/model/query',//不需要改
-		model_query_content_data_by_id : '/model/model_query_content_data_by_id',
+		model_query_content_data_by_id : '/model/model_query_content_data_by_id',//改过
 		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',
-		data_add : '/data/add',
-		save_data : '/data/save_data',
-		creat_tmp : '/file/creat_tmp',
+		data_add : '/data/add',//改过
+		save_data : '/data/save_data',//不需要改
+		creat_tmp : '/file/creat_tmp',//不需要改
 		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',
 		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口
 		get_f_css_by_fid : '/page/get_f_css_by_fid',
