@@ -7,7 +7,7 @@ function CMS(){
 		new_move_tuila_time : 700
 	},
 	this.sys_btns = {
-		chose_layout_show : true,
+		chose_or_edit_page_show : true,
 		edit_layout_show : true,
 		create_floor_show : true,
 		prev_view_show : true,
@@ -191,8 +191,8 @@ CMS.prototype = {
 		getAddFloorBtns : function(){
 			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
 		},
-		getChoseLayoutFixBtn : function(){
-			return this.getTypeTwoBtn({btn_id:"chose_layout_btn",btn_name:"选择布局"});
+		getChoseOrEditPageFixBtn : function(){
+			return this.getTypeTwoBtn({btn_id:"chose_or_edit_page_btn",btn_name:"选择或编辑页面"});
 		},
 		getEditLayoutFixBtn : function(){
 			return this.getTypeTwoBtn({btn_id:"edit_layout_btn",btn_name:"编辑布局"});
@@ -371,7 +371,7 @@ CMS.prototype = {
 				var $main_btns = _this.o.$sys_main_btns;
 				_this.o.$sys_sub_btns = $('#sys_btns').find('.sub_btns');
 
-				_this.sys_btns.chose_layout_show && $main_btns.append(_this.html.getChoseLayoutFixBtn());//加入选择布局按钮
+				_this.sys_btns.chose_or_edit_page_show && $main_btns.append(_this.html.getChoseOrEditPageFixBtn());//加入选择布局按钮
 
 				_this.sys_btns.edit_layout_show && $main_btns.append(_this.html.getEditLayoutFixBtn()) && _this.extra_event.edit_layout_btn_event();//加入编辑布局按钮
 				
@@ -388,11 +388,11 @@ CMS.prototype = {
 
 				_this.sys_btns.prev_view_show && $main_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
 			},
-			add_chose_layout_win : function(){
+			/*add_chose_layout_win : function(){
 				//加入选择布局窗口
 				var chose_win_str = _this.html.getChoseXWin('chose_layouts_cntr','布局');
 				_this.o.$root.append(chose_win_str);
-			},
+			},*/
 			add_chose_model_win : function(){
 				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
 				_this.o.$root.append(chose_win_str);
@@ -465,6 +465,7 @@ CMS.prototype = {
 			},
 			show_c_edit_s_win : function($this,data){
 				var top = $this.offset().top;
+				var height = $this.height();
 				var left = $this.offset().left;
 				$('#c_edit_s_win_id').find('.text').val(data.href);
 				$('#c_edit_s_win_id').find('.yesorno').removeClass('active');
@@ -474,7 +475,10 @@ CMS.prototype = {
 					$('#c_edit_s_win_id').find('.no').addClass('active');
 				}
 				$('#c_edit_s_win_id').find('img').attr('src',data.imgurl);
-				$('#c_edit_s_win_id').css({top:top,left:left}).show().addClass('bounceInUp');
+				$('#c_edit_s_win_id').css({top:top+height,left:left}).show().addClass('bounceInUp');
+				setTimeout(function(){
+					$('#c_edit_s_win_id').removeClass('bounceInUp');
+				},1000);
 			},
 			update_css_by_reg : function(id,css_s){
 				var target_s = $('.cntr > style').text();
@@ -615,9 +619,17 @@ CMS.prototype = {
 		});
 
 		//选择布局
-		this.o.$root.delegate('#chose_layout_btn','click',function(){
-			$('#chose_layouts_cntr').show();
-			_this.fn.query_layout($('#chose_layouts_cntr').find('.piece_ul'));
+		this.o.$root.delegate('#chose_or_edit_page_btn','click',function(){
+			$('#chose_page_cntr').show();
+
+
+			//$('#chose_layouts_cntr').show();
+			//_this.fn.query_layout($('#chose_layouts_cntr').find('.piece_ul'));
+		});
+
+		//点击遮罩层关闭弹出窗口
+		this.o.$root.delegate('#chose_page_cntr .win_bg','click',function(){
+			$('#chose_page_cntr').hide();
 		});
 
 		//选择模板,将来会考虑选择模板的条件
@@ -686,10 +698,6 @@ CMS.prototype = {
 			$('#chose_models_cntr').hide();
 		});
 
-		//点击遮罩层关闭弹出窗口
-		this.o.$root.delegate('#chose_layouts_cntr .win_bg','click',function(){
-			$('#chose_layouts_cntr').hide();
-		});
 
 		//点击布局item时,选择布局这个按钮应该用最新的代替
 		/*this.o.$root.delegate('#chose_layouts_cntr .piece_ul li',{
@@ -912,6 +920,7 @@ CMS.prototype = {
 								}
 								$c_edit.find('img').attr('src',imgurl).attr('alt',alt_name);
 								
+								$this.parents('.c_edit_s_win').hide();
 							}else{
 								console.log('返回的结果reCode不等于1')
 							}
@@ -1440,7 +1449,7 @@ CMS.prototype = {
 		this.init_unit();
 		//显示选择布局按钮
 		this.fn.add_fixed_btns();//加入悬浮按钮组
-		this.fn.add_chose_layout_win();//加入选择布局窗口
+		//this.fn.add_chose_layout_win();//加入选择布局窗口
 		this.fn.add_chose_model_win();//加入选择模板窗口
 		this.fn.add_chose_page_win();//加入选择页面窗口
 
