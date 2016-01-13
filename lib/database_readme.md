@@ -84,7 +84,7 @@ c_page_block
 id		c_block_id		c_page_id		order		style 		create_time		last_edit_time
 
 c_page_floor
-id		c_floor_id		c_page_id		order		style 		create_time		last_edit_time
+id		c_floor_id		c_page_id		order		style 		create_time		last_edit_time		model_type		term_type		query_height
 
 
 c_model		模板表(juicer) 						#模板表中含有区域属性zone(1,2,3)【例如八宫格模板】,zone(all)【轮播图】

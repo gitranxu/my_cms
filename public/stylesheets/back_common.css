@@ -1,4 +1,4 @@
-html,body{height: 100%;}
+html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial, sans-serif;}
 .h50{height: 50px;}
 .h100{height: 100px;}
 .h150{height: 150px;}
@@ -144,14 +144,21 @@ html,body{height: 100%;}
 .edit_win .saveBtn:hover{background: green;}
 
 .edit_floor_mask .edit_group{padding:10px;background: rgba(11,146,132,.4);position: absolute;top: 50%;left: 50%;margin-left: -57px;margin-top: -64px;z-index: 9701;padding-bottom: 42px;padding-top: 20px;width: 114px;}
-.edit_floor_mask .edit_group .edit_item{margin-bottom: 2px;}
-.edit_floor_mask .edit_group .edit_input{width: 32px;color: #2DEE2D;font-size: 14px;background: #696262;border: none;padding: 2px;}
+.edit_floor_mask .edit_group .edit_item{margin-bottom: 2px;position: relative;}
+.edit_floor_mask .edit_group .edit_item .chose_ul{position: absolute;top:20px;left: 72px;width: 36px;background: orange;z-index: 2;}
+.edit_floor_mask .edit_group .edit_item .chose_ul li{height: 20px;line-height: 20px;padding-left: 4px;color: #fff;cursor: pointer;}
+.edit_floor_mask .edit_group .edit_item .chose_ul li:hover{background: green;}
+
+.edit_floor_mask .edit_group .edit_input,.edit_floor_mask .edit_group .chose_input{width: 32px;color: #2DEE2D;font-size: 14px;background: #696262;border: none;padding: 2px;}
 .edit_floor_mask .edit_group .edit_input.unvalidate{background: #ED7171;color:#FFF017;}
 .edit_floor_mask .edit_group .disable_input{background: #685FC2;color:#17FFFE;border: none;padding: 2px;}
 .edit_floor_mask .edit_group .edit_item span{width: 62px;font-size: 12px;text-align: right;margin-right: 10px;display: inline-block;color: #D4DAD4;}
 .edit_floor_mask .edit_group .saveBtn{height: 24px;background: orange;color: #fff;text-align: center;line-height: 24px;cursor: pointer;position: absolute;bottom: 10px;right: 10px;left: 10px;}
 .edit_floor_mask .edit_group .saveBtn:hover{background: green;}
-
+.edit_floor_mask .edit_group .super{position: absolute;top: -9px;right: -8px;width: 20px;height: 20px;line-height: 20px;text-align: center;color: #fff;background: rgba(111,51,156,.5);border-radius: 50%;cursor: pointer;}
+.edit_floor_mask .edit_group .super:hover{color: #fff;background: rgba(111,51,156,.9);}
+.edit_floor_mask .edit_group .super.clicked{color: #6BEDD3;}
+.edit_floor_mask .edit_group .floor_config{position: absolute;left: 140px;top: 0px;width: 110px;background: rgba(211,116,113,.4);padding: 20px 10px;}
 
 #chose_page_cntr .piece_ul{height: 192px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .piece_ul li.active{background: #479F03;color: #00FB0B;}

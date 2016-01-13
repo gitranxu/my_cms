@@ -159,6 +159,22 @@ CMS.prototype = {
 			                        '</div>'+
 			                    '{@/each}'+
 			                    '<div class="saveBtn">保存</div>'+
+			                    '<div class="super" title="更多配置信息">S</div>'+
+			                    '<div class="floor_config hid_rx">'+
+									'<div class="edit_item">'+
+										'<div class="chose_ul_info model_type_info hid_rx" val=1></div>'+
+			                            '<span>模板类型 :</span><input type="text" readonly value="综合" class="model_type chose_input">'+
+			                            '<ul class="chose_ul hid_rx"><li val=1>综合</li><li val=2>轮播</li><li val=3>单图</li><li val=4>其他</li></ul>'+
+			                        '</div>'+
+			                        '<div class="edit_item">'+
+			                        	'<div class="chose_ul_info term_type_info hid_rx" val=1></div>'+
+			                            '<span>终端类型 :</span><input type="text" readonly value="PC" class="term_type chose_input">'+
+			                            '<ul class="chose_ul hid_rx"><li val=1>PC</li><li val=2>WAP</li></ul>'+
+			                        '</div>'+
+			                        '<div class="edit_item">'+
+			                            '<span title="过滤模板时用，0代表不限高度">楼层高度 :</span><input type="text" value="0" class="query_height edit_input">'+
+			                        '</div>'+
+			                    '</div>'+
 			                '</div>'+
 			            '</div>';
 			return juicer(tmpl,jsondata);
@@ -1144,6 +1160,27 @@ CMS.prototype = {
 									$edit_group.find('.marginA').val(msg.msg.marginA);
 
 									$edit_group.find('.marginB').val(msg.msg.marginB);
+									var model_type_name = '';
+									if(msg.msg.model_type==1){
+										model_type_name = '综合';
+									}else if(msg.msg.model_type==2){
+										model_type_name = '轮播';
+									}else if(msg.msg.model_type==3){
+										model_type_name = '单图';
+									}else if(msg.msg.model_type==4){
+										model_type_name = '其他';
+									}
+									$edit_group.find('.model_type').val(model_type_name);
+
+									var term_type_name = '';
+									if(msg.msg.term_type==1){
+										term_type_name = 'PC';
+									}else if(msg.msg.term_type==2){
+										term_type_name = 'WAP';
+									}
+									$edit_group.find('.term_type').val(term_type_name);
+
+									$edit_group.find('.query_height').val(msg.msg.query_height);
 
 									$edit_group.show();
 									$this.addClass('clicked');
@@ -1174,10 +1211,14 @@ CMS.prototype = {
 						var marginA = $edit_group.find('.marginA').val();
 						var marginB = $edit_group.find('.marginB').val();
 						var f_css_s = 'margin-top:'+marginA+'px!important;margin-bottom:'+marginB+'px!important;';
+						var model_type = $this.parents('.edit_group').find('.model_type_info').attr('val');
+						var term_type = $this.parents('.edit_group').find('.term_type_info').attr('val');
+						var query_height = $this.parents('.edit_group').find('.query_height').val();
+						console.log(model_type+'----------model_type,'+term_type+'----------term_type,'+query_height+'----------query_height');
 						_this.ajax.common({
 							url : _this.urls.set_f_css_by_fid,
 							method : 'POST',
-							data : {fid:fid,update_val:f_css_s , pid : pid },
+							data : {fid:fid,update_val:f_css_s , pid : pid ,model_type:model_type,term_type:term_type,query_height:query_height},
 							successFn : function(msg){
 								if(msg.reCode==1){
 									//对于新增的楼层来说，这里需要先把楼层的样式放到style中去
@@ -1197,6 +1238,35 @@ CMS.prototype = {
 						});
 
 				});
+
+				//点击S按钮
+				_this.o.$root.delegate('.edit_floor_mask .super','click',function(){
+					var $this = $(this);
+					var $floor_config = $this.parents('.edit_floor_mask').find('.floor_config');
+					if($this.hasClass('clicked')){
+
+						$floor_config.fadeOut('slow');
+						$this.removeClass('clicked');
+					}else{
+						$floor_config.fadeIn('slow');
+						$this.addClass('clicked');
+					}
+					
+				});
+
+				//下拉框事件
+				_this.o.$root.delegate('.edit_floor_mask .chose_input','focus',function(){
+					var $this = $(this);
+					$this.parents('.edit_item').find('.chose_ul').show();
+				});
+
+				_this.o.$root.delegate('.edit_floor_mask .chose_ul li','click',function(){
+					var $this = $(this);
+					$this.parents('.edit_item').find('.chose_ul_info').attr('val',$this.attr('val'));
+					$this.parents('.edit_item').find('.chose_input').val($this.text());
+					$this.parent().hide();
+				});
+
 			},
 			edit_page_win_event : function(){
 				//编辑页中的布局列表点击事件

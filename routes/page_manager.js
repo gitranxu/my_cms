@@ -96,7 +96,7 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 	var fid = req.query.fid;
 	var pid = req.query.pid;
 
-	var get_f_css_by_fid_sql = " SELECT f.c_floor_id id,f.style fstyle FROM c_page_floor f WHERE f.`c_floor_id` = '"+fid+"' AND f.`c_page_id` = '"+pid+"'";
+	var get_f_css_by_fid_sql = " SELECT f.c_floor_id id,f.style fstyle,f.model_type,f.term_type,f.query_height FROM c_page_floor f WHERE f.`c_floor_id` = '"+fid+"' AND f.`c_page_id` = '"+pid+"'";
 	console.log(get_f_css_by_fid_sql+'-----------------get_f_css_by_fid');
 	var result = {};
 	sqlclient.init();
@@ -107,6 +107,9 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 			//var f_width = get_value_by_name(rows[0].fstyle,"width");add_attr(result,f_width,"width");
 			var f_margin_top = get_value_by_name(rows[0].fstyle,"margin-top");add_attr(result,f_margin_top,"marginA");
 			var f_margin_bottom = get_value_by_name(rows[0].fstyle,"margin-bottom");add_attr(result,f_margin_bottom,"marginB");
+			add_attr(result,rows[0].model_type,"model_type");
+			add_attr(result,rows[0].term_type,"term_type");
+			result["query_height"] = rows[0].query_height;
 
 			res.json({reCode:1,msg:result});
 		}else{
@@ -119,10 +122,13 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 router.post('/set_f_css_by_fid', function(req, res, next) {
 	var fid = req.body.fid;
 	var pid = req.body.pid;
+	var model_type = req.body.model_type;
+	var term_type = req.body.term_type;
+	var query_height = req.body.query_height;
 
 	var update_val = req.body.update_val;
 
-	var sql = "UPDATE c_page_floor pf SET pf.style = '"+update_val+"',last_edit_time = NOW() WHERE pf.`c_floor_id` = '"+fid+"' AND pf.`c_page_id` = '"+pid+"'";
+	var sql = "UPDATE c_page_floor pf SET pf.style = '"+update_val+"',last_edit_time = NOW(),pf.model_type="+model_type+",pf.term_type="+term_type+",query_height="+query_height+" WHERE pf.`c_floor_id` = '"+fid+"' AND pf.`c_page_id` = '"+pid+"'";
 	console.log(sql+'--------------------set_f_css_by_fid');
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
