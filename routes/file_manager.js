@@ -24,15 +24,18 @@ router.post('/generate_html', function(req, res, next) {
 	$('.need_remove').remove();
 
 	var the_url = '';
-	var generate_html_query_url_sql = "SELECT url FROM c_generate_html_config WHERE c_page_id = '"+pid+"' AND c_layout_id = '"+lid+"' AND generate_type ="+generate_type;
+	var generate_html_query_url_sql = "SELECT page_url,prev_view_url FROM c_generate_html_config WHERE c_page_id = '"+pid+"' AND c_layout_id = '"+lid+"'";
 	console.log(generate_html_query_url_sql+'--------------------------------generate_html_query_url_sql');
 	//根据pid,lid,generate_type去查询生成路径，查询出来后先检查一下，如果为空，说明还未配置，进行提醒
 	sqlclient.init();
 	sqlclient.query(generate_html_query_url_sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
-			the_url = rows[0].url;
-
+			if(generate_type == 1){//预览
+				the_url = rows[0].prev_view_url;
+			}else{//正式
+				the_url = rows[0].page_url;
+			}
 			
 			var filename_with_houzhui = the_url.substring(the_url.lastIndexOf('/')+1);
 			var tmp = the_url.substring(the_url.indexOf('//')+2);

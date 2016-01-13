@@ -75,7 +75,7 @@ c_floor		楼层表
 id		content		c_block_id		create_time
 
 c_page_layout
-id		c_layout_id		c_page_id		url			project_name		create_time		last_edit_time
+id		c_layout_id		c_page_id		project_name		create_time		last_edit_time
 
 c_page_blocks
 id		c_blocks_id		c_page_id		order		style 		create_time		last_edit_time		
@@ -93,7 +93,8 @@ id		name		content		data_model		img_url		type		create_time
 c_data		数据表								#不同楼层(id唯一)不同模板的数据不一样
 id		c_model_id		c_floor_id		c_floor_model_id		data
 
-
+c_generate_html_config
+id		c_page_id		c_layout_id		prev_view_url		page_url		create_time		last_edit_time
 
 
 reCode 

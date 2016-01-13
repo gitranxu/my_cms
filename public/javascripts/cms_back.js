@@ -188,7 +188,7 @@ CMS.prototype = {
 		},
 		getPageLis : function(jsondata){//name,id pid,url,project_name,c_layout_id
 			var tmpl = 	'{@each pagelist as it}'+
-							'<li pid="${it.c_page_id}" p_name="${it.name}" p_url="${it.url}" p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
+							'<li pid="${it.c_page_id}" p_name="${it.name}" p_page_url="${it.page_url}" p_prev_view_url="${it.prev_view_url}"  p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
 	                            '<div class="bgli"></div>'+
 	                            '<div class="ctnli">${it.name}</div>'+
 	                        '</li>'+
@@ -275,16 +275,20 @@ CMS.prototype = {
 										        '<input type="text" value="" class="p_name edit_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
-										        '<span>url :</span>'+
-										        '<input type="text" value="" class="p_url edit_input">'+
-										    '</div>'+
-										    '<div class="edit_item">'+
 										        '<span>所属项目 :</span>'+
 										        '<input type="text" value="" class="p_project edit_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
 										        '<span>关联布局 :</span>'+
 										        '<input type="text" value="" placeholder="请点击左则布局列表" disabled class="p_layout disable_input">'+
+										    '</div>'+
+										    '<div class="edit_item">'+
+										        '<span title="用于查看页面的预览效果">预览url :</span>'+
+										        '<input type="text" value="" class="p_prev_view_url edit_input">'+
+										    '</div>'+
+										    '<div class="edit_item">'+
+										        '<span title="生成的正式页面的路径">正式url :</span>'+
+										        '<input type="text" value="" class="p_page_url edit_input">'+
 										    '</div>'+
 										    '<div class="saveBtn">保存</div>'+
 										'</div>'+
@@ -1292,10 +1296,13 @@ CMS.prototype = {
 							data : {pid : pid,lid : layout_id},
 							successFn : function(msg){
 								if(msg.reCode==1){
-									$pageinfo.find('.p_url').val(msg.url);
+									$pageinfo.find('.p_page_url').val(msg.page_url);
+									$pageinfo.find('.p_prev_view_url').val(msg.prev_view_url);
 									$pageinfo.find('.p_project').val(msg.project_name);
+
 								}else if(msg.reCode==10000){ //如果没有数据，则清空
-									$pageinfo.find('.p_url').val('');
+									$pageinfo.find('.p_page_url').val('');
+									$pageinfo.find('.p_prev_view_url').val('');
 									$pageinfo.find('.p_project').val('');
 								}else{
 									alert(msg.msg);
@@ -1318,6 +1325,17 @@ CMS.prototype = {
 					var project_name = $edit_group.find('.p_project').val();
 					var layout_id = $edit_group.find('.p_layout').attr('layoutid');
 					var pid = $edit_group.attr('pid');
+					var page_url = $edit_group.find('.p_page_url').val();;
+					var prev_view_url = $edit_group.find('.p_prev_view_url').val();;
+
+					if(/^\s*$/.test(page_url)){
+						alert('【预览url】不能为空！');
+						return;
+					}
+					if(/^\s*$/.test(prev_view_url)){
+						alert('【正式url】不能为空！');
+						return;
+					}
 
 					_this.ajax.common({
 						url : _this.urls.save_or_update_page_info,
@@ -1327,7 +1345,9 @@ CMS.prototype = {
 							url : url,
 							project_name : project_name,
 							layout_id : layout_id,
-							page_id : pid
+							page_id : pid,
+							page_url : page_url,
+							prev_view_url : prev_view_url
 						},
 						successFn : function(msg){
 							if(msg.reCode==1){
@@ -1351,7 +1371,8 @@ CMS.prototype = {
 					$this.addClass('active').siblings().removeClass('active');
 					var $edit_group = $this.parents('.content').find('.pageinfo .edit_group');
 					$edit_group.find('.p_name').val($this.attr('p_name'));
-					$edit_group.find('.p_url').val($this.attr('p_url'));
+					$edit_group.find('.p_page_url').val($this.attr('p_page_url'));
+					$edit_group.find('.p_prev_view_url').val($this.attr('p_prev_view_url'));
 					$edit_group.find('.p_project').val($this.attr('p_project_name'));
 					$edit_group.attr('pid',$this.attr('pid'));
 

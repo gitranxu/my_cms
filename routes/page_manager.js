@@ -7,10 +7,25 @@ var sqlclient = require('../lib/mysql_cli');
 
 
 router.get('/get_all_pages', function(req, res, next) {
-	var get_all_pages = "SELECT p.name,pl.* "+
-						" FROM c_page p,c_page_layout pl "+
+	var get_all_pages = "SELECT "+
+						  " p.name, "+
+						  " c.`page_url`, "+
+						  " c.`prev_view_url`, "+
+						  " pl.*  "+
+						" FROM "+
+						  " c_page p, "+
+						  " c_page_layout pl, "+
+						  " c_generate_html_config c "+
 						" WHERE p.id = pl.`c_page_id` "+
-  						  " AND pl.`last_edit_time` = (SELECT MAX(last_edit_time) FROM c_page_layout WHERE c_page_id = p.id) ORDER BY last_edit_time DESC";
+						  " AND pl.`c_layout_id` = c.`c_layout_id` "+
+						  " AND pl.`c_page_id` = c.`c_page_id` "+
+						  " AND pl.`last_edit_time` =  "+
+						  " (SELECT  "+
+						    " MAX(last_edit_time)  "+
+						  " FROM "+
+						    " c_page_layout  "+
+						  " WHERE c_page_id = p.id) "+ 
+						" ORDER BY last_edit_time DESC ";
 
 	console.log(get_all_pages+'------------------------get_all_pages');
 	sqlclient.init();
@@ -28,14 +43,24 @@ router.get('/get_all_pages', function(req, res, next) {
 router.get('/get_page_layout_info_by_pid_lid', function(req, res, next) {
 	var pid = req.query.pid;
 	var lid = req.query.lid;
-	var get_page_layout_info_by_pid_lid = "SELECT pl.url,pl.`project_name` FROM c_page_layout pl WHERE pl.c_page_id = '"+pid+"' AND pl.`c_layout_id` = '"+lid+"'";
+	var get_page_layout_info_by_pid_lid = "SELECT "+
+											  " pl.`project_name`, "+
+											  " c.`page_url`, "+
+											  " c.`prev_view_url` "+
+											" FROM "+
+											  " c_page_layout pl, "+
+											  " c_generate_html_config c "+
+											" WHERE pl.`c_page_id` = c.`c_page_id` "+
+											  " AND pl.`c_layout_id` = c.`c_layout_id` "+
+											  " AND pl.c_page_id = '"+pid+"'  "+
+											  " AND pl.`c_layout_id` = '"+lid+"' ";
 
 	console.log(get_page_layout_info_by_pid_lid+'------------------------get_page_layout_info_by_pid_lid');
 	sqlclient.init();
 	sqlclient.query(get_page_layout_info_by_pid_lid,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
-			res.json({reCode:1,url:rows[0].url,project_name:rows[0].project_name});
+			res.json({reCode:1,page_url:rows[0].page_url,prev_view_url:rows[0].prev_view_url,project_name:rows[0].project_name});
 		}else{
 			res.json({reCode:10000,msg:"没有数据"});
 		}
@@ -158,7 +183,8 @@ router.post('/update_css_by_id_table_col', function(req, res, next) {
 //主要操作c_page,c_blocks,c_block三张表
 router.post('/save_or_update_page_info', function(req, res, next) {
 	var name = req.body.name;
-	var url = req.body.url;
+	var page_url = req.body.page_url;
+	var prev_view_url = req.body.prev_view_url;
 	var project_name = req.body.project_name;
 	var layout_id = req.body.layout_id;
 	var page_id = req.body.page_id;
@@ -186,9 +212,9 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 				
 			}
 			if(page_id){//更新操作
-				update_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+				update_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 			}else{//新增操作
-				add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+				add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 			}
 
 		}else{
@@ -201,7 +227,7 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 });
 
 //新增操作，操作c_page,c_page_layout,c_page_blocks,c_page_block四张表
-function add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
+function add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
 	//对于新增来说，传过来的page_id是undefined
 	howdo
 		.task(function(done){
@@ -217,12 +243,21 @@ function add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sql
 			}
 		})
 		.task(function(done){
-			var insert_to_page_layout_sql = "INSERT INTO c_page_layout(id,c_layout_id,c_page_id,url,project_name,create_time,last_edit_time) VALUES(UUID(),'"+layout_id+"','"+page_id+"','"+url+"','"+project_name+"',NOW(),NOW());";
+			var insert_to_page_layout_sql = "INSERT INTO c_page_layout(id,c_layout_id,c_page_id,project_name,create_time,last_edit_time) VALUES(UUID(),'"+layout_id+"','"+page_id+"','"+project_name+"',NOW(),NOW());";
 			console.log(insert_to_page_layout_sql+'-----------------insert_to_page_layout_sql');
 			sqlclient.query(insert_to_page_layout_sql,function(err,rows,fields){
 				if(err) throw err;
 				console.log('c_page_layout插入成功！');
 				done(null,'c_page_layout插入成功！');
+			});
+		})
+		.task(function(done){
+			var insert_to_generate_config_sql = "INSERT INTO c_generate_html_config(id,c_page_id,c_layout_id,page_url,prev_view_url,create_time,last_edit_time) VALUES(UUID(),'"+page_id+"','"+layout_id+"','"+page_url+"','"+prev_view_url+"',NOW(),NOW())";
+			console.log(insert_to_generate_config_sql+'-----------------insert_to_generate_config_sql');
+			sqlclient.query(insert_to_generate_config_sql,function(err,rows,fields){
+				if(err) throw err;
+				console.log('c_generate_html_config插入成功！');
+				done(null,'c_generate_html_config插入成功！');
 			});
 		})
 		.task(function(done){
@@ -351,23 +386,30 @@ function add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sql
 
 //操作c_page_layout,c_page_blocks,c_page_block三张表
 //先根据相应id进行判断，如果没有记录则新增，如果有记录则不进行任何操作
-function update_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
+function update_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
 	var is_c_page_layout_update_sql = "SELECT 1 FROM c_page_layout pl WHERE pl.`c_page_id`='"+page_id+"' AND pl.`c_layout_id` = '"+layout_id+"'";
 	
 	console.log(is_c_page_layout_update_sql+'-----------------is_c_page_layout_update_sql');
 	sqlclient.query(is_c_page_layout_update_sql,function(err,rows,fields){
 		if(err) throw err;
-		if(rows.length){//如果查到进行更新,只需更新c_page_layout一张表即可
-			var c_page_layout_update_sql = "UPDATE c_page_layout SET url = '"+url+"',project_name = '"+project_name+"',last_edit_time = NOW() WHERE c_layout_id = '"+layout_id+"' AND c_page_id = '"+page_id+"'";
+		if(rows.length){//如果查到进行更新,只需更新c_page_layout及c_generate_html_config表即可
+			var c_page_layout_update_sql = "UPDATE c_page_layout SET project_name = '"+project_name+"',last_edit_time = NOW() WHERE c_layout_id = '"+layout_id+"' AND c_page_id = '"+page_id+"'";
 			console.log(c_page_layout_update_sql+'-----------------c_page_layout_update_sql');
 			sqlclient.query(c_page_layout_update_sql,function(err,rows,fields){
 				if(err) throw err;
 				console.log('c_page_layout更新成功！');
-				res.json({reCode:1,msg:'更新成功',pid:page_id});
+
+				var c_generate_html_config_update_sql = "UPDATE c_generate_html_config SET page_url = '"+page_url+"',prev_view_url = '"+prev_view_url+"',last_edit_time = NOW() WHERE c_page_id = '"+page_id+"' AND c_layout_id = '"+layout_id+"'";
+				sqlclient.query(c_generate_html_config_update_sql,function(err,rows,fields){
+					if(err) throw err;
+					console.log('c_generate_html_config更新成功！');
+					res.json({reCode:1,msg:'更新成功',pid:page_id});
+				});
+				
 			});
 
 		}else{//如果未查到，直接添加
-			add_page(page_id,url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+			add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 		}
 	});
 
