@@ -3,34 +3,69 @@ var cheerio = require('cheerio');
 var fs = require('fs');
 var sys = require('sys');
 var formidable = require('formidable');
+var sqlclient = require('../lib/mysql_cli');
 var router = express.Router();
 
-//生成临时html文件
-router.post('/creat_tmp', function(req, res, next) {
+//生成html文件
+//prev_view_page_url="http://localhost:3000/projects/tmp/aaa.html" page_url="http://localhost:3000/projects/xx/aaa.html"
+
+router.post('/generate_html', function(req, res, next) {
 	var head = req.body.head;
 	var body = req.body.body;
+	var generate_type = req.body.generate_type;
+
+	var pid = req.body.pid;
+	var lid = req.body.lid;
+
 	var html = "<!DOCTYPE html><html><head></head><body></body></html>";
 	var $ = cheerio.load(html);
 	$('head').append(head);
 	$('body').append(body);
 	$('.need_remove').remove();
-	$('#config').remove();//能写到#config里面的，尽量写到这个里面
 
-	var prev_view_page_url = $('#back').attr('prev_view_page_url');
-	if(!prev_view_page_url){
-		console.log('请检查#back元素是否设置了【prev_view_page_url】属性');
-		res.json({msg:'请检查#back元素是否设置了【prev_view_page_url】属性'});
-	}
-	var filename_with_houzhui = prev_view_page_url.substring(prev_view_page_url.lastIndexOf('/')+1);
-	var tmp = prev_view_page_url.substring(prev_view_page_url.indexOf('//')+2);
-	var path = tmp.substring(tmp.indexOf('/'),tmp.lastIndexOf('/')+1); //path两边都有/,例如：/projects/tmp/
-	fs.writeFile('public'+path+filename_with_houzhui,$.html(),function(err){
+	var the_url = '';
+	var generate_html_query_url_sql = "SELECT url FROM c_generate_html_config WHERE c_page_id = '"+pid+"' AND c_layout_id = '"+lid+"' AND generate_type ="+generate_type;
+	console.log(generate_html_query_url_sql+'--------------------------------generate_html_query_url_sql');
+	//根据pid,lid,generate_type去查询生成路径，查询出来后先检查一下，如果为空，说明还未配置，进行提醒
+	sqlclient.init();
+	sqlclient.query(generate_html_query_url_sql,function(err,rows,fields){
 		if(err) throw err;
-		res.json({msg:'saved!',prev_view_page_url:prev_view_page_url});
-		//console.log('saved!');
-	})
+		if(rows.length){
+			the_url = rows[0].url;
 
-  /*res.render('index2', {abc:'test',list:[{name:'rx',show:true},{name:'cl',show:true},{name:'xx',show:false}],blah:[{num:1},{num:2},{num:3,inner:[{time:'15:00'},{time:'16:00'},{time:'17:00'},{time:'18:00'}]},{num:4}] });*/
+			
+			var filename_with_houzhui = the_url.substring(the_url.lastIndexOf('/')+1);
+			var tmp = the_url.substring(the_url.indexOf('//')+2);
+			var path = tmp.substring(tmp.indexOf('/'),tmp.lastIndexOf('/')+1); //path两边都有/,例如：/projects/tmp/
+			var file_full_url = 'public'+path+filename_with_houzhui;
+
+			fs.exists('public'+path,function(exists){
+				if(!exists){//如果不存在，创建目录
+					fs.mkdir('public'+path,function(err){
+						if(err) throw err;
+						fs.writeFile(file_full_url,$.html(),function(err){
+							if(err) throw err;
+							res.json({reCode:1,msg:'生成成功！',the_url:the_url});
+						})
+					});
+				}else{
+					fs.writeFile(file_full_url,$.html(),function(err){
+						if(err) throw err;
+						res.json({reCode:1,msg:'生成成功！',the_url:the_url});
+					})
+				}
+			});
+
+					
+			
+				
+
+		}else{
+			console.log();
+			res.json({reCode:10003,msg:'未找到配置信息.'});
+		}
+	});
+
 });
 
 //图片上传

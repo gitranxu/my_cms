@@ -30,7 +30,7 @@ function CMS(){
 		get_img_data_by_fidmid : '/model/get_img_data_by_fidmid',//不需要改
 		data_add : '/data/add',//改过
 		save_data : '/data/save_data',//不需要改
-		creat_tmp : '/file/creat_tmp',//不需要改
+		generate_html : '/file/generate_html',//不需要改
 		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',//改过
 		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口 //改过
 		get_f_css_by_fid : '/page/get_f_css_by_fid',//改过
@@ -786,7 +786,7 @@ CMS.prototype = {
 
 		//预览
 		//在点击预览按钮或生成按钮之前，要先判断块组块内部移动按钮是否为标红状态，如果是则不能进行
-		this.o.$root.delegate('#prev_view_btn','click',function(){
+		this.o.$root.delegate('#prev_view_btn,#generate_html_btn','click',function(){
 			var blocks_active = $('#blockGroups_move_btn').hasClass('active');
 			var block_active = $('#blockGroup_move_btn').hasClass('active');
 			if(blocks_active){
@@ -799,12 +799,27 @@ CMS.prototype = {
 			}
 			var head = $(document.head).html();
 			var body = $(document.body).html();
+
+			var $this = $(this);
+
+			var pid = _this.o.$content.find('.cntr').attr('pid');
+			var lid = _this.o.$content.find('.cntr').attr('lid');
+
+			var generate_type = 1;//临时
+			if($this.attr('id') != 'prev_view_btn'){
+				generate_type = 2;//正式
+			}
+
 			_this.ajax.common({
-				url : _this.urls.creat_tmp,
+				url : _this.urls.generate_html,
 				method : 'POST',
-				data : {head:head,body:body},
+				data : {head:head,body:body,generate_type:generate_type,pid,lid},
 				successFn : function(msg){
-					window.open(msg.prev_view_page_url);
+					if(msg.reCode==1){
+						window.open(msg.the_url);
+					}else{
+						alert(msg.msg);
+					}
 				}
 			});
 		});
