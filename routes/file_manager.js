@@ -36,13 +36,14 @@ router.post('/generate_html', function(req, res, next) {
 			}else{//正式
 				the_url = rows[0].page_url;
 			}
-			
+			the_url = 'http://localhost:3000/generate_html'+the_url;
 			var filename_with_houzhui = the_url.substring(the_url.lastIndexOf('/')+1);
 			var tmp = the_url.substring(the_url.indexOf('//')+2);
 			var path = tmp.substring(tmp.indexOf('/'),tmp.lastIndexOf('/')+1); //path两边都有/,例如：/projects/tmp/
 			var file_full_url = 'public'+path+filename_with_houzhui;
 
 			fs.exists('public'+path,function(exists){
+				console.log('--------------------------------如果报错的话，看看public/generate_html/目录有没有手动添加~！');
 				if(!exists){//如果不存在，创建目录
 					fs.mkdir('public'+path,function(err){
 						if(err) throw err;
@@ -59,12 +60,7 @@ router.post('/generate_html', function(req, res, next) {
 				}
 			});
 
-					
-			
-				
-
 		}else{
-			console.log();
 			res.json({reCode:10003,msg:'未找到配置信息.'});
 		}
 	});

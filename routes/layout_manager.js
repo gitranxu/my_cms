@@ -160,6 +160,10 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				}
 				css_s += '.c_'+i+'{'+css_obj[i]+'}';
 			}
+			//如果.cntr下面没有style，生成一个
+			if($('.cntr > style').length==0){//如果没有
+				$('.cntr').prepend('<style></style>');
+			}
 			$('.cntr > style').prepend(css_s);
 			$('.cntr').attr('pid',pageid).attr('lid',layoutid);
 			res.status(200).send($.html());

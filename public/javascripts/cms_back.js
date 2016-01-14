@@ -40,9 +40,9 @@ function CMS(){
 		get_page_layout_info_by_pid_lid : '/page/get_page_layout_info_by_pid_lid'//不需要改
 	},
 	this.o = {
-		$root : $('#back'),
-		$content : $('#content'),
-		$config : $('#config'),
+		$root : null,
+		$content : null,
+		$config : null,
 		$sys_main_btns : null,
 		$sys_sub_btns : null,
 		$cur_c_edit_btn : null //这个对象是点击编辑按钮时赋值的，用于图片编辑小窗口查询相关参数用
@@ -283,12 +283,12 @@ CMS.prototype = {
 										        '<input type="text" value="" placeholder="请点击左则布局列表" disabled class="p_layout disable_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
-										        '<span title="用于查看页面的预览效果">预览url :</span>'+
-										        '<input type="text" value="" class="p_prev_view_url edit_input">'+
+										        '<span title="用于查看页面的预览效果,注意格式">预览url :</span>'+
+										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_prev_view_url edit_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
-										        '<span title="生成的正式页面的路径">正式url :</span>'+
-										        '<input type="text" value="" class="p_page_url edit_input">'+
+										        '<span title="生成的正式页面的路径,注意格式" >正式url :</span>'+
+										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_page_url edit_input">'+
 										    '</div>'+
 										    '<div class="saveBtn">保存</div>'+
 										'</div>'+
@@ -385,11 +385,8 @@ CMS.prototype = {
 				_this.o.$sys_sub_btns.find('.choseBtn').removeClass('active');
 			},
 			add_fixed_btns : function(){
-				var sys_btns_html = _this.html.getSysBtns();
-				_this.o.$config.append(sys_btns_html);
-				_this.o.$sys_main_btns = $('#sys_btns').find('.main_btns');
+
 				var $main_btns = _this.o.$sys_main_btns;
-				_this.o.$sys_sub_btns = $('#sys_btns').find('.sub_btns');
 
 				_this.sys_btns.chose_or_edit_page_show && $main_btns.append(_this.html.getChoseOrEditPageFixBtn());//加入选择布局按钮
 
@@ -1328,12 +1325,21 @@ CMS.prototype = {
 					var page_url = $edit_group.find('.p_page_url').val();;
 					var prev_view_url = $edit_group.find('.p_prev_view_url').val();;
 
-					if(/^\s*$/.test(page_url)){
+					if(/^\s*$/.test(prev_view_url)){
 						alert('【预览url】不能为空！');
 						return;
 					}
-					if(/^\s*$/.test(prev_view_url)){
+					if(!/^\/\w+\/\w+\.html*$/.test(prev_view_url)){
+						alert('【预览url】格式为【/xxx/x.html】，即斜杠+目录名+文件名.html,注意前后没有空格！');
+						return;
+					}
+
+					if(/^\s*$/.test(page_url)){
 						alert('【正式url】不能为空！');
+						return;
+					}
+					if(!/^\/\w+\/\w+\.html*$/.test(page_url)){
+						alert('【正式url】格式为【/xxx/x.html】，即斜杠+目录名+文件名.html,注意前后没有空格！');
 						return;
 					}
 
@@ -1552,6 +1558,8 @@ CMS.prototype = {
 	},
 	init : function(){
 		
+		this.init_o();
+
 		this.init_unit();
 		//显示选择布局按钮
 		this.fn.add_fixed_btns();//加入悬浮按钮组
@@ -1564,6 +1572,17 @@ CMS.prototype = {
 		this.fn.show_chose_page_win();//根据情况是否显示选择页面窗口
 
 		this.bind();
+	},
+	init_o : function(){
+		this.o.$root = $('#back');
+		this.o.$root.append('<div id="content"></div><div id="config" class="need_remove"></div>');
+		this.o.$content = $('#content');
+		this.o.$config = $('#config');
+
+		var sys_btns_html = this.html.getSysBtns();
+		this.o.$config.append(sys_btns_html);
+		this.o.$sys_main_btns = $('#sys_btns').find('.main_btns');
+		this.o.$sys_sub_btns = $('#sys_btns').find('.sub_btns');
 	},
 	init_unit : function(){
 		this.fn = this.fn();

@@ -282,17 +282,21 @@ function add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_
 								sqlclient.query(insert_to_page_blocks_sql,function(err,rows,fields){
 									if(err) throw err;
 									console.log('c_page_blocks插入成功！');
+									next(null,val);
 								});
 
 							}else{
 								console.log('查询c_blocks记录默认order，未查到数据');
+								next(null,val);
 							}
 							
 						});
 
 								
+					}else{
+						next(null,val);
 					}
-					next(null,val);
+					
 				})
 				.follow()
 				.try(function(bsid){
@@ -339,15 +343,19 @@ function add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_
 								sqlclient.query(insert_to_page_block_sql,function(err,rows,fields){
 									if(err) throw err;
 									console.log('c_page_block插入成功！');
+									next(null,val);
 								});
 
 							}else{
 								console.log('查询c_block记录默认order，未查到数据');
+								next(null,val);
 							}
 							
 						});
+					}else{
+						next(null,val);
 					}
-					next(null,val);
+					
 				})
 				.follow()
 				.try(function(bid){
