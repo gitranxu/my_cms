@@ -17,6 +17,8 @@ var model_manager = require('./routes/model_manager');
 var data_manager = require('./routes/data_manager');
 var page_manager = require('./routes/page_manager');
 
+var layouteditmodel_manager = require('./routes/layouteditmodel_manager');
+
 var app = express();
 
 // view engine setup
@@ -40,6 +42,7 @@ app.use('/file', file_manager);
 app.use('/model', model_manager);
 app.use('/data', data_manager);
 app.use('/page', page_manager);
+app.use('/layouteditmodel_manager', layouteditmodel_manager);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
