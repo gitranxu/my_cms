@@ -260,7 +260,7 @@ CMS.prototype = {
 					        '<div class="content">'+
 					        	'<div class="c_top clear_rx">'+
 					        		'<div class="layoutlist fl_rx">'+
-					                    '<h3 class="c_title">可选的布局有：</h3>'+
+					                    '<h3 class="c_title">可选的布局有：<div id="create_layout_btn" class="hid_rx">创建布局</div></h3>'+
 					                    '<ul class="piece_ul"></ul>'+
 					                '</div>'+
 					                '<div class="prevview fl_rx">'+
@@ -511,6 +511,9 @@ CMS.prototype = {
 					var width = $this.find('.width').val();
 					var marginA = $this.find('.marginA').val();
 					var marginB = $this.find('.marginB').val();
+					width = width ? width : 0;
+					marginA = marginA ? marginA : 0;
+					marginB = marginB ? marginB : 0;
 					total += parseInt(width)+parseInt(marginA)+parseInt(marginB);
 				});
 				$edit_win.find('.cur_val').val(total);
@@ -1401,6 +1404,22 @@ CMS.prototype = {
 					_this.fn.parse_page(pid,layout_id);
 				});
 
+				_this.o.$root.delegate('#chose_page_cntr .layoutlist .c_title',{
+					mouseenter : function(){
+						_this.create_layout_show_timer = setTimeout(function(){
+							$('#create_layout_btn').fadeIn('slow');
+						},3000);
+					},
+					mouseleave : function(){
+						clearTimeout(_this.create_layout_show_timer);
+						_this.create_layout_show_timer = null;
+						$('#create_layout_btn').fadeOut('slow');
+					}
+				});
+				_this.o.$root.delegate('#create_layout_btn','click',function(){
+					window.open('/create_layout.html');
+				});
+				
 			}
 		};
 	},

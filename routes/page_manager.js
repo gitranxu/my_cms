@@ -89,9 +89,12 @@ router.get('/get_bs_b_css_by_bsid', function(req, res, next) {
 		if(err) throw err;
 		if(rows.length){
 			var bsid = rows[0].bsid;add_attr(result,bsid,"bsid");
-			var bs_width = get_value_by_name(rows[0].bsstyle,"width");add_attr(result,bs_width,"width");
-			var bs_margin_top = get_value_by_name(rows[0].bsstyle,"margin-top");add_attr(result,bs_margin_top,"marginA");
-			var bs_margin_bottom = get_value_by_name(rows[0].bsstyle,"margin-bottom");add_attr(result,bs_margin_bottom,"marginB");
+			if(rows[0].bsstyle){
+				var bs_width = get_value_by_name(rows[0].bsstyle,"width");add_attr(result,bs_width,"width");
+				var bs_margin_top = get_value_by_name(rows[0].bsstyle,"margin-top");add_attr(result,bs_margin_top,"marginA");
+				var bs_margin_bottom = get_value_by_name(rows[0].bsstyle,"margin-bottom");add_attr(result,bs_margin_bottom,"marginB");
+			}
+			
 
 			
 			for(var i = 0,j = rows.length;i < j;i++){
@@ -100,9 +103,11 @@ router.get('/get_bs_b_css_by_bsid', function(req, res, next) {
 					break;
 				}
 				var bid = rows[i].bid;add_attr(item,bid,"bid");
-				var b_width = get_value_by_name(rows[i].bstyle,'width');add_attr(item,b_width,"width");
-				var b_margin_left = get_value_by_name(rows[i].bstyle,'margin-left');add_attr(item,b_margin_left,"marginA");
-				var b_margin_right = get_value_by_name(rows[i].bstyle,'margin-right');add_attr(item,b_margin_right,"marginB");
+				if(rows[i].bstyle){
+					var b_width = get_value_by_name(rows[i].bstyle,'width');add_attr(item,b_width,"width");
+					var b_margin_left = get_value_by_name(rows[i].bstyle,'margin-left');add_attr(item,b_margin_left,"marginA");
+					var b_margin_right = get_value_by_name(rows[i].bstyle,'margin-right');add_attr(item,b_margin_right,"marginB");
+				}
 				result.b_items.push(item);
 			}
 

@@ -26,12 +26,13 @@ CREATE TABLE `c_block` (
   `c_blocks_id` char(36) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `default_order` int(5) DEFAULT NULL COMMENT '块的默认顺序',
+  `default_style` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `c_block` */
 
-insert  into `c_block`(`id`,`content`,`c_blocks_id`,`create_time`,`default_order`) values ('0f211848-b857-11e5-8208-003067b83487','<div class=\"c_block fl_rx c11 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:33:26',1),('25349997-b857-11e5-8208-003067b83487','<div class=\"c_block fl_rx c9 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:33:55',2),('2c59d845-b031-11e5-b189-003067b83487','<div class=\"c_block fl_rx c15 h300\"></div>','86352d1d-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:30:22',1),('420fd0b9-b857-11e5-8208-003067b83487','<div class=\"c_block c5 h200 blocks_move\"></div>','9e0eaa3e-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:34:48',1),('a58973ff-b85e-11e5-8208-003067b83487','<div class=\"c_block c5 h200 blocks_move\"></div>','7219122a-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:27:07',1),('eaf8632e-b856-11e5-8208-003067b83487','<div class=\"c_block fl_rx c2 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:32:50',3),('fc4145b2-b85e-11e5-8208-003067b83487','<div class=\"c_block fl_rx c2 h300\"></div>','86352d1d-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:29:34',2);
+insert  into `c_block`(`id`,`content`,`c_blocks_id`,`create_time`,`default_order`,`default_style`) values ('0f211848-b857-11e5-8208-003067b83487','<div class=\"c_block fl_rx c11 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:33:26',1,NULL),('25349997-b857-11e5-8208-003067b83487','<div class=\"c_block fl_rx c9 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:33:55',2,NULL),('2c59d845-b031-11e5-b189-003067b83487','<div class=\"c_block fl_rx c15 h300\"></div>','86352d1d-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:30:22',1,NULL),('420fd0b9-b857-11e5-8208-003067b83487','<div class=\"c_block c5 h200 blocks_move\"></div>','9e0eaa3e-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:34:48',1,NULL),('a58973ff-b85e-11e5-8208-003067b83487','<div class=\"c_block c5 h200 blocks_move\"></div>','7219122a-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:27:07',1,NULL),('eaf8632e-b856-11e5-8208-003067b83487','<div class=\"c_block fl_rx c2 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:32:50',3,NULL),('fc4145b2-b85e-11e5-8208-003067b83487','<div class=\"c_block fl_rx c2 h300\"></div>','86352d1d-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:29:34',2,NULL);
 
 /*Table structure for table `c_blocks` */
 
@@ -43,12 +44,13 @@ CREATE TABLE `c_blocks` (
   `c_layout_id` char(36) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `default_order` int(5) DEFAULT NULL,
+  `default_style` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `c_blocks` */
 
-insert  into `c_blocks`(`id`,`content`,`c_layout_id`,`create_time`,`default_order`) values ('7219122a-af67-11e5-baf7-68f728f3bf19',NULL,'60f01bfd-b841-11e5-a0bb-68f728f3bf19','2016-01-11 20:26:00',1),('86352d1d-af67-11e5-baf7-68f728f3bf19','<div class=\"clear_rx blocks_move\"></div>','60f01bfd-b841-11e5-a0bb-68f728f3bf19','2016-01-11 20:28:33',2),('91834cab-af67-11e5-baf7-68f728f3bf19','<div class=\"clear_rx blocks_move\"></div>','2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','2016-01-11 19:29:36',1),('9e0eaa3e-af67-11e5-baf7-68f728f3bf19',NULL,'2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','2016-01-11 19:29:56',2);
+insert  into `c_blocks`(`id`,`content`,`c_layout_id`,`create_time`,`default_order`,`default_style`) values ('7219122a-af67-11e5-baf7-68f728f3bf19',NULL,'60f01bfd-b841-11e5-a0bb-68f728f3bf19','2016-01-11 20:26:00',1,NULL),('86352d1d-af67-11e5-baf7-68f728f3bf19','<div class=\"clear_rx blocks_move\"></div>','60f01bfd-b841-11e5-a0bb-68f728f3bf19','2016-01-11 20:28:33',2,NULL),('91834cab-af67-11e5-baf7-68f728f3bf19','<div class=\"clear_rx blocks_move\"></div>','2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','2016-01-11 19:29:36',1,NULL),('9e0eaa3e-af67-11e5-baf7-68f728f3bf19',NULL,'2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','2016-01-11 19:29:56',2,NULL);
 
 /*Table structure for table `c_data` */
 
@@ -158,7 +160,7 @@ CREATE TABLE `c_page_block` (
   `c_block_id` char(36) DEFAULT NULL,
   `c_page_id` char(36) DEFAULT NULL,
   `order` int(5) DEFAULT NULL,
-  `style` varchar(100) DEFAULT 'margin-left:0px!important;margin-right:0px!important;width:200px!important;',
+  `style` varchar(100) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `last_edit_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -175,7 +177,7 @@ CREATE TABLE `c_page_blocks` (
   `c_blocks_id` char(36) DEFAULT NULL,
   `c_page_id` char(36) DEFAULT NULL,
   `order` int(5) DEFAULT NULL,
-  `style` varchar(100) DEFAULT 'margin-top:0px!important;margin-bottom:0px!important;width:1200px!important;',
+  `style` varchar(100) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `last_edit_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

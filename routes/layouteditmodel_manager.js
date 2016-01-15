@@ -18,8 +18,8 @@ router.post('/generate_layout',function(req,res,next){
 
 	var layout_id = uuid.v1();
 
-	var c_blocks_obj = [];
-	var c_block_obj = [];
+	var c_blocks_list = [];
+	var c_block_list = [];
 
 	$('.cntr .blocks_move').each(function(index){
 		var c_blocks_info = {};
@@ -31,7 +31,7 @@ router.post('/generate_layout',function(req,res,next){
 		c_blocks_info.id = c_blocks_id;
 		c_blocks_info.default_order = index+1;
 		c_blocks_info.child_num = $this.find('.c_block').length;//如果为0，则在c_block表中要插入一条记录，同时c_blocks中的content为NULL
-		c_blocks_obj.push(c_blocks_info);
+		c_blocks_list.push(c_blocks_info);
 
 		$this.find('.c_block').each(function(index){
 			var c_block_info = {};
@@ -42,7 +42,9 @@ router.post('/generate_layout',function(req,res,next){
 			c_block_info.c_blocks_id = c_blocks_id;
 			c_block_info.id = c_block_id;
 			c_block_info.default_order = index+1;
-			c_block_obj.push(c_block_info);
+			c_block_info.siblings_num = c_blocks_info.child_num;//兄弟个数
+			c_block_info.is_float = $c_block.hasClass('fl_rx') || $c_block.hasClass('fr_rx');
+			c_block_list.push(c_block_info);
 		});
 	});
 
@@ -62,7 +64,7 @@ router.post('/generate_layout',function(req,res,next){
 		})
 		.task(function(done){
 			howdo
-				.each(c_blocks_obj,function(key,val,next,data){
+				.each(c_blocks_list,function(key,val,next,data){
 					if(data){
 						insert_blocks(sqlclient,data,function(){
 							next(null,val);
@@ -84,7 +86,7 @@ router.post('/generate_layout',function(req,res,next){
 		})
 		.task(function(done){
 			howdo
-				.each(c_block_obj,function(key,val,next,data){
+				.each(c_block_list,function(key,val,next,data){
 					if(data){
 						insert_block(sqlclient,data,function(){
 							next(null,val);
@@ -95,7 +97,7 @@ router.post('/generate_layout',function(req,res,next){
 				})
 				.follow()
 				.try(function(data){
-					insert_blocks(sqlclient,data,function(){
+					insert_block(sqlclient,data,function(){
 						done(null,'c_block批量插入成功!')
 					});
 				})
@@ -148,6 +150,12 @@ function insert_blocks(sqlclient,data,fn){
 function insert_block(sqlclient,data,fn){
 
 	var insert_into_c_block_sql = "INSERT INTO c_block(id,content,c_blocks_id,create_time,default_order) VALUES('"+data.id+"','"+data.content+"','"+data.c_blocks_id+"',NOW(),"+data.default_order+");";
+
+	if(data.is_float){
+		var default_style = 'width:'+Math.floor(100/data.siblings_num)+'%!important;';
+		insert_into_c_block_sql = "INSERT INTO c_block(id,content,c_blocks_id,create_time,default_order,default_style) VALUES('"+data.id+"','"+data.content+"','"+data.c_blocks_id+"',NOW(),"+data.default_order+",'"+default_style+"');";
+	}
+
 	console.log(insert_into_c_block_sql+'------------------insert_into_c_block_sql');
 	sqlclient.query(insert_into_c_block_sql,function(err,rows,fields){
 

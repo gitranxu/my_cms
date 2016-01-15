@@ -37,10 +37,12 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					      " l.content lc, "+
 					      " bs.content bsc, "+
 					      " pbs.order bsorder, "+
+					      " bs.`default_style` bs_default_style, "+
 					      " pbs.`style` bsstyle, "+
 					      " bs.id bsid, "+
 					      " b.content bc, "+
 					      " pb.order border, "+
+					      " b.`default_style` b_default_style, "+
 					      " pb.`style` bstyle, "+
 					      " b.id bid  "+
 					    " FROM "+
@@ -96,7 +98,6 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 	sqlclient.init();
 	sqlclient.query(core_sql,function(err,rows,fields){
 		if(err) throw err;
-		console.log(rows.length+'-----------------------layoutid');
 		if(rows.length){
 			var $ = cheerio.load(rows[0].lc);//layout的主体
 
@@ -108,8 +109,8 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				var bsid = rows[i].bsid;
 				var bid = rows[i].bid;
 
-				css_obj[rows[i].bsid] = rows[i].bsstyle;
-				css_obj[rows[i].bid] = rows[i].bstyle;
+				css_obj[rows[i].bsid] = rows[i].bsstyle ? rows[i].bsstyle : rows[i].bs_default_style ;
+				css_obj[rows[i].bid] = rows[i].bstyle ? rows[i].bstyle : rows[i].b_default_style ;
 				css_obj[rows[i].fid] = rows[i].fstyle;
 
 
@@ -125,14 +126,8 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					var b_appended_length = $('.cntr').find('.c_block[bid="'+bid+'"]').length;
 					if(!b_appended_length){//如果不存在，加入b_content
 						var $3 = cheerio.load(rows[i].bc);
-						$3('.c_block').attr('bid',rows[i].bid).attr('b_order',rows[i].border).addClass('c_'+rows[i].bid);;
-						//如果bs_content里面有wrap1200元素，则b_content加入到该元素下面
-						var $wrap1200 = $('#'+bsid).find('.wrap1200');
-						if($wrap1200.length){
-							$wrap1200.append($3.html());
-						}else{
-							$('#'+bsid).append($3.html());
-						}
+						$3('.c_block').attr('bid',rows[i].bid).attr('b_order',rows[i].border).addClass('c_'+rows[i].bid);
+						$('#'+bsid).append($3.html());
 						
 					}
 
@@ -145,7 +140,9 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					var $2 = cheerio.load(rows[i].bc);
 					$2('.blocks_move').attr('id',bsid).attr('bid',rows[i].bid).attr('bs_order',rows[i].bsorder).addClass('c_'+bsid);
 					var b_appended_length = $('.cntr').find('#'+bsid).length;
+					console.log(b_appended_length+'--------------------------------b_appended_length');
 					if(!b_appended_length){//如果不存在
+						console.log($2.html());
 						$('.cntr').append($2.html());
 					}
 
