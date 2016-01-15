@@ -5,8 +5,8 @@
     <title>Document</title>
     
     <link rel="stylesheet" href="/stylesheets/base.css">
-    <link rel="stylesheet" href="/stylesheets/animate.min.css">
-    <link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">
+    <link rel="stylesheet" href="/stylesheets/back_common.css">
+    <link rel="stylesheet" href="/stylesheets/create_layout.css">
     <style>
     	.need_move_width200{width: 200px;}
     	.layout_save_btn{position: absolute;top: 0;left: 0;padding: 10px;background: orange;cursor: pointer;}
@@ -16,21 +16,57 @@
     
     <div id="back">
         <div id="content">
-        	<div class="cntr">
-        		<div class="clear_rx blocks_move wrap1200">
-        			<div class="c_block fl_rx h300 c12 need_move_width200"></div>
-        			<div class="c_block fl_rx h300 c1 need_move_width200"></div>
-        			<div class="c_block fr_rx h300 c2 need_move_width200"></div>
-        		</div>
-        		<div class="c_block blocks_move h300 c11 wrap1200"></div>
-        		<div class="clear_rx blocks_move c7">
-        			<div class="c_block h300 c12 wrap1200"></div>
-        			<div class="c_block h300 c1 wrap1200"></div>
-        			<div class="c_block h300 c2 wrap1200"></div>
-        		</div>
+        	<div class="prev_view_zone">
+                <div class="cntr">
+                    <!-- <div class="clear_rx blocks_move wrap1200">
+                        <div class="c_block fl_rx h300 c12 need_move_width200"></div>
+                        <div class="c_block fl_rx h300 c1 need_move_width200"></div>
+                        <div class="c_block fr_rx h300 c2 need_move_width200"></div>
+                    </div>
+                    <div class="c_block blocks_move h300 c11 wrap1200"></div> 
+                    <div class="clear_rx blocks_move c7">
+                        <div class="c_block h300 c12 wrap1200"></div>
+                        <div class="c_block h300 c1 wrap1200"></div>
+                        <div class="c_block h300 c2 wrap1200"></div>
+                    </div>-->
+                </div>
         	</div>
         </div>
-        <div class="layout_save_btn">保存模板</div>
+        <div id="tools">
+            <div class="comps clear_rx">
+                <div class="blocks_full_haschild_tool toolitem c17" appendhtml='<div class="clear_rx blocks_move need_move_height need_move_bgcolor"></div>'>块组(填充,有子元素块)</div>
+                <div class="blocks_center_haschild_tool toolitem c17" appendhtml='<div class="clear_rx blocks_move wrap1200 need_move_height need_move_bgcolor"></div>'>块组(居中,有子元素块)</div>
+                <div class="blocks_full_nochild_tool toolitem c17" appendhtml='<div class="c_block blocks_move h300"></div>'>块组(填充,无子元素块)</div>
+                <div class="blocks_center_nochild_tool toolitem c17" appendhtml='<div class="c_block blocks_move h300 wrap1200"></div>'>块组(居中,无子元素块)</div>
+
+                <div class="block_full_tool toolitem c17" appendhtml='<div class="c_block h300"></div>' >块(填充)</div>
+                <div class="block_center_tool toolitem c17" appendhtml='<div class="c_block h300 wrap1200"></div>' >块(居中)</div>
+                <div class="block_fl_tool toolitem c17" appendhtml='<div class="c_block fl_rx h300 need_move_width200"></div>' >块(左浮动)</div>
+                <div class="block_fr_tool toolitem c17" appendhtml='<div class="c_block fr_rx h300 need_move_width200"></div>' >块(右浮动)</div>
+            </div>
+            <div class="bgcolors">
+                <div class="bgcolor c1" bgval="c1"></div>
+                <div class="bgcolor c2" bgval="c2"></div>
+                <div class="bgcolor c3" bgval="c3"></div>
+                <div class="bgcolor c4" bgval="c4"></div>
+                <div class="bgcolor c5" bgval="c5"></div>
+                <div class="bgcolor c6" bgval="c6"></div>
+                <div class="bgcolor c7" bgval="c7"></div>
+                <div class="bgcolor c8" bgval="c8"></div>
+                <div class="bgcolor c9" bgval="c9"></div>
+                <div class="bgcolor c10" bgval="c10"></div>
+                <div class="bgcolor c11" bgval="c11"></div>
+                <div class="bgcolor c12" bgval="c12"></div>
+                <div class="bgcolor c13" bgval="c13"></div>
+                <div class="bgcolor c14" bgval="c14"></div>
+                <div class="bgcolor c15" bgval="c15"></div>
+                <div class="bgcolor c16" bgval="c16"></div>
+                <div class="bgcolor c17" bgval="c17"></div>
+                <div class="bgcolor c18" bgval="c18"></div>
+            </div>
+        </div>
+
+        <!-- <div class="layout_save_btn">保存模板</div> -->
     </div>
    	
 
