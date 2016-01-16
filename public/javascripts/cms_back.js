@@ -1075,7 +1075,7 @@ CMS.prototype = {
 
 					var cankao_width = $this.parents('.edit_win').find('.cankao_val').val();
 					var b_total_width = $this.parents('.edit_win').find('.cur_val').val();
-					if(b_total_width > cankao_width){
+					if(b_total_width - cankao_width > 0){
 						alert('所有块的宽度及外边距之和不能大于参考宽度！');
 						return;
 					}

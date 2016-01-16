@@ -1,6 +1,10 @@
-#tools{position: absolute;top: 10px;left: 10px;width: 570px;height: 600px;background: orange;}
+html,body{height: 100%;}
+body{background: #957E45;}
+#tools{position: fixed;top: 10px;left: 10px;width: 200px;height: 600px;background: rgba(77,44,33,.7);}
 .comps{position: relative;}
 .toolitem{width: 180px;height: 40px;line-height: 40px;text-align: center;color: #fff;position: absolute;left: 10px;}
+.toolitem span{position: absolute;right: 6px;line-height: 40px;height: 40px;font-size: 20px;}
+.blockitem{color: #A103FF;}
 .blocks_full_haschild_tool{top: 10px;}
 .blocks_center_haschild_tool{top: 60px;}
 .blocks_full_nochild_tool{top: 110px;}
@@ -10,17 +14,44 @@
 .block_fl_tool{top: 310px;}
 .block_fr_tool{top: 360px;}
 
-.bgcolors{position: absolute;left: 10px;bottom: 10px;}
-.bgcolor{width: 15px;height: 15px;border-radius: 50%;margin-right: 10px;float: left;}
+.bgcolors{position: absolute;left: 15px;top: 360px;width: 180px;}
+.bgcolor{width: 13px;height: 13px;border-radius: 50%;margin: 3px;float: left;}
+.jieshi{position: absolute;left: 10px;top: 410px;width: 177px;color: #FF8C00;}
+.jieshi .title{height: 20px;line-height: 20px;}
+.jieshi .item{margin: 4px 0;}
 
-
-
-.prev_view_zone{width: 1000px;height: 600px;background: #FBFBFB;position: absolute;top: 10px;right: 10px;}
+.prev_view_zone{width: 1000px;height: 100%;background: #FBFBFB;margin: 10px auto;}
 .prev_view_zone .wrap1200{width: 800px;margin: 0 auto;}
 .prev_view_zone .h300{height: 200px;}
 .prev_view_zone .need_move_width200{width: 120px;}
 
 .compPz{background: red;}
 #back .cntr{position: relative;height: 100%;}
+#content{height: 100%;}
 .need_move_height{height: 200px;}
 .need_move_bgcolor{background: orange;}
+
+#sys{position: fixed;top: 10px;right: 10px;width: 200px;height: 460px;background: rgba(99,81,147,.6);padding: 10px;}
+.layout_form{position: relative;padding-bottom: 10px;}
+#sys .title{height: 20px;line-height: 20px;color: #fff;text-align: left;position: relative;}
+.filter_use_off{position: absolute;top: 0px;left: 120px;}
+.filter_use_off i{background: url('/images/sys/checkbox.jpg');height: 14px;width: 14px;display: inline-block;vertical-align: text-top;}
+.filter_use_off i.no{background-position: -20px 0px;}
+.filter_use_off i.yes{background-position: 0px 0px;}
+
+.layout_form .input_group{margin-top: 10px;}
+.layout_form .input_group span{width:56px;margin-right: 10px;display: inline-block;text-align: right;color: #fff;}
+.layout_form .input_group input{width: 110px;padding: 2px 10px;}
+
+.layout_save_btn{padding: 10px;background: #a6d315;cursor: pointer;text-align: center;height: 6px;line-height: 6px;color: #fff;border-radius: 8px;margin-top: 10px;}
+.layout_save_btn:hover{background: #85A420;}
+
+.layout_ul{margin-top: 4px;}
+.layout_ul li{height: 20px;line-height: 20px;background: #ddd;padding-left: 10px;position: relative;color:#fff;}
+.layout_ul li:hover{background: #abc;}
+.layout_ul li.active{background: #fab;}
+.layout_ul .syslayout{background: #8487DD!important;color: #1BF9A0;}
+.layout_ul .canusebtn{position: absolute;top: 0px;right: 0px;width: 24px;height: 20px;line-height: 20px;font-size: 12px;background: #2F8686;color:#1BF9A0;padding: 0 4px;cursor: pointer;}
+.layout_ul .canusebtn:hover{background: #167C69;}
+.layout_ul .use_on{background: #23C1A3;}
+.layout_ul .use_off{background: #919CA3;color: #242829;}

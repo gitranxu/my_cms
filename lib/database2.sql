@@ -1,5 +1,5 @@
 /*
-SQLyog Ultimate v11.27 (32 bit)
+SQLyog Ultimate v12.09 (64 bit)
 MySQL - 5.6.24 : Database - cms2
 *********************************************************************
 */
@@ -32,8 +32,6 @@ CREATE TABLE `c_block` (
 
 /*Data for the table `c_block` */
 
-insert  into `c_block`(`id`,`content`,`c_blocks_id`,`create_time`,`default_order`,`default_style`) values ('0f211848-b857-11e5-8208-003067b83487','<div class=\"c_block fl_rx c11 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:33:26',1,NULL),('25349997-b857-11e5-8208-003067b83487','<div class=\"c_block fl_rx c9 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:33:55',2,NULL),('2c59d845-b031-11e5-b189-003067b83487','<div class=\"c_block fl_rx c15 h300\"></div>','86352d1d-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:30:22',1,NULL),('420fd0b9-b857-11e5-8208-003067b83487','<div class=\"c_block c5 h200 blocks_move\"></div>','9e0eaa3e-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:34:48',1,NULL),('a58973ff-b85e-11e5-8208-003067b83487','<div class=\"c_block c5 h200 blocks_move\"></div>','7219122a-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:27:07',1,NULL),('eaf8632e-b856-11e5-8208-003067b83487','<div class=\"c_block fl_rx c2 h300\"></div>','91834cab-af67-11e5-baf7-68f728f3bf19','2016-01-11 19:32:50',3,NULL),('fc4145b2-b85e-11e5-8208-003067b83487','<div class=\"c_block fl_rx c2 h300\"></div>','86352d1d-af67-11e5-baf7-68f728f3bf19','2016-01-11 20:29:34',2,NULL);
-
 /*Table structure for table `c_blocks` */
 
 DROP TABLE IF EXISTS `c_blocks`;
@@ -49,8 +47,6 @@ CREATE TABLE `c_blocks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `c_blocks` */
-
-insert  into `c_blocks`(`id`,`content`,`c_layout_id`,`create_time`,`default_order`,`default_style`) values ('7219122a-af67-11e5-baf7-68f728f3bf19',NULL,'60f01bfd-b841-11e5-a0bb-68f728f3bf19','2016-01-11 20:26:00',1,NULL),('86352d1d-af67-11e5-baf7-68f728f3bf19','<div class=\"clear_rx blocks_move\"></div>','60f01bfd-b841-11e5-a0bb-68f728f3bf19','2016-01-11 20:28:33',2,NULL),('91834cab-af67-11e5-baf7-68f728f3bf19','<div class=\"clear_rx blocks_move\"></div>','2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','2016-01-11 19:29:36',1,NULL),('9e0eaa3e-af67-11e5-baf7-68f728f3bf19',NULL,'2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','2016-01-11 19:29:56',2,NULL);
 
 /*Table structure for table `c_data` */
 
@@ -111,12 +107,14 @@ CREATE TABLE `c_layout` (
   `content` text,
   `img_url` varchar(80) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
+  `edit_model` text COMMENT '布局的编辑模型',
+  `last_edit_time` datetime DEFAULT NULL,
+  `valid` int(1) DEFAULT '1' COMMENT '1:合法，2:禁用',
+  `type` int(1) DEFAULT '2' COMMENT '1:系统布局，2:用户定义',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `c_layout` */
-
-insert  into `c_layout`(`id`,`name`,`content`,`img_url`,`create_time`) values ('2e2ebb2c-b841-11e5-a0bb-68f728f3bf19','布局一','<div class=\"cntr wrap1200\"></div>','/images/upload/1.jpg','2016-01-11 16:57:31'),('60f01bfd-b841-11e5-a0bb-68f728f3bf19','布局二','<div class=\"cntr wrap1200\"></div>','/images/upload/3.jpg','2016-01-11 16:58:41');
 
 /*Table structure for table `c_model` */
 

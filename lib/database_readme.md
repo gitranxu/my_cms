@@ -63,7 +63,7 @@ c_page		页面表				(页面的名字不可以变，但url,project_name可以因
 id		name		create_time
 
 c_layout	布局表
-id		name		content		img_url		create_time
+id		name		content		img_url		create_time		edit_model		last_edit_time		valid
 												
 c_blocks	块组表
 id		content		c_layout_id		create_time
@@ -104,7 +104,7 @@ reCode
 	10002	插入失败
 	10003	未找到配置信息
 	10004	配置信息所指目录不存在
-
+	10005	名称已存在，请换用其他名称
 
 按钮的显示系统
 1.fixed的那几个按钮，可以让用户移动它的位置
