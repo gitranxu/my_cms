@@ -107,11 +107,11 @@ CMS.prototype = {
 		                    '<div class="edit_win hid_rx">'+
 		                    	'<div class="help_group hid_rx clear_rx">'+
 		                    		'<div class="edit_item fl_rx">'+
-			                            '<span title="即块组的宽度">参考宽度 :</span>'+
+			                            '<span title="即块组的宽度" class="hastitle">参考宽度 :</span>'+
 			                            '<input type="text" disabled value="" class="disable_input cankao_val edit_input">'+
 			                        '</div>'+
 			                        '<div class="edit_item fl_rx">'+
-			                            '<span title="即所有块及其外边距总和">当前宽度 :</span>'+
+			                            '<span title="即所有块及其外边距总和" class="hastitle">当前宽度 :</span>'+
 			                            '<input type="text" disabled value="" class="disable_input cur_val edit_input">'+
 			                        '</div>'+
 			                    '</div>'+
@@ -159,7 +159,7 @@ CMS.prototype = {
 			                        '</div>'+
 			                    '{@/each}'+
 			                    '<div class="saveBtn">保存</div>'+
-			                    '<div class="super" title="更多配置信息">S</div>'+
+			                    '<div class="super hastitle" title="更多配置信息">S</div>'+
 			                    '<div class="floor_config hid_rx">'+
 									'<div class="edit_item">'+
 										'<div class="chose_ul_info model_type_info hid_rx" val=1></div>'+
@@ -172,7 +172,7 @@ CMS.prototype = {
 			                            '<ul class="chose_ul hid_rx"><li val=1>PC</li><li val=2>WAP</li></ul>'+
 			                        '</div>'+
 			                        '<div class="edit_item">'+
-			                            '<span title="过滤模板时用，0代表不限高度">楼层高度 :</span><input type="text" value="0" class="query_height edit_input">'+
+			                            '<span title="过滤模板时用，0代表不限高度" class="hastitle">楼层高度 :</span><input type="text" value="0" class="query_height edit_input">'+
 			                        '</div>'+
 			                    '</div>'+
 			                '</div>'+
@@ -261,7 +261,12 @@ CMS.prototype = {
 					        	'<div class="c_top clear_rx">'+
 					        		'<div class="layoutlist fl_rx">'+
 					                    '<h3 class="c_title">可选的布局有：<div id="create_layout_btn" class="hid_rx">创建布局</div></h3>'+
-					                    '<ul class="piece_ul"></ul>'+
+					                    '<div>'+
+											'<ul class="tabs clear_rx"><li class="active"><div class="bgli"></div><div class="ctnli">系统布局</div></li><li><div class="bgli"></div><div class="ctnli">用户布局</div></li></ul>'+
+											'<ul class="piece_ul sys "></ul>'+
+											'<ul class="piece_ul user hid_rx"></ul>'+
+					                    '</div>'+
+					                    
 					                '</div>'+
 					                '<div class="prevview fl_rx">'+
 					                    '<h3 class="c_title">效果预览：</h3>'+
@@ -271,7 +276,7 @@ CMS.prototype = {
 					                	'<h3 class="c_title">页面信息：</h3>'+
 					                    '<div class="edit_group">'+
 										    '<div class="edit_item">'+
-										        '<span>页面名称 :</span>'+
+										        '<span title="在点击页面列表之前可以新增页面" class="hastitle">页面名称 :</span>'+
 										        '<input type="text" value="" class="p_name edit_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
@@ -283,11 +288,11 @@ CMS.prototype = {
 										        '<input type="text" value="" placeholder="请点击左则布局列表" disabled class="p_layout disable_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
-										        '<span title="用于查看页面的预览效果,注意格式">预览url :</span>'+
+										        '<span title="用于查看页面的预览效果,注意格式" class="hastitle">预览url :</span>'+
 										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_prev_view_url edit_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
-										        '<span title="生成的正式页面的路径,注意格式" >正式url :</span>'+
+										        '<span title="生成的正式页面的路径,注意格式" class="hastitle" >正式url :</span>'+
 										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_page_url edit_input">'+
 										    '</div>'+
 										    '<div class="saveBtn">保存</div>'+
@@ -522,8 +527,16 @@ CMS.prototype = {
 				_this.ajax.common({
 					url : _this.urls.layout_query,
 					successFn : function(msg){
-						var html = _this.juicer.msg_to_findpieces_html(msg);
-						$ul.empty().append(html);
+						$ul.each(function(){
+							var $this = $(this);
+							if($this.hasClass('sys')){
+								var html = _this.juicer.msg_to_sys_lis_html(msg);
+								$this.empty().append(html);
+							}else if($this.hasClass('user')){
+								var html = _this.juicer.msg_to_user_lis_html(msg);
+								$this.empty().append(html);
+							}
+						});
 					},
 					data : {
 						t_type : 1,
@@ -585,8 +598,18 @@ CMS.prototype = {
 		}
 	},
 	juicer : {
-		msg_to_findpieces_html : function(msg){
+		msg_to_findmodels_html : function(msg){
 			var tpl = this.list_tpl();
+			var html = juicer(tpl,msg);
+			return html;
+		},
+		msg_to_sys_lis_html : function(msg){
+			var tpl = this.list_sys_tpl();
+			var html = juicer(tpl,msg);
+			return html;
+		},
+		msg_to_user_lis_html : function(msg){
+			var tpl = this.list_user_tpl();
 			var html = juicer(tpl,msg);
 			return html;
 		},
@@ -599,6 +622,32 @@ CMS.prototype = {
 								'{@/if}'+
 							'</div>'+
 						'</li>'+
+					'{@/each}'
+		},
+		list_sys_tpl : function(){
+			return '{@each list as it}'+
+						'{@if it.type==1}'+
+						'<li class="border_top_none" imgurl="${it.t_url}" dataid="${it.id}"><div class="bgli"></div>'+
+							'<div class="ctnli">${it.name}'+
+								'{@if it.isUpdate}'+
+									'<span class="isupdate">有更新</span>'+
+								'{@/if}'+
+							'</div>'+
+						'</li>'+
+						'{@/if}'+
+					'{@/each}'
+		},
+		list_user_tpl : function(){
+			return '{@each list as it}'+
+						'{@if it.type==2}'+
+						'<li class="border_top_none" imgurl="${it.t_url}" dataid="${it.id}"><div class="bgli"></div>'+
+							'<div class="ctnli">${it.name}'+
+								'{@if it.isUpdate}'+
+									'<span class="isupdate">有更新</span>'+
+								'{@/if}'+
+							'</div>'+
+						'</li>'+
+						'{@/if}'+
 					'{@/each}'
 		}
 	},
@@ -652,6 +701,15 @@ CMS.prototype = {
 			$('#chose_page_cntr').hide();
 		});
 
+		//点击tab页
+		this.o.$root.delegate('#chose_page_cntr .layoutlist .tabs li','click',function(){
+			var $this = $(this);
+			$this.addClass('active').siblings().removeClass('active');
+			var index = $('.layoutlist .tabs li').index($('.layoutlist .tabs li.active'));
+			$('#chose_page_cntr .layoutlist').find('.piece_ul').addClass('hid_rx');
+			$('#chose_page_cntr .layoutlist').find('.piece_ul:eq('+index+')').removeClass('hid_rx');
+		});
+
 		//选择模板,将来会考虑选择模板的条件
 		this.o.$root.delegate('.chose_model','click',function(){
 			var fid = $(this).parents('.c_floor').attr('fid');
@@ -659,7 +717,7 @@ CMS.prototype = {
 			_this.ajax.common({
 				url : _this.urls.model_query,
 				successFn : function(msg){
-					var html = _this.juicer.msg_to_findpieces_html(msg);
+					var html = _this.juicer.msg_to_findmodels_html(msg);
 					$('#chose_models_cntr').find('.piece_ul').empty().append(html);
 				},
 				data : {
@@ -1376,6 +1434,8 @@ CMS.prototype = {
 
 				//点击page列表时
 				_this.o.$root.delegate('#chose_page_cntr .c_bottom .page_ul li','click',function(){
+					//一旦点击列表，则【页面名称就不能编辑了，如果想新增主刷新页面】
+					$('#chose_page_cntr .p_name').attr('readonly','readonly');
 					var $this = $(this);
 					$this.addClass('active').siblings().removeClass('active');
 					var $edit_group = $this.parents('.content').find('.pageinfo .edit_group');

@@ -160,7 +160,7 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .edit_floor_mask .edit_group .super.clicked{color: #6BEDD3;}
 .edit_floor_mask .edit_group .floor_config{position: absolute;left: 140px;top: 0px;width: 110px;background: rgba(211,116,113,.4);padding: 20px 10px;}
 
-#chose_page_cntr .piece_ul{height: 192px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
+#chose_page_cntr .piece_ul{height: 160px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .piece_ul li.active{background: #479F03;color: #00FB0B;}
 #chose_page_cntr .prevview{height: 226px;overflow: auto;width: 260px;margin-left: 10px;}
 #chose_page_cntr .prevview .prev_view{height: 192px;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
@@ -190,3 +190,10 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .blocks_move,.c_block{position: relative;}
 .del_btn{position: absolute;top: 0px;right: 0px;padding: 2px 4px;background: #45f7c1;color: #fff;cursor: pointer;}
 .del_btn:hover{background: #45aaa1;}
+
+.tabs{position: relative;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
+.tabs li{float: left;width: 50%;text-align: center;height: 30px;line-height: 30px;cursor: pointer;}
+.tabs li.active{background: rgba(116,116,207,0.4);color: #65DAB3;}
+.tabs li:hover{background: #4F7493;color: rgba(222,161,20,0.81);}
+
+.hastitle{color:#6AEB08!important;}

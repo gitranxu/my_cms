@@ -49,10 +49,11 @@ body{background: #957E45;}
 .layout_save_btn:hover{background: #85A420;}
 
 .layout_ul{margin-top: 4px;}
-.layout_ul li{height: 20px;line-height: 20px;background: #ddd;padding-left: 10px;position: relative;color:#fff;}
+.layout_ul li{height: 20px;line-height: 20px;background: #ddd;padding-left: 10px;position: relative;color:#fff;cursor: pointer;}
 .layout_ul li:hover{background: #abc;}
 .layout_ul li.active{background: #fab;}
 .layout_ul .syslayout{background: #8487DD!important;color: #1BF9A0;}
+.layout_ul .syslayout:hover{background: #84aaDD!important;color: #1BaaA0;}
 .layout_ul .canusebtn{position: absolute;top: 0px;right: 0px;width: 24px;height: 20px;line-height: 20px;font-size: 12px;background: #2F8686;color:#1BF9A0;padding: 0 4px;cursor: pointer;}
 .layout_ul .canusebtn:hover{background: #167C69;}
 .layout_ul .use_on{background: #23C1A3;}
