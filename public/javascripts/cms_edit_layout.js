@@ -69,19 +69,28 @@ CMS_layout.prototype = {
 						return;
 					}
 					
-					_this.ajax.common({
-						url : _this.urls.generate_layout,
-						method : 'POST',
-						data : {cntr_html:cntr_html,layout_name:layout_name,img_url:'/images/upload/4.jpg'},
-						successFn : function(msg){
-							if(msg.reCode==1){
-								//alert(msg.msg);
-								_this.init_ajax();
-							}else{
-								alert(msg.msg);
-							}
-						}
-					});
+					html2canvas($('.for_img'),{
+		                allowTaint : true,
+		                taintTest : false,
+		                onrendered : function(canvas){
+		                    var dataUrl = canvas.toDataURL();
+		                    _this.ajax.common({
+								url : _this.urls.generate_layout,
+								method : 'POST',
+								data : {cntr_html:cntr_html,layout_name:layout_name,img_data:dataUrl},
+								successFn : function(msg){
+									if(msg.reCode==1){
+										//alert(msg.msg);
+										_this.init_ajax();
+									}else{
+										alert(msg.msg);
+									}
+								}
+							});
+		                }
+		            });
+
+							
 				});
 
 				//点击布局列表
@@ -92,6 +101,8 @@ CMS_layout.prototype = {
 					var $this = $(this);
 					$this.addClass('active').siblings().removeClass('active');
 					$('.prev_view_zone').empty().append($this.attr('edit_model'));
+
+					_this.fn.prev_view_zone_changed();
 				});
 
 				//点击布局列表中的启用禁用按钮
@@ -124,6 +135,7 @@ CMS_layout.prototype = {
 
 				});
 
+				//点击布局列表旁边的是否过滤按钮
 				$('#sys').delegate('.filter_use_off i','click',function(ev){
 					var $this = $(this);
 					var isfilter = 1;//1为过滤禁用记录
@@ -154,6 +166,13 @@ CMS_layout.prototype = {
 
 								
 				});
+
+				//点击删除按钮del_btn
+				$('.prev_view_zone').delegate('.del_btn','click',function(){
+					$(this).parent().remove();
+					_this.fn.prev_view_zone_changed();
+				});
+
 			},
 			tools : function(){
 
@@ -327,16 +346,18 @@ CMS_layout.prototype = {
 				}
 
 				if(className.indexOf('c_block')!=-1&&className.indexOf('fl_rx')==-1){//如果不是浮动的
-					if($container.find('.c_block.fl_rx').length){
+					if(!$container.hasClass('cntr') && $container.find('.c_block.fl_rx').length){
 						alert('不合法3,不能这样操作');
 						return;
 					}
 				}
 
-				var html = '<div class="'+className+'"></div>';
+				var html = '<div class="'+className+'"><div class="need_remove del_btn">删除</div></div>';
 				$container.append(html);
 				_this.tools_drag();
-				_this.fn.changeColor();
+				this.changeColor();
+
+				this.prev_view_zone_changed();
 			},
 			changeColor : function(){
 				var $bgcoloractive = $('.bgcolors .bgcolor.active');
@@ -353,6 +374,19 @@ CMS_layout.prototype = {
 				var bgval = $('.bgcolors .bgcolor.active').attr('bgval');
 				$('.toolitem').removeClass('c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18').addClass(bgval);
 				
+			},
+			prev_view_zone_changed : function(){
+				//这里还要加上for_img处理
+				var html = $('.prev_view_zone .cntr').html().replace(/compPz/g,"").replace(/<div class="need_remove del_btn">删除<\/div>/g,"");
+				$('.for_img').empty().append(html);
+				//对for_img里的fl_rx元素宽度进行处理
+				$('.for_img').find('.clear_rx.blocks_move').each(function(){
+					var $this = $(this);
+					if($this.find('.fl_rx').length){
+						var percent = Math.floor(100/$this.find('.fl_rx').length);
+						$this.find('.fl_rx').width(percent+'%');
+					}
+				});
 			},
 			getNearest : function($objA,$objB){
 				var result = [];
@@ -453,7 +487,7 @@ CMS_layout.prototype = {
 	html : {
 		layout_lis : function(){
 			return '{@each list as it}'+
-						'<li id="${it.id}" img_url="${it.img_url}" status="${it.valid}" edit_model="${it.edit_model}" class="{@if it.type==1}syslayout{@/if} {@if it.valid==1}use_on{@else}use_off{@/if}">${it.name}{@if it.type==1}(系统布局){@else}<div class="canusebtn">{@if it.valid==1}启用{@else}禁用{@/if}</div>{@/if}</li>'+
+						'<li id="${it.id}" img_data="${it.img_data}" status="${it.valid}" edit_model="${it.edit_model}" class="{@if it.type==1}syslayout{@/if} {@if it.valid==1}use_on{@else}use_off{@/if}">${it.name}{@if it.type==1}(系统布局){@else}<div class="canusebtn">{@if it.valid==1}启用{@else}禁用{@/if}</div>{@/if}</li>'+
 					'{@/each}';
 		}
 	}

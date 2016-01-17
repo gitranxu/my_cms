@@ -25,10 +25,10 @@ router.post('/change_layout_status',function(req,res,next){
 router.get('/query_layout_edit_model',function(req,res,next){
 	var isfilter = req.query.isfilter;
 
-	var query_layout_edit_model_sql = " SELECT l.`edit_model`,l.`name`,l.`id`,l.`img_url`,l.valid,l.type FROM c_layout l ORDER BY l.`type` ASC, l.`last_edit_time` DESC";
+	var query_layout_edit_model_sql = " SELECT l.`edit_model`,l.`name`,l.`id`,l.`img_data`,l.valid,l.type FROM c_layout l ORDER BY l.valid ASC, l.`type` ASC, l.`last_edit_time` DESC";
 
 	if(isfilter==1){//1为过滤禁用记录,2或者空时为不用过滤禁用记录
-		query_layout_edit_model_sql = " SELECT l.`edit_model`,l.`name`,l.`id`,l.`img_url`,l.valid,l.type FROM c_layout l WHERE l.valid = 1 ORDER BY l.`type` ASC, l.`last_edit_time` DESC";
+		query_layout_edit_model_sql = " SELECT l.`edit_model`,l.`name`,l.`id`,l.`img_data`,l.valid,l.type FROM c_layout l WHERE l.valid = 1 ORDER BY l.valid ASC, l.`type` ASC, l.`last_edit_time` DESC";
 	}
 
 	
@@ -49,7 +49,7 @@ router.post('/generate_layout',function(req,res,next){
 
 	var cntr_html = req.body.cntr_html;
 	var layout_name = req.body.layout_name;
-	var img_url = req.body.img_url;
+	var img_data = req.body.img_data;
 
 	//先根据layout_name去查询一下，如果该名字已存在，则给用户提示
 	var is_layout_name_exist_sql = "SELECT 1 FROM c_layout l WHERE l.`name` = '"+layout_name+"'";
@@ -98,7 +98,7 @@ router.post('/generate_layout',function(req,res,next){
 
 
 			//保存到c_layout,c_blocks,c_block三张表中
-			var insert_into_c_layout_sql = "INSERT INTO c_layout(id,`name`,content,img_url,create_time,edit_model,last_edit_time) VALUES('"+layout_id+"','"+layout_name+"','<div class=\"cntr\"></div>','"+img_url+"',NOW(),'"+cntr_html+"',NOW())";
+			var insert_into_c_layout_sql = "INSERT INTO c_layout(id,`name`,content,img_data,create_time,edit_model,last_edit_time) VALUES('"+layout_id+"','"+layout_name+"','<div class=\"cntr\"></div>','"+img_data+"',NOW(),'"+cntr_html+"',NOW())";
 
 			howdo
 				.task(function(done){

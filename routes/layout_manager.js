@@ -5,7 +5,7 @@ var sqlclient = require('../lib/mysql_cli');
 
 /* GET users listing. */
 router.get('/query', function(req, res, next) {
-	var query_all_layout = "SELECT id,name,img_url t_url FROM  c_layout WHERE valid=1 ORDER BY `type` ASC, `last_edit_time` DESC";
+	var query_all_layout = "SELECT id,name,img_data t_url FROM  c_layout WHERE valid=1 ORDER BY `type` ASC, `last_edit_time` DESC";
 	console.log(query_all_layout+'--------------------query_all_layout');
 	sqlclient.init();
 	sqlclient.query(query_all_layout,function(err,rows,fields){
@@ -18,8 +18,6 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 	//var layoutid = req.query.layoutid;'"+layoutid+"'
 	var pageid = req.query.pid;
 	var layoutid = req.query.lid;
-	console.log(pageid+'-----------------------pageid');
-	console.log(layoutid+'-----------------------layoutid');
 	var core_sql = "SELECT "+
 					  " b.*, "+
 					  " cm.id 'mid', "+

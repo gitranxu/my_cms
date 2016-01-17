@@ -186,3 +186,7 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .page_ul li.active{background: #479F03;color: #00FB0B;}
 
 #create_layout_btn{position: absolute;top: 0;right: 0;padding: 0px 4px;background: orange;cursor: pointer;}
+
+.blocks_move,.c_block{position: relative;}
+.del_btn{position: absolute;top: 0px;right: 0px;padding: 2px 4px;background: #45f7c1;color: #fff;cursor: pointer;}
+.del_btn:hover{background: #45aaa1;}
