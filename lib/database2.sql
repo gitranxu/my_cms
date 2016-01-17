@@ -105,7 +105,7 @@ CREATE TABLE `c_layout` (
   `id` char(36) NOT NULL,
   `name` varchar(80) DEFAULT NULL,
   `content` text,
-  `img_url` varchar(80) DEFAULT NULL,
+  `img_data` varchar(5800) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `edit_model` text COMMENT '布局的编辑模型',
   `last_edit_time` datetime DEFAULT NULL,
