@@ -5,11 +5,45 @@ var router = express.Router();
 var sqlclient = require('../lib/mysql_cli');
 
 router.get('/query', function(req, res, next) {
+	var fid = req.query.fid;
+	var pid = req.query.pid;
+	var f_width = req.query.f_width;
+
+	var filter_model_sql = "SELECT model_type,term_type,query_height FROM c_page_floor WHERE c_floor_id = '"+fid+"' AND c_page_id = '"+pid+"'";
+	console.log(filter_model_sql+'------------filter_model_sql');
 	sqlclient.init();
-	sqlclient.query('SELECT id,name FROM  c_model',function(err,rows,fields){
+	sqlclient.query(filter_model_sql,function(err,rows,fields){
 		if(err) throw err;
-		res.status(200).json({ list: rows });
+		if(rows.length){
+			var model_type = rows[0].model_type;//如果为综合，则查找全部，否则直等
+			var term_type = rows[0].term_type;
+			var query_height = rows[0].query_height; //如果为0，则查找全部，否则直等
+
+			var query_model_sql = "SELECT id,name,img_url FROM c_model WHERE term_type ="+term_type+" AND model_width="+f_width;
+
+			if(model_type!=1){//如果不为综合，则直等
+				query_model_sql += " AND `type`="+model_type;
+			}
+			if(query_height!=0){
+				query_model_sql += " AND `model_height`="+query_height;
+			}
+			console.log(query_model_sql+'------------query_model_sql');
+			sqlclient.query(query_model_sql,function(err,rows,fields){
+				if(err) throw err;
+				if(rows.length){
+					res.json({reCode:1,msg:rows});
+				}else{
+					res.json({reCode:10000,msg:"没有符合条件的模板"});
+				}
+			});
+
+		}else{
+			res.json({reCode : 10000,msg:"查询模板过滤条件时，记录为空..."});
+		}
 	});
+
+
+			
 });
 
 

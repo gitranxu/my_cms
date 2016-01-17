@@ -564,6 +564,12 @@ CMS.prototype = {
 					data : { pid : pid,lid : lid},
 					dataType : 'html'
 				});
+			},
+			edit_blocks_mask_save : function(bs_finished,b_finished,$saveBtn){
+				if(bs_finished&&b_finished){
+					$saveBtn.parents('.edit_win').hide();
+					$saveBtn.parents('.edit_blocks_mask').find('.btn_group .edit').removeClass('clicked');
+				}
 			}
 		}
 		
@@ -600,7 +606,7 @@ CMS.prototype = {
 	juicer : {
 		msg_to_findmodels_html : function(msg){
 			var tpl = this.list_tpl();
-			var html = juicer(tpl,msg);
+			var html = juicer(tpl,{list:msg.msg});
 			return html;
 		},
 		msg_to_sys_lis_html : function(msg){
@@ -710,22 +716,26 @@ CMS.prototype = {
 			$('#chose_page_cntr .layoutlist').find('.piece_ul:eq('+index+')').removeClass('hid_rx');
 		});
 
-		//选择模板,将来会考虑选择模板的条件
+		//选择模板
 		this.o.$root.delegate('.chose_model','click',function(){
-			var fid = $(this).parents('.c_floor').attr('fid');
+			var $floor = $(this).parents('.c_floor');
+			var fid = $floor.attr('fid');
+			var pid = _this.o.$content.find('.cntr').attr('pid');
 			$('#chose_models_cntr').attr('chose_win_fid',fid).show();
 			_this.ajax.common({
 				url : _this.urls.model_query,
 				successFn : function(msg){
-					var html = _this.juicer.msg_to_findmodels_html(msg);
-					$('#chose_models_cntr').find('.piece_ul').empty().append(html);
+					if(msg.reCode==1){
+						var html = _this.juicer.msg_to_findmodels_html(msg);
+						$('#chose_models_cntr').find('.piece_ul').empty().append(html);
+					}else{
+						alert(msg.msg);
+					}
 				},
 				data : {
-					t_type : 1,
-					t_width : 2,
-					term_type : 3,
-					floor_id : 4,
-					t_height : 5
+					f_width : $floor.width(),
+					fid : fid,
+					pid : pid
 				}
 			});
 		});
@@ -1106,6 +1116,10 @@ CMS.prototype = {
 				//只能输入正整数或0
 				_this.o.$root.delegate('.edit_win .edit_input,.edit_floor_mask .edit_input','blur',function(){
 					var val = $(this).val();
+					if(/^\s*$/.test(val)){	//如果为空格，则转换为0
+						val = 0;
+						$(this).val(val);
+					}
 					if(!/^\d+$/.test(val)){
 						$(this).addClass('unvalidate');
 					}else{
@@ -1138,6 +1152,8 @@ CMS.prototype = {
 						return;
 					}
 
+					var bs_finished = false;
+					var b_finished = false;
 
 					var pid = _this.o.$content.find('.cntr').attr('pid');
 					var $bs_edit_group = $this.parents('.edit_win').find('.bs_edit_group');
@@ -1153,6 +1169,8 @@ CMS.prototype = {
 							successFn : function(msg){
 								if(msg.reCode==1){
 									_this.fn.update_css_by_reg(bsid,bs_css_s);
+									bs_finished = true;
+									_this.fn.edit_blocks_mask_save(bs_finished,b_finished,$this);
 								}
 							}
 						});
@@ -1172,6 +1190,8 @@ CMS.prototype = {
 								successFn : function(msg){
 									if(msg.reCode==1){
 										_this.fn.update_css_by_reg(bid,b_css_s);
+										b_finished = true;
+										_this.fn.edit_blocks_mask_save(bs_finished,b_finished,$this);
 									}
 								}
 							});
@@ -1276,7 +1296,7 @@ CMS.prototype = {
 						var model_type = $this.parents('.edit_group').find('.model_type_info').attr('val');
 						var term_type = $this.parents('.edit_group').find('.term_type_info').attr('val');
 						var query_height = $this.parents('.edit_group').find('.query_height').val();
-						console.log(model_type+'----------model_type,'+term_type+'----------term_type,'+query_height+'----------query_height');
+						//console.log(model_type+'----------model_type,'+term_type+'----------term_type,'+query_height+'----------query_height');
 						_this.ajax.common({
 							url : _this.urls.set_f_css_by_fid,
 							method : 'POST',
@@ -1295,6 +1315,9 @@ CMS.prototype = {
 										_this.fn.update_css_by_reg(fid,f_css_s);
 									}
 									
+									$this.parents('.edit_floor_mask').find('.edit_group').hide();//保存完后要隐藏
+									$this.parents('.edit_floor_mask').find('.btn_group .edit').removeClass('clicked');
+
 								}
 							}
 						});

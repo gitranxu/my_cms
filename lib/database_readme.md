@@ -88,7 +88,7 @@ id		c_floor_id		c_page_id		order		style 		create_time		last_edit_time		model_typ
 
 
 c_model		模板表(juicer) 						#模板表中含有区域属性zone(1,2,3)【例如八宫格模板】,zone(all)【轮播图】
-id		name		content		data_model		img_url		type		create_time
+id		name		content		data_model		img_url		type		create_time		last_edit_time		term_type		model_height		model_width
 
 c_data		数据表								#不同楼层(id唯一)不同模板的数据不一样
 id		c_model_id		c_floor_id		c_floor_model_id		data
