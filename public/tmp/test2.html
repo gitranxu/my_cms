@@ -1,0 +1,85 @@
+<div class="c_model css_namespace_first">
+	<style type="text/css">
+		.css_namespace_first .floor_section{width: 1200px;margin: 0 auto 30px;color: #000;}
+		.css_namespace_first .floor_section .floor_title{height: 48px;}
+		.css_namespace_first .floor_section .floor_title h3{float: left;height: 48px;line-height: 48px;font-size: 20px;font-weight: normal;width: 240px;}
+		.css_namespace_first .floor_section .floor_links{float: right;width: 960px;text-align: right;padding-top: 20px;}
+		.css_namespace_first .floor_section .floor_links a{color: #6f7170;margin-left: 12px;}
+		.css_namespace_first .floor_img{width: 1200px;}
+		.css_namespace_first .floor_left{float: left;width: 240px;height: 535px;overflow: hidden;}
+		.css_namespace_first .floor_section a,.css_namespace_first .floor_section a:focus{outline: none!important;text-decoration: none;color: #000;}
+		.css_namespace_first .floor_left img{width: 240px;height: 535px;}
+		.css_namespace_first .floor_right{float: right;width: 960px;border-top: 1px solid #dedede;}
+		.css_namespace_first .floor_item{width: 239px;height: 266px;border-right: 1px solid #dedede;border-bottom: 1px solid #dedede;float: left;position: relative;background: #fff;text-align: center;}
+		.css_namespace_first .floor_item .pro_img{overflow: hidden;padding: 12px 0;}
+		.css_namespace_first .floor_item a{display: block;}
+		.css_namespace_first .floor_item a img{border: 0;vertical-align: top;}
+		.css_namespace_first .floor_item .pro_img img{height: 164px;position: relative;top: 0;}
+		.css_namespace_first .floor_item .pro_name{font-size: 14px;height: 22px;line-height: 22px;overflow: hidden;padding: 0 14px;}
+		.css_namespace_first .floor_item .pro_description{color: #6f7170;height: 20px;line-height: 20px;overflow: hidden;padding: 0 12px;}
+		.css_namespace_first .floor_item .pro_price{font-size: 14px;color: #e2231a;height: 22px;line-height: 22px;overflow: hidden;}
+		.css_namespace_first .floor_item .floor_label{display: block;width: 54px;height: 54px;position: absolute;top: 0;right: 0;background-image: url(http://pic.shop.lenovo.com.cn/g1/M00/00/F0/CmBZD1ZynUyAUnWjAAGn0mxLsoI703.png);}
+		.css_namespace_first .floor_item .floor_label1{background-position: 0 -700px;}
+	</style>
+
+	<script class="tmpl" type="text/template">
+		<div class="floor_section floor_l1_r8">
+		    <div class="floor_title clear_rx">
+		        <h3>
+		            1F Lenovo 电脑
+		        </h3>
+		        <div class="floor_links">
+		        	{@each linklist as it}
+			            <a target="_blank" href="${it.href}"
+			            title="${it.title}">
+			                YOGA 4 Pro系列
+			            </a>
+		            {@/each}
+		        </div>
+		    </div>
+		    <div class="floor_img clear_rx">
+		        <div class="floor_left btn_cntr_in_piece" datatype="3" sort="1" b_i="240,535,40">
+		            <a target="_blank" href="http://www.lenovo.com.cn/product/50982.html"
+		            latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p1_goods_code_no_exists"
+		            title="">
+		                <img width="240" height="535" src="http://pic.shop.lenovo.com.cn/g1/M00/00/7F/CmBZEFZdY9iALGjfAABvbEHIe5s561.jpg"
+		                _src="http://pic.shop.lenovo.com.cn/g1/M00/00/7F/CmBZEFZdY9iALGjfAABvbEHIe5s561.jpg"
+		                alt="" class="lazy_img">
+		            </a>
+		        </div>
+		        <div class="floor_right">
+		        	{@each gelist as it}
+			            <div class="floor_item c_edit" edit_type=1 zone_key="${it.zone_key}">
+			                <a target="_blank" href="${it.href}"
+			                latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+			                title="${it.title}" class="pro_img">
+			                    <img width="164" height="164" src="${it.imgurl}"
+			                    _src="${it.imgurl}"
+			                    alt="${it.title}" class="lazy_img" style="left: 0px;">
+			                </a>
+			                <a target="_blank" href="${it.href}"
+			                latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+			                title="${it.title}" class="pro_name">
+			                    ${it.title}
+			                </a>
+			                <a target="_blank" href="${it.href}"
+			                latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+			                title="${it.title}" class="pro_description">
+			                    ${it.description}
+			                </a>
+			                <a target="_blank" href="${it.href}"
+			                latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+			                title="${it.title}" class="pro_price">
+			                    ${it.price}元
+			                </a>
+			                <span class="floor_label floor_label1">
+			                </span>
+			            </div>
+		            {@/each}
+		        </div>
+		    </div>
+		</div>
+	</script>
+
+	<div class="translated"></div>
+</div>

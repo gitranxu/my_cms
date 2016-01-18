@@ -22,7 +22,7 @@ router.get('/query', function(req, res, next) {
 			var query_model_sql = "SELECT id,name,img_url FROM c_model WHERE term_type ="+term_type+" AND model_width="+f_width;
 
 			if(model_type!=1){//如果不为综合，则直等
-				query_model_sql += " AND `type`="+model_type;
+				query_model_sql += " AND `model_type`="+model_type;
 			}
 			if(query_height!=0){
 				query_model_sql += " AND `model_height`="+query_height;
@@ -86,7 +86,7 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 	var fid = req.query.fid;
 	var sql = "SELECT a.*,b.data "+
 				  " FROM ( "+
-					" SELECT   m.content,m.`data_model`,m.`id`,m.type mtype "+
+					" SELECT   m.content,m.`data_model`,m.`id`,m.render_type mrendertype "+
 					" FROM c_model m  "+
 					" WHERE m.id = '"+mid+"' "+
 					" ) a LEFT JOIN  "+
@@ -101,24 +101,26 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 		if(rows.length){
 
 			var $ = cheerio.load(rows[0].content);
-			var mtype = rows[0].mtype;
+			var mrendertype = rows[0].mrendertype;
 
-			if(mtype==2){//模板类型为2时进行这样的处理
+			if(mrendertype==2){//模板类型为2时进行这样的处理
 				var tmpl = ($('.tmpl').html());
 				var data = rows[0].data;
 				if(!data){
 					data = rows[0].data_model;
 				}
-				
-				var html = juicer(tmpl,{model_list : eval('('+data+')')});
+				//console.log(data+'---------------------data');
+				//console.log(tmpl+'---------------------tmpl');
+				var html = juicer(tmpl,eval('('+data+')'));
+				//console.log(html+'---------------------html');
 				$('.tmpl').remove();
 				$('.translated').append(html);
-			}else if(mtype==1){
+			}else if(mrendertype==1){
 				console.log('普通HTML模板不需要进行juicer处理');
 			}
 
 
-			$('.c_model').attr('mid',rows[0].id).attr('mtype',mtype);
+			$('.c_model').attr('mid',rows[0].id).attr('mrendertype',mrendertype);
 			res.json({reCode:1,msg:$.html()});
 		}else{
 			res.json({reCode:10000,msg:''});

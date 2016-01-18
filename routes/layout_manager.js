@@ -22,7 +22,8 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					  " b.*, "+
 					  " cm.id 'mid', "+
 					  " cm.content mc, "+
-					  " cm.type mtype  "+
+					  " cm.model_type mmodeltype,  "+
+					  " cm.render_type mrendertype  "+
 					" FROM "+
 					  " (SELECT  "+
 					    " a.*, "+
@@ -74,7 +75,8 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					      " f.`id` c_floor_id, "+
 					      " m.`content`, "+
 					      " m.`id`, "+
-					      " m.type  "+
+					      " m.model_type,  "+
+					      " m.render_type  "+
 					    " FROM "+
 					      " c_floor f, "+
 					      " c_model m, "+
@@ -207,7 +209,7 @@ function block_append_floor($obj,row_obj){
 function floor_append_model($obj,row_obj){
 	if(row_obj.mid){
 		//var html = replace_css_namespace(row_obj.mc,row_obj.mid);
-		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid).attr('mtype',row_obj.mtype);
+		$obj.append(row_obj.mc).find('.c_model').attr('mid',row_obj.mid).attr('mrendertype',row_obj.mrendertype);
 	}
 }
 

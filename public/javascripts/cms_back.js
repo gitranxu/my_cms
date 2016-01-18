@@ -1604,6 +1604,8 @@ CMS.prototype = {
 				var mid = $c_model.attr('mid');
 				if(mid){
 					var html = $c_model.html();
+					var class_s = $c_model.attr('class');
+					$c_model.removeClass().addClass(class_s.replace(/css_namespace\w*/g,'c_'+mid));
 					$c_model.empty().append(html.replace(/css_namespace\w*/g,'c_'+mid));
 				}
 					
@@ -1625,14 +1627,14 @@ CMS.prototype = {
 						var $c_floor = $this.parents('.c_floor');
 						var fid = $c_floor.attr('fid');
 
-						var mtype = $this.attr('mtype');
-						if(mtype==2){//如果模板类型为2，则需要进行加工，
+						var mrendertype = $this.attr('mrendertype');
+						if(mrendertype==2){//如果模板类型为2，则需要进行加工，
 							var tmp = $this.find('.tmpl').html();
 							var data = that.get_data_by_fidmid(fid+mid,json);
 							var html = juicer(tmp,data);
 							$this.find('.translated').append(html);
 							$this.find('.tmpl').remove();
-						}else if(mtype==1){
+						}else if(mrendertype==1){
 							console.log('普通HTML模板，不需要进行juicer处理');
 						}
 							
