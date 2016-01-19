@@ -31,7 +31,7 @@ c_blocks的content的内容可以为空,可以不为空，不为空的时候,如
 
 
 一个c_model最基本的content结构(juicer模板)【zone_key必填，可以先暂时认为zone_key与c_edit是一一对应关系】
-<div class="c_model">
+<div class="c_model css_namespacexx">   在模板中有一个c_edit类可以定义编辑按钮，在这个类对应的元素上有一个edit_type属性：1.轮播,2.n宫格
 	<style>
 		/* .aaa ul li{float: left;}
 		.aaa ul li img{width: 200px;height: 170px;} */

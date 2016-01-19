@@ -956,20 +956,29 @@ CMS.prototype = {
 			var $this = $(this);
 			_this.o.$cur_c_edit_btn = $this;
 
+
 			var fid = $this.parents('.c_floor').attr('fid');
 			var mid = $this.parents('.c_model').attr('mid');
 			var zone_key = $this.parents('.c_edit').attr('zone_key');
-			
+			var edit_type = $this.parents('.c_edit').attr('edit_type');
+
+
 			_this.ajax.common({
 				url : _this.urls.get_img_data_by_fidmid,
 				data : {fid:fid,mid:mid},
 				successFn : function(msg){
+					if(edit_type==1){
+						alert('轮播处理...');
+						alert(typeof msg.msg);
+					}else if(edit_type==2){
+						alert('N宫格处理...');
+					}
 
-					_this.data.cur_one_img = eval('('+msg.msg+')');
+					/*_this.data.cur_one_img = eval('('+msg.msg+')');
 
 					var item_data_obj = _this.fn.get_json_by_zone_key(_this.data.cur_one_img,zone_key);
 
-					_this.fn.show_c_edit_s_win($this.parents('.c_edit_zone'),item_data_obj);
+					_this.fn.show_c_edit_s_win($this.parents('.c_edit_zone'),item_data_obj);*/
 					
 				}
 			});
