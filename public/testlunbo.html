@@ -42,9 +42,15 @@
 										<option value="2">否</option>
 									</select>
 								</div>
+								<div class="saveBtn">保存</div>
 							</div>
 						</div>
-						<div class="fl_rx img_upload">2</div>
+						<div class="fl_rx img_upload">
+							<div class="upload_img_comp fl_rx">
+								<input type="file" id="file1" name="file" class="input_file_btn" onchange="my_ajaxFileUpload(this);">
+								<img src="/images/sys/default_upload.jpg" alt="">
+							</div>
+						</div>
 					</div>
 					<div class="list_item">
 						<table>
@@ -93,6 +99,45 @@
 	<script src="/javascripts/other/juicer-min.js" class="need_remove"></script>
 	<script src="/javascripts/cms_back.js" class="need_remove"></script>
 	<script src="/javascripts/other/lunbo.js" class="need_remove"></script>
+	<script>
+		function my_ajaxFileUpload(fileObj){
+	var allowExtention = ".jpg,.bmp,.gif,.png"; //允许上传文件的后缀名
+    var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+    var browserVersion = window.navigator.userAgent.toUpperCase();
 
+    var $img = $(fileObj).next('img');
+    if (allowExtention.indexOf(extention) > -1) {
+
+        $.ajaxFileUpload({
+			url : '/file/upload123',
+			secureuri:false,
+			fileElementId:'file1',
+			success:function(data,status){
+				if(status=='success'){
+					var reg = /\{.+\}/;
+                    var msg_str = reg.exec(data)[0];
+                    var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
+                    var msg_obj = eval('('+msg_str_done+')');
+
+                    $img.attr('src',msg_obj.img_path);
+				}
+			},
+			error:function(){
+			},
+			dataType:'text'
+		});
+
+    } else {
+        alert("仅支持" + allowExtention + "为后缀名的文件!");
+        fileObj.value = ""; //清空选中文件
+        if (browserVersion.indexOf("MSIE") > -1) {
+            fileObj.select();
+            document.selection.clear();
+        }
+        fileObj.outerHTML = fileObj.outerHTML;
+    }
+
+}
+	</script>
 </body>
 </html>

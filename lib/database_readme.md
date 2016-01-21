@@ -149,31 +149,8 @@ reCode
 	
 
 
-SELECT 
-  c_blocks_id,style bsstyle 
-FROM
-  c_page_blocks 
-WHERE c_page_id = "6a7ded55-b670-11e5-828f-003067b83487" 
-  AND c_blocks_id IN 
-  (SELECT 
-    id 
-  FROM
-    c_blocks 
-  WHERE layout_id = 'c232ed09-af67-11e5-baf7-68f728f3bf19')
-  
-  
-  
- SELECT c_block_id,style bstyle FROM c_page_block WHERE c_page_id = "6a7ded55-b670-11e5-828f-003067b83487" 
-  AND c_block_id IN (SELECT id FROM c_block WHERE c_blocks_id IN(SELECT 
-    id 
-  FROM
-    c_blocks 
-  WHERE layout_id = 'c232ed09-af67-11e5-baf7-68f728f3bf19'))
-  
-  
-  
-  SELECT id fid,style fstyle FROM c_floor WHERE c_block_id IN (SELECT id FROM c_block WHERE c_blocks_id IN(SELECT 
-    id 
-  FROM
-    c_blocks 
-  WHERE layout_id = 'c232ed09-af67-11e5-baf7-68f728f3bf19'))
+
+
+
+
+

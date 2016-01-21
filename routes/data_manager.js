@@ -39,11 +39,15 @@ router.post('/save_data',function(req,res,next){
 	var to_save_data = req.body.to_save_data;
 	var fid = req.body.fid;
 	var mid = req.body.mid;
+	var data = null;
+	if(to_save_data){
+		data = "'"+to_save_data+"'";
+	}
 	var sql_update = "UPDATE c_data d "+
-					  " SET d.`data` = '"+to_save_data+"' "+
+					  " SET d.`data` ="+data+
 					  " WHERE d.`c_floor_id` = '"+fid+"' "+
 					    " AND d.`c_model_id` = '"+mid+"'";
-	console.log(sql_update+'--------------sql_update');
+	console.log(sql_update+'--------------save_data_sql_update');
 	sqlclient.init();
 	sqlclient.query(sql_update,function(err,rows,fields){
 		if(err) throw err;

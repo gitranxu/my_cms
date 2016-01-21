@@ -73,6 +73,21 @@ CMS.prototype = {
 			            '</div>';
 			return juicer(tmpl,jsondata);
 		},
+		getLunboTr : function(jsondata){
+			var tmpl = '{@each list as it}'+
+							'<tr>'+
+								'<td class="l_sort">${it.sort}</td>'+
+								'<td class="l_href">${it.href}</td>'+
+								'<td class="l_img">'+
+									'<img src="${it.imgurl}" alt="">'+
+								'</td>'+
+								'<td class="l_desc">${it.desc}</td>'+
+								'<td open_new="${it.open_new}" class="l_open_new">{@if it.open_new=="true"}是{@else}否{@/if}</td>'+
+								'<td class="l_opt"><div class="l_del l_btn">删除</div></td>'+
+							'</tr>'+
+						'{@/each}';
+			return juicer(tmpl,jsondata);
+		},
 		getBEditGroup : function(jsondata){
 			var tmpl = '{@each b_items as it}'+
 							'<div class="edit_group fl_rx" bid="${it.bid}">'+
@@ -378,6 +393,63 @@ CMS.prototype = {
 			                '</div>'+
 			            '</div>'+
 			        '</div>';
+		},
+		getEdit_Lunbo_win : function(){
+			return '<div id="c_edit_lunbo_win" class="hid_rx need_remove">'+
+						'<div class="win_bg"></div>'+
+						'<div class="lunbo_edit_win">'+
+							'<div class="bg"></div>'+
+							'<div class="content">'+
+								'<div class="edit_lunbo_item_zone clear_rx">'+
+									'<div class="fl_rx edit_lunbo_item">'+
+										'<div class="edit_group">'+
+											'<div class="edit_item">'+
+												'<span>排序：</span>'+
+												'<input type="text" class="lunbo_item_order edit_input">'+
+											'</div>'+
+											'<div class="edit_item">'+
+												'<span>链接：</span>'+
+												'<input type="text" class="lunbo_item_href edit_input">'+
+											'</div>'+
+											'<div class="edit_item">'+
+												'<span>简介：</span>'+
+												'<input type="text" class="lunbo_item_desc edit_input">'+
+											'</div>'+
+											'<div class="edit_item">'+
+												'<span>新窗口打开：</span>'+
+												'<select name="" id="" class="lunbo_item_new_open edit_input">'+
+													'<option value=true>是</option>'+
+													'<option value=false>否</option>'+
+												'</select>'+
+											'</div>'+
+											'<div class="saveBtn">保存</div>'+
+										'</div>'+
+									'</div>'+
+									'<div class="fl_rx img_upload">'+
+										'<div class="upload_img_comp fl_rx">'+
+											'<input type="file" id="lunbo_item_file" name="file" class="input_file_btn" onchange="my_ajaxFileUpload(this);">'+
+											'<img src="/images/sys/default_upload.jpg" alt="">'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+								'<div class="list_item">'+
+									'<table>'+
+										'<thead>'+
+											'<tr>'+
+												'<th>排序</th>'+
+												'<th>链接</th>'+
+												'<th>图片</th>'+
+												'<th>简介</th>'+
+												'<th>是否在新窗口打开</th>'+
+												'<th>操作</th>'+
+											'</tr>'+
+										'</thead>'+
+										'<tbody></tbody>'+
+									'</table>'+
+								'</div>'+
+							'</div>'+
+						'</div>'+
+					'</div>';
 		}
 	},
 	fn : function(){
@@ -388,6 +460,14 @@ CMS.prototype = {
 				_this.o.$content.removeAttr('style');
 				_this.o.$sys_sub_btns.hide();
 				_this.o.$sys_sub_btns.find('.choseBtn').removeClass('active');
+				//删除<script src="/javascripts/other/lunbo.js" id="lunbojsid"></script>，然后再重新生成
+				console.log('---------------执行...');
+				$('#lunbojsid').remove();
+				var oScript= document.createElement("script"); 
+			    oScript.type = "text/javascript"; 
+			    oScript.src = "/javascripts/other/lunbo.js"; 
+			    oScript.id = "lunbojsid";
+			    document.getElementsByTagName('BODY').item(0).appendChild( oScript);
 			},
 			add_fixed_btns : function(){
 
@@ -452,6 +532,11 @@ CMS.prototype = {
 				var edit_one_img_win_str = _this.html.getEditOneImgWin();
 				_this.o.$root.append(edit_one_img_win_str);
 				_this.extra_event.edit_one_img_win_event();
+			},
+			getEdit_Lunbo_win : function(){
+				var edit_lunbo_win_str = _this.html.getEdit_Lunbo_win();
+				_this.o.$root.append(edit_lunbo_win_str);
+				_this.extra_event.edit_lunbo_win_event();
 			},
 
 			removeDefaultHeightColor : function($obj){
@@ -570,6 +655,38 @@ CMS.prototype = {
 					$saveBtn.parents('.edit_win').hide();
 					$saveBtn.parents('.edit_blocks_mask').find('.btn_group .edit').removeClass('clicked');
 				}
+			},
+			get_lunbo_sortjson : function(one_lunbo_item,addActive){
+				var result = {list:[]};
+				$('#c_edit_lunbo_win .list_item tbody tr').each(function(){
+					var $this = $(this);
+					if($this.hasClass('active')){
+						if(addActive){
+							var order = $this.find('.l_sort').text();
+							var href = $this.find('.l_href').text();
+							var desc = $this.find('.l_desc').text();
+							var new_open = $this.find('.l_open_new').attr('open_new');
+							var imgurl = $this.find('.l_img img').attr('src');
+							result.list.push({sort:order,imgurl:imgurl,href:href,desc:desc,open_new:new_open});
+						}
+					}else if($this.hasClass('for_del')){
+						console.log('准备删除，不用添加....')
+					}else{
+						var order = $this.find('.l_sort').text();
+						var href = $this.find('.l_href').text();
+						var desc = $this.find('.l_desc').text();
+						var new_open = $this.find('.l_open_new').attr('open_new');
+						var imgurl = $this.find('.l_img img').attr('src');
+						result.list.push({sort:order,imgurl:imgurl,href:href,desc:desc,open_new:new_open});
+					}
+				});
+				if(one_lunbo_item){
+					result.list.push(one_lunbo_item);
+				}
+				
+				//然后再排序
+				result.list.sort(function(a,b){return a.sort - b.sort;});
+				return result;
 			}
 		}
 		
@@ -968,8 +1085,13 @@ CMS.prototype = {
 				data : {fid:fid,mid:mid},
 				successFn : function(msg){
 					if(edit_type==1){
-						alert('轮播处理...');
-						alert(typeof msg.msg);
+						
+						var html = _this.html.getLunboTr(eval('('+msg.msg+')'));
+						//alert(html);
+						$("#c_edit_lunbo_win").attr('fid',fid).attr('mid',mid);
+						$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
+						$("#c_edit_lunbo_win").show();
+
 					}else if(edit_type==2){
 						alert('N宫格处理...');
 					}
@@ -1512,6 +1634,106 @@ CMS.prototype = {
 					window.open('/create_layout.html');
 				});
 				
+			},
+			edit_lunbo_win_event : function(){
+
+				_this.o.$root.delegate('#c_edit_lunbo_win .win_bg','click',function(){
+					$('#c_edit_lunbo_win').hide();
+				});
+
+				_this.o.$root.delegate('#c_edit_lunbo_win .saveBtn','click',function(){
+					//先新增或修改DOM，然后按照顺序组装成json，保存进数据库
+					var $win = $('#c_edit_lunbo_win');
+					var $tr_active = $win.find('.list_item tr.active');
+
+					var fid = $('#c_edit_lunbo_win').attr('fid');
+					var mid = $('#c_edit_lunbo_win').attr('mid');
+
+					var addActive = true;
+					if($tr_active.length){//如果有，说明是更新操作
+						addActive = false;
+					}else{//这里是新增操作
+						addActive = true;
+					}
+
+					var order = $win.find('.lunbo_item_order').val();
+					var href = $win.find('.lunbo_item_href').val();
+					var desc = $win.find('.lunbo_item_desc').val();
+					var new_open = $win.find('.lunbo_item_new_open').val();//true,false
+					var imgurl = $win.find('.upload_img_comp img').attr('src');
+
+					var update_json = {sort:order,imgurl:imgurl,href:href,desc:desc,open_new:new_open};
+					//将active之外的tr进行遍历,再加上更新的这个，排序后保存到数据库
+					var json = _this.fn.get_lunbo_sortjson(update_json,addActive);
+
+					_this.ajax.common({
+						url : _this.urls.save_data,
+						data : {to_save_data : JSON.stringify(json),fid:fid,mid:mid},
+						method : 'POST',
+						successFn : function(msg){
+							if(msg.reCode==1){
+								//进行DOM操作
+								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(_this.html.getLunboTr(json));
+								_this.parseHtml.re_parse_floor_model(fid,mid);
+							}else{
+								console.log('失败....');
+							}
+						}
+					});
+				});
+
+				//删除操作
+				_this.o.$root.delegate('#c_edit_lunbo_win .l_del','click',function(){
+					//保存成功后再进行DOM操作
+					var $cur_tr = $(this).parents('tr');
+					$cur_tr.addClass('for_del');
+
+					var fid = $('#c_edit_lunbo_win').attr('fid');
+					var mid = $('#c_edit_lunbo_win').attr('mid');
+
+					var update_json = null;
+					var json = _this.fn.get_lunbo_sortjson(update_json,true);
+					if(json.list.length==0){
+						json = null;
+					}else{
+						json = JSON.stringify(json);
+					}
+
+					_this.ajax.common({
+						url : _this.urls.save_data,
+						data : {to_save_data : json,fid:fid,mid:mid},
+						method : 'POST',
+						successFn : function(msg){
+							if(msg.reCode==1){
+								//进行DOM操作
+								var html = _this.html.getLunboTr(eval('('+json+')'));
+								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
+								_this.parseHtml.re_parse_floor_model(fid,mid);
+							}else{
+								console.log('失败....');
+							}
+						}
+					});
+
+				});
+
+				_this.o.$root.delegate('#c_edit_lunbo_win .list_item tr','click',function(ev){
+					if($(ev.target).hasClass('l_del')){
+						return;
+					}
+
+					var $this = $(this);
+					var $win = $('#c_edit_lunbo_win');
+					$this.addClass('active').siblings().removeClass('active');
+					$win.find('.lunbo_item_order').val($this.find('.l_sort').text());
+					$win.find('.lunbo_item_href').val($this.find('.l_href').text());
+					$win.find('.lunbo_item_desc').val($this.find('.l_desc').text());
+					$win.find('.lunbo_item_new_open').val($this.find('.l_open_new').attr('open_new'));
+					$win.find('.upload_img_comp img').attr('src',$this.find('.l_img img').attr('src'));
+				});
+
+
+
 			}
 		};
 	},
@@ -1550,6 +1772,24 @@ CMS.prototype = {
 					_this.o.$content.find('.cntr').show();
 				}
 					
+			},
+			re_parse_floor_model : function(fid,mid){
+				var that = this;
+				var queryparams = "'"+fid+mid+"'";//查询字符串，格式'fidmid','fidmid'
+				_this.ajax.common({
+					url : _this.urls.get_floor_model_datas_of_layout,
+					method : 'POST',
+					data : {queryparams : queryparams},
+					successFn : function(msg){
+						if(msg.reCode==0){//如果有数据
+							that.parse_c_model(msg.msg);
+						}else if(msg.reCode=10001){
+							console.log(msg.msg);
+						}else{
+							console.log('可能页面还没有模板，或模板没有数据...');
+						}
+					}
+				});
 			},
 			parse : function(){
 				var that = this;
@@ -1641,8 +1881,8 @@ CMS.prototype = {
 							var tmp = $this.find('.tmpl').html();
 							var data = that.get_data_by_fidmid(fid+mid,json);
 							var html = juicer(tmp,data);
-							$this.find('.translated').append(html);
-							$this.find('.tmpl').remove();
+							$this.find('.translated').empty().append(html);
+							//$this.find('.tmpl').remove();
 						}else if(mrendertype==1){
 							console.log('普通HTML模板，不需要进行juicer处理');
 						}
@@ -1662,7 +1902,7 @@ CMS.prototype = {
 						if(!data){
 							data = jsondata[i].data_model;
 						}
-						return { model_list : eval('('+data+')') };
+						return eval('('+data+')');
 					}
 				}
 			}
@@ -1681,6 +1921,8 @@ CMS.prototype = {
 		this.fn.add_chose_page_win();//加入选择页面窗口
 
 		this.fn.add_edit_one_img_win();//加入编辑图片小窗口
+
+		this.fn.getEdit_Lunbo_win();//加入编辑轮播图的窗口
 
 		this.fn.show_chose_page_win();//根据情况是否显示选择页面窗口
 
@@ -2247,12 +2489,13 @@ function my_ajaxFileUpload(fileObj){
     var browserVersion = window.navigator.userAgent.toUpperCase();
 
     var $img = $(fileObj).next('img');
+    var id = $(fileObj).attr('id');
     if (allowExtention.indexOf(extention) > -1) {
 
         $.ajaxFileUpload({
 			url : '/file/upload',
 			secureuri:false,
-			fileElementId:'file1',
+			fileElementId: id,
 			success:function(data,status){
 				if(status=='success'){
 					var reg = /\{.+\}/;
