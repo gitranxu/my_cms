@@ -31,6 +31,7 @@ function CMS(){
 		data_add : '/data/add',//改过
 		save_data : '/data/save_data',//不需要改
 		generate_html : '/file/generate_html',//不需要改
+		generate_edit_html : '/file/generate_edit_html',
 		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',//改过
 		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口 //改过
 		get_f_css_by_fid : '/page/get_f_css_by_fid',//改过
@@ -203,7 +204,7 @@ CMS.prototype = {
 		},
 		getPageLis : function(jsondata){//name,id pid,url,project_name,c_layout_id
 			var tmpl = 	'{@each pagelist as it}'+
-							'<li pid="${it.c_page_id}" p_name="${it.name}" p_page_url="${it.page_url}" p_prev_view_url="${it.prev_view_url}"  p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
+							'<li pid="${it.c_page_id}" p_name="${it.name}" p_page_url="${it.page_url}" p_prev_view_url="${it.prev_view_url}" p_edit_page_url="${it.edit_page_url}"  p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
 	                            '<div class="bgli"></div>'+
 	                            '<div class="ctnli">${it.name}</div>'+
 	                        '</li>'+
@@ -301,6 +302,10 @@ CMS.prototype = {
 										    '<div class="edit_item">'+
 										        '<span>关联布局 :</span>'+
 										        '<input type="text" value="" placeholder="请点击左则布局列表" disabled class="p_layout disable_input">'+
+										    '</div>'+
+										    '<div class="edit_item">'+
+										        '<span title="用于生成编辑页面,注意格式" class="hastitle">编辑url :</span>'+
+										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_edit_url edit_input">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
 										        '<span title="用于查看页面的预览效果,注意格式" class="hastitle">预览url :</span>'+
@@ -490,11 +495,6 @@ CMS.prototype = {
 
 				_this.sys_btns.prev_view_show && $main_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
 			},
-			/*add_chose_layout_win : function(){
-				//加入选择布局窗口
-				var chose_win_str = _this.html.getChoseXWin('chose_layouts_cntr','布局');
-				_this.o.$root.append(chose_win_str);
-			},*/
 			add_chose_model_win : function(){
 				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
 				_this.o.$root.append(chose_win_str);
@@ -508,6 +508,10 @@ CMS.prototype = {
 			show_chose_page_win : function(){
 				if($('#back .cntr').length){
 					//如果有，说明已经选择过了，不用在页面初始化时进行显示
+					var pid = $('#back .cntr').attr('pid');
+					var lid = $('#back .cntr').attr('lid');
+					this.parse_page(pid,lid);
+					$('#chose_or_edit_page_btn').remove();//这种情况下，【选择或编辑页面】按钮不可见
 				}else{
 					//还未生成页面，用户必须生成页面才可以进行操作
 					_this.ajax.common({
@@ -1510,6 +1514,7 @@ CMS.prototype = {
 								if(msg.reCode==1){
 									$pageinfo.find('.p_page_url').val(msg.page_url);
 									$pageinfo.find('.p_prev_view_url').val(msg.prev_view_url);
+									$pageinfo.find('.p_edit_url').val(msg.edit_page_url);
 									$pageinfo.find('.p_project').val(msg.project_name);
 
 								}else if(msg.reCode==10000){ //如果没有数据，则清空
@@ -1537,14 +1542,24 @@ CMS.prototype = {
 					var project_name = $edit_group.find('.p_project').val();
 					var layout_id = $edit_group.find('.p_layout').attr('layoutid');
 					var pid = $edit_group.attr('pid');
-					var page_url = $edit_group.find('.p_page_url').val();;
-					var prev_view_url = $edit_group.find('.p_prev_view_url').val();;
+					var edit_url = $edit_group.find('.p_edit_url').val();
+					var page_url = $edit_group.find('.p_page_url').val();
+					var prev_view_url = $edit_group.find('.p_prev_view_url').val();
+
+					if(/^\s*$/.test(edit_url)){
+						alert('【编辑url】不能为空！');
+						return;
+					}
+					if(!/^\/\w+\/\w+\.html$/.test(edit_url)){
+						alert('【编辑url】格式为【/xxx/x.html】，即斜杠+目录名+文件名.html,注意前后没有空格！');
+						return;
+					}
 
 					if(/^\s*$/.test(prev_view_url)){
 						alert('【预览url】不能为空！');
 						return;
 					}
-					if(!/^\/\w+\/\w+\.html*$/.test(prev_view_url)){
+					if(!/^\/\w+\/\w+\.html$/.test(prev_view_url)){
 						alert('【预览url】格式为【/xxx/x.html】，即斜杠+目录名+文件名.html,注意前后没有空格！');
 						return;
 					}
@@ -1553,7 +1568,7 @@ CMS.prototype = {
 						alert('【正式url】不能为空！');
 						return;
 					}
-					if(!/^\/\w+\/\w+\.html*$/.test(page_url)){
+					if(!/^\/\w+\/\w+\.html$/.test(page_url)){
 						alert('【正式url】格式为【/xxx/x.html】，即斜杠+目录名+文件名.html,注意前后没有空格！');
 						return;
 					}
@@ -1568,18 +1583,26 @@ CMS.prototype = {
 							layout_id : layout_id,
 							page_id : pid,
 							page_url : page_url,
-							prev_view_url : prev_view_url
+							prev_view_url : prev_view_url,
+							edit_page_url : edit_url
 						},
 						successFn : function(msg){
 							if(msg.reCode==1){
-								//如果成功，则将对应的pagelist中的相应信息改成最新的
-								var $cur_page = $this.parents('.content').find('.c_bottom .page_ul li.active');
-								$cur_page.attr('p_url',url);
-								$cur_page.attr('p_project_name',project_name);
-								$cur_page.attr('p_c_layout_id',layout_id);
-
-								//如果成功应该将pageid返回回来
-								_this.fn.parse_page(msg.pid,layout_id);
+								_this.ajax.common({
+									url : _this.urls.generate_edit_html,
+									method : 'POST',
+									data : {pid : msg.pid,lid : layout_id,edit_url:edit_url},
+									successFn : function(msg){
+										if(msg.reCode==1){
+											window.open(msg.the_url);
+											window.location.reload(true);
+										}else{
+											alert('生成页面失败....');
+										}
+										
+									}
+								});
+								
 							}
 						}
 					});
@@ -1596,6 +1619,7 @@ CMS.prototype = {
 					$edit_group.find('.p_name').val($this.attr('p_name'));
 					$edit_group.find('.p_page_url').val($this.attr('p_page_url'));
 					$edit_group.find('.p_prev_view_url').val($this.attr('p_prev_view_url'));
+					$edit_group.find('.p_edit_url').val($this.attr('p_edit_page_url'));
 					$edit_group.find('.p_project').val($this.attr('p_project_name'));
 					$edit_group.attr('pid',$this.attr('pid'));
 
@@ -1613,9 +1637,11 @@ CMS.prototype = {
 
 				//双击page列表时
 				_this.o.$root.delegate('#chose_page_cntr .c_bottom .page_ul li','dblclick',function(){
-					var layout_id = $(this).parents('.content').find('.pageinfo .p_layout').attr('layoutid');
+					/*var layout_id = $(this).parents('.content').find('.pageinfo .p_layout').attr('layoutid');
 					var pid = $(this).attr('pid');
-					_this.fn.parse_page(pid,layout_id);
+					_this.fn.parse_page(pid,layout_id);*/
+					var edit_url = $(this).attr('p_edit_page_url');
+					window.open('/generate_html/edit'+edit_url);
 				});
 
 				_this.o.$root.delegate('#chose_page_cntr .layoutlist .c_title',{
@@ -1774,6 +1800,8 @@ CMS.prototype = {
 					
 			},
 			re_parse_floor_model : function(fid,mid){
+				var $c_floor = _this.o.$root.find('.c_floor[fid="'+fid+'"]');
+				var $c_model = _this.o.$root.find('.c_model[mid="'+mid+'"]');
 				var that = this;
 				var queryparams = "'"+fid+mid+"'";//查询字符串，格式'fidmid','fidmid'
 				_this.ajax.common({
@@ -1782,7 +1810,7 @@ CMS.prototype = {
 					data : {queryparams : queryparams},
 					successFn : function(msg){
 						if(msg.reCode==0){//如果有数据
-							that.parse_c_model(msg.msg);
+							that.parse_c_floor_model(msg.msg,$c_floor,$c_model);
 						}else if(msg.reCode=10001){
 							console.log(msg.msg);
 						}else{
@@ -1871,7 +1899,12 @@ CMS.prototype = {
 				var that = this;
 				if(json.length){
 					_this.o.$content.find('.c_model').each(function(){
-						var $this = $(this);
+						var $c_model = $(this);
+						//var mid = $this.attr('mid');
+						var $c_floor = $c_model.parents('.c_floor');
+						//var fid = $c_floor.attr('fid');
+						that.parse_c_floor_model(json,$c_floor,$c_model);
+						/*var $this = $(this);
 						var mid = $this.attr('mid');
 						var $c_floor = $this.parents('.c_floor');
 						var fid = $c_floor.attr('fid');
@@ -1888,11 +1921,34 @@ CMS.prototype = {
 						}
 							
 
-						_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
+						_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示*/
 					});
 				}
-				that.parse_c_edit(_this.o.$content);
+				//that.parse_c_edit(_this.o.$content);
 				_this.o.$content.find('.cntr').show();
+			},
+			//解析某个楼层的模板
+			parse_c_floor_model : function(json,$c_floor,$c_model){
+				//console.log(JSON.stringify(json));
+				var that = this;
+				var fid = $c_floor.attr('fid');
+				var mid = $c_model.attr('mid');
+
+				var mrendertype = $c_model.attr('mrendertype');
+				if(mrendertype==2){//如果模板类型为2，则需要进行加工，
+					var tmp = $c_model.find('.tmpl').html();
+					var data = that.get_data_by_fidmid(fid+mid,json);
+					var html = juicer(tmp,data);
+					$c_model.find('.translated').empty().append(html);
+					//$this.find('.tmpl').remove();
+				}else if(mrendertype==1){
+					console.log('普通HTML模板，不需要进行juicer处理');
+				}
+					
+
+				_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示
+
+				that.parse_c_edit($c_floor);
 			},
 			get_data_by_fidmid : function(fidmid,jsondata){
 				for(var i = 0,j = jsondata.length; i < j;i++){

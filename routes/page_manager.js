@@ -11,6 +11,7 @@ router.get('/get_all_pages', function(req, res, next) {
 						  " p.name, "+
 						  " c.`page_url`, "+
 						  " c.`prev_view_url`, "+
+						  " c.`edit_page_url`, "+
 						  " pl.*  "+
 						" FROM "+
 						  " c_page p, "+
@@ -46,7 +47,8 @@ router.get('/get_page_layout_info_by_pid_lid', function(req, res, next) {
 	var get_page_layout_info_by_pid_lid = "SELECT "+
 											  " pl.`project_name`, "+
 											  " c.`page_url`, "+
-											  " c.`prev_view_url` "+
+											  " c.`prev_view_url`, "+
+											  " c.`edit_page_url` "+
 											" FROM "+
 											  " c_page_layout pl, "+
 											  " c_generate_html_config c "+
@@ -60,7 +62,7 @@ router.get('/get_page_layout_info_by_pid_lid', function(req, res, next) {
 	sqlclient.query(get_page_layout_info_by_pid_lid,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
-			res.json({reCode:1,page_url:rows[0].page_url,prev_view_url:rows[0].prev_view_url,project_name:rows[0].project_name});
+			res.json({reCode:1,page_url:rows[0].page_url,prev_view_url:rows[0].prev_view_url,edit_page_url:rows[0].edit_page_url,project_name:rows[0].project_name});
 		}else{
 			res.json({reCode:10000,msg:"没有数据"});
 		}
@@ -190,6 +192,7 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 	var name = req.body.name;
 	var page_url = req.body.page_url;
 	var prev_view_url = req.body.prev_view_url;
+	var edit_page_url = req.body.edit_page_url;
 	var project_name = req.body.project_name;
 	var layout_id = req.body.layout_id;
 	var page_id = req.body.page_id;
@@ -217,9 +220,9 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 				
 			}
 			if(page_id){//更新操作
-				update_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+				update_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 			}else{//新增操作
-				add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
+				add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res);
 			}
 
 		}else{
@@ -232,7 +235,7 @@ router.post('/save_or_update_page_info', function(req, res, next) {
 });
 
 //新增操作，操作c_page,c_page_layout,c_page_blocks,c_page_block四张表
-function add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
+function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
 	//对于新增来说，传过来的page_id是undefined
 	howdo
 		.task(function(done){
@@ -257,7 +260,7 @@ function add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_
 			});
 		})
 		.task(function(done){
-			var insert_to_generate_config_sql = "INSERT INTO c_generate_html_config(id,c_page_id,c_layout_id,page_url,prev_view_url,create_time,last_edit_time) VALUES(UUID(),'"+page_id+"','"+layout_id+"','"+page_url+"','"+prev_view_url+"',NOW(),NOW())";
+			var insert_to_generate_config_sql = "INSERT INTO c_generate_html_config(id,c_page_id,c_layout_id,page_url,prev_view_url,edit_page_url,create_time,last_edit_time) VALUES(UUID(),'"+page_id+"','"+layout_id+"','"+page_url+"','"+edit_page_url+"','"+prev_view_url+"',NOW(),NOW())";
 			console.log(insert_to_generate_config_sql+'-----------------insert_to_generate_config_sql');
 			sqlclient.query(insert_to_generate_config_sql,function(err,rows,fields){
 				if(err) throw err;
@@ -399,7 +402,7 @@ function add_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_
 
 //操作c_page_layout,c_page_blocks,c_page_block三张表
 //先根据相应id进行判断，如果没有记录则新增，如果有记录则不进行任何操作
-function update_page(page_id,page_url,prev_view_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
+function update_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layout_id,name,bs_id_obj,b_id_obj,sqlclient,res){
 	var is_c_page_layout_update_sql = "SELECT 1 FROM c_page_layout pl WHERE pl.`c_page_id`='"+page_id+"' AND pl.`c_layout_id` = '"+layout_id+"'";
 	
 	console.log(is_c_page_layout_update_sql+'-----------------is_c_page_layout_update_sql');
@@ -412,7 +415,7 @@ function update_page(page_id,page_url,prev_view_url,project_name,layout_id,name,
 				if(err) throw err;
 				console.log('c_page_layout更新成功！');
 
-				var c_generate_html_config_update_sql = "UPDATE c_generate_html_config SET page_url = '"+page_url+"',prev_view_url = '"+prev_view_url+"',last_edit_time = NOW() WHERE c_page_id = '"+page_id+"' AND c_layout_id = '"+layout_id+"'";
+				var c_generate_html_config_update_sql = "UPDATE c_generate_html_config SET page_url = '"+page_url+"',prev_view_url = '"+prev_view_url+"',edit_page_url = '"+edit_page_url+"',last_edit_time = NOW() WHERE c_page_id = '"+page_id+"' AND c_layout_id = '"+layout_id+"'";
 				sqlclient.query(c_generate_html_config_update_sql,function(err,rows,fields){
 					if(err) throw err;
 					console.log('c_generate_html_config更新成功！');
