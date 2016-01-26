@@ -1073,7 +1073,7 @@ CMS.prototype = {
 		});
 
 		//点击编辑按钮，弹出编辑窗口,查询出相关数据保存起来
-		this.o.$root.delegate('.c_edit_btn','click',function(e){
+		this.o.$root.delegate('.c_edit_btn1','click',function(e){
 			var $this = $(this);
 			_this.o.$cur_c_edit_btn = $this;
 
@@ -1983,10 +1983,16 @@ CMS.prototype = {
 		this.fn.show_chose_page_win();//根据情况是否显示选择页面窗口
 
 		this.bind();
+		this.model_config_unit.bind();
+
+		//this.model_config_unit.fn().get_model_config_win();//测试
 	},
 	init_o : function(){
 		this.o.$root = $('#back');
-		this.o.$root.append('<div id="content"></div><div id="config" class="need_remove"></div>');
+		if(!$('#content').length){
+			this.o.$root.append('<div id="content"></div><div id="config" class="need_remove"></div>');
+		}
+		
 		this.o.$content = $('#content');
 		this.o.$config = $('#config');
 
@@ -2001,6 +2007,7 @@ CMS.prototype = {
 		this.move_unit = this.move_unit();
 		this.parseHtml = this.parseHtml();
 		this.extra_event = this.extra_event();
+		this.model_config_unit = this.model_config_unit();
 	},
 	move_unit : function(){
 		//分3个级别的移动，块组级之间的上下移动blocks_move，块组级内部各块之间的左右移动block_move，块级内部各楼层之间的上下移动floor_move
@@ -2530,6 +2537,176 @@ CMS.prototype = {
 	        return(Min + Math.round(Rand * Range)); 
 
 		} 
+	},
+	model_config_unit : function(){
+		var _this = this;
+		return {
+			urls : {
+
+			},
+			bind : function(){
+				var that = this;
+				//点击编辑按钮的时候,可以得到mid,fid以及可能有zone_id
+				_this.o.$root.delegate('.c_edit_btn','click',function(){
+					var $this = $(this);
+					var $c_model = $this.parents('.c_model');
+					var $c_floor = $this.parents('.c_floor');
+					var mid = $c_model.attr('mid');
+					var fid = $c_floor.attr('fid');
+					var zone_id = $this.parents('.c_edit').attr('zone_id');
+					_this.ajax.common({
+						url : _this.urls.get_img_data_by_fidmid,
+						data : {fid : fid,mid : mid},
+						successFn : function(msg){
+							if(msg.reCode==1){
+								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id);
+							}else{
+								alert('查询结果为空');
+							}
+						}
+					});
+				});
+			},
+			html : {
+				get_model_config_win : function(){
+					return '<div id="cms_model_config_win" class="need_remove hid_rx1">'+
+								'<div class="win_bg"></div>'+
+								'<div class="model_config_win">'+
+									'<div class="bg2"></div>'+
+									'<div class="content">'+
+										'<div class="edit_group">'+
+											'{@each model_prop_list as it}'+
+												'{@if it.type=="text"}'+
+													'<div class="edit_item">'+
+														'<span>${it.title}</span>'+
+														'<input type="text" value="${it.value}"/>'+
+													'</div>'+
+												'{@/if}'+
+												'{@if it.type=="selection"}'+
+													'<div class="edit_item">'+
+														'<span>${it.title}</span>'+
+														'<select class="sel_input">'+
+															'{@each it.options as o_it}'+
+																'<option value="${o_it.key}" class="{@if o_it.key==it.value}selected{@/if}"  {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
+															'{@/each}'+
+														'</select>'+
+													'</div>'+
+												'{@/if}'+
+												'{@if it.type=="list"}'+
+													'这里回头再处理，没有图片的情况'+
+												'{@/if}'+
+											'{@/each}'+
+										'</div>'+
+
+										'<div class="edit_group">'+
+											'{@each zone_prop_list as it}'+
+												'{@if it.type=="text"}'+
+													'<div class="edit_item">'+
+														'<span>${it.title}</span>'+
+														'<input type="text" value="${it.value}"/>'+
+													'</div>'+
+												'{@/if}'+
+												'{@if it.type=="selection"}'+
+													'<div class="edit_item">'+
+														'<span>${it.title}</span>'+
+														'<select class="sel_input">'+
+															'{@each it.options as o_it}'+
+																'<option value="${o_it.key}" class="{@if o_it.key==it.value}selected{@/if}"  {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
+															'{@/each}'+
+														'</select>'+
+													'</div>'+
+												'{@/if}'+
+												'{@if it.type=="list"}'+
+													'这里回头再处理，没有图片的情况'+
+												'{@/if}'+
+											'{@/each}'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+							'</div>';
+				},
+				getlist : function(jsondata){
+					var tmpl = '{@each list as it}'+
+									'<tr>'+
+										'<td class="l_sort">${it.sort}</td>'+
+										'<td class="l_href">${it.href}</td>'+
+										'<td class="l_img">'+
+											'<img src="${it.imgurl}" alt="">'+
+										'</td>'+
+										'<td class="l_desc">${it.desc}</td>'+
+										'<td open_new="${it.open_new}" class="l_open_new">{@if it.open_new=="true"}是{@else}否{@/if}</td>'+
+										'<td class="l_opt"><div class="l_del l_btn">删除</div></td>'+
+									'</tr>'+
+								'{@/each}';
+					return juicer(tmpl,jsondata);
+				}
+			},
+			fn : function(){
+				var that = this;
+				return {
+					reopen_model_config_win : function(json,zone_id){
+						//进行判断，如果已有，则不添加，在使用之前，需要先清空
+						var translated_json = {model_prop_list:null,zone_prop_list:null};
+						var tmpl = that.html.get_model_config_win();
+						translated_json.model_prop_list = this.model_obj_to_array(json);
+						translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);
+						var html = juicer(tmpl,translated_json);
+						if(!$('#cms_model_config_win').length){
+							_this.o.$root.append(html)
+						}else{
+							//一些清空操作
+						}
+					},
+					model_obj_to_array : function(obj){ //将对象按一定规则转换成数组
+						//对于整体来说，转换数组时不转换zone_item_list属性
+						var result = [];
+						for(var i in obj){
+							if(i=='zone_item_list'){
+								console.log('不处理')
+							}else{
+								//将key值放到对象中去
+								if(typeof obj[i]=='object'){
+									obj[i]['key'] = i;
+									result.push(obj[i]);
+								}
+							}
+						}
+							
+						return result;
+					},
+					zone_obj_to_array : function(obj,zone_id){
+						var result = [];
+						var list = obj.zone_item_list;
+						var the_zone_obj = null;
+						for(var i in list){
+							if(list[i].zone_id==zone_id){
+								the_zone_obj = list[i];
+								break;
+							}
+						}
+
+						if(the_zone_obj && the_zone_obj.zone_id){//如果有zone_id
+							for(var i in the_zone_obj){
+								if(i=='zone_id'){
+									console.log('不处理')
+								}else{
+									//将key值放到对象中去
+									if(typeof the_zone_obj[i]=='object'){
+										the_zone_obj[i]['key'] = i;
+										result.push(the_zone_obj[i]);
+									}
+								}
+							}
+						}else{
+							console.log('请确认数据库中相应json格式是否正确 ，没有zone_id属性')
+						}
+							
+						return result;
+					}
+				}
+					
+			}
+		}
 	}
 }
 

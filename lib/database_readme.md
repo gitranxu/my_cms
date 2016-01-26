@@ -146,6 +146,323 @@ reCode
 	  c_page_block默认值(margin-left:0px!important;margin-right:0px!important;width:200px!important;)
 	  c_floor的style默认值(margin-top:0px!important;margin-bottom:0px!important;),c_floor不编辑宽度,宽度始终等于c_block的宽度
 
+
+
+配置统一JSON格式
+
+{
+	floor_name : {
+		value : '1F Lenovo 电脑 楼层一',
+		type : 'text',
+		title : '标题'
+	},
+	hrefs : {
+		values : [{
+			href : 'http://www.sohu.com',
+			type : 'text',
+			title : '去搜狐',
+			order : 3
+		},{
+			href : 'http://www.baidu.com',
+			type : 'text',
+			title : '去百度',
+			order : 1
+		}],
+		type : 'list',
+		title : '',
+		content : '对于list类型来说，提供一个编辑按钮，有增删改的功能'
+	},
+	zone_item_list : [
+		{
+			zone_id : 1,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4981,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身1',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 2,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4982,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身2',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 3,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4983,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身3',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 4,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4984,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身4',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 5,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4985,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身5',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 6,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4986,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身6',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 7,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4987,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身7',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		},
+		{
+			zone_id : 8,
+			
+			href : {
+				value : 'http://www.lenovo.com.cn/product/50828.html',
+				type : 'text',
+				title : '链接'
+			},
+			imgurl : {
+				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
+				type : 'text',
+				title : '图片链接'
+			},
+			title : {
+				value : '标题内容',
+				type : 'text',
+				title : '标题'
+			},
+			price : {
+				value : 4988,
+				type : 'text',
+				title : '价格'
+			},
+			description : {
+				value : '外观轻薄简约 多彩时尚机身8',
+				type : 'text',
+				title : '简介'
+			},
+			ishot : {
+				value : '1',
+				type : 'selection',
+				title : '是否热卖',
+				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
+			}
+			
+		}
+	]
+}
 	
 
 

@@ -97,7 +97,7 @@ router.post('/generate_edit_html', function(req, res, next) {
 					'<link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">'+
 				'</head>'+
 				'<body>'+
-				  	'<div id="back"><div id="content"><div class="cntr" pid="'+pid+'" lid="'+lid+'"></div></div></div>'+
+				  	'<div id="back"><div id="content"><div class="cntr" pid="'+pid+'" lid="'+lid+'"></div></div><div id="config" class="need_remove"></div></div>'+
 					'<script src="/javascripts/other/jquery-1.9.1.min.js"></script>'+
 					'<script src="/javascripts/other/ajaxfileupload.js" class="need_remove"></script>'+
 					'<script src="/javascripts/other/juicer-min.js" class="need_remove"></script>'+
