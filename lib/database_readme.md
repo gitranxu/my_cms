@@ -162,14 +162,14 @@ reCode
 			type : 'text',
 			open_new : 'true',
 			title : '去搜狐',
-			innerhtml : '<i class="icon"></i><span>##val##</span>',
+			innerhtml : '<i class=\"icon\"></i><span>##val##</span>',
 			order : 3
 		},{
 			href : 'http://www.baidu.com',
 			type : 'text',
 			open_new : 'false',
 			title : '去百度',
-			innerhtml : '<span class="style-red">##val##</span>',
+			innerhtml : '<span class=\"style-red\">##val##</span>',
 			order : 1
 		}],
 		type : 'list',
@@ -216,6 +216,8 @@ reCode
 		
 	]
 }
+
+双引号问题如何解决
 	
 
 

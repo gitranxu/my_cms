@@ -2579,7 +2579,7 @@ CMS.prototype = {
 				_this.o.$root.delegate('#cms_model_config_win .edit_list_table .add','click',function(){
 					var $this = $(this);
 					var $table = $this.parents('.edit_list_table');
-					$table.append('<tr><td class="title"><input type="text" value="链接显示名称"></td><td class="open_new"><input type="text" value="true"></td><td class="href"><input type="text" value="http://test.com"></td><td class="order"><input type="text" value="3"></td><td class="innerhtml"><input type="text" value="<i class=&quot;icon&quot;></i><span>##val##</span>"></td><td class="del"><div class="edit_list_table_tr_del">删除</div></td></tr>');
+					$table.append('<tr><td class="title"><input type="text" value="链接显示名称"></td><td class="open_new"><input type="text" value="true"></td><td class="href"><input type="text" value="http://test.com"></td><td class="order"><input type="text" value="3"></td><td class="innerhtml"><input type="text" value="<i class=\"icon\"></i><span>##val##</span>"></td><td class="del"><div class="edit_list_table_tr_del">删除</div></td></tr>');
 				});
 
 				//点击保存按钮，拼装JSON，保存进数据库
