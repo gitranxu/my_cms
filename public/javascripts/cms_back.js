@@ -2554,17 +2554,75 @@ CMS.prototype = {
 					var mid = $c_model.attr('mid');
 					var fid = $c_floor.attr('fid');
 					var zone_id = $this.parents('.c_edit').attr('zone_id');
+					
 					_this.ajax.common({
 						url : _this.urls.get_img_data_by_fidmid,
 						data : {fid : fid,mid : mid},
 						successFn : function(msg){
 							if(msg.reCode==1){
-								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id);
+								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
 							}else{
 								alert('查询结果为空');
 							}
 						}
 					});
+				});
+
+				//点击删除按钮时,首先删除的是当前表格中的当前行，保存后才保存数据,这里仅是操作DOM
+				_this.o.$root.delegate('#cms_model_config_win .edit_list_table .edit_list_table_tr_del','click',function(){
+					var $this = $(this);
+					var $tr = $this.parents('tr');
+					$tr.remove();
+				});
+
+				//点击新增按钮时,仅是操作DOM
+				_this.o.$root.delegate('#cms_model_config_win .edit_list_table .add','click',function(){
+					var $this = $(this);
+					var $table = $this.parents('.edit_list_table');
+					$table.append('<tr><td class="title"><input type="text" value="链接显示名称"></td><td class="open_new"><input type="text" value="true"></td><td class="href"><input type="text" value="http://test.com"></td><td class="order"><input type="text" value="3"></td><td class="innerhtml"><input type="text" value="<i class=&quot;icon&quot;></i><span>##val##</span>"></td><td class="del"><div class="edit_list_table_tr_del">删除</div></td></tr>');
+				});
+
+				//点击保存按钮，拼装JSON，保存进数据库
+				_this.o.$root.delegate('#cms_model_config_win .save','click',function(){
+					//alert(123);
+					var $cms_model_config_win = $('#cms_model_config_win');
+					var target_zone_id = $cms_model_config_win.attr('target_zone_id');
+					var s_json = $cms_model_config_win.attr('s_json');
+					var json_obj = eval('('+s_json+')');
+					var fid = $cms_model_config_win.attr('fid');
+					var mid = $cms_model_config_win.attr('mid');
+					//console.log(JSON.stringify(json_obj));
+
+					$('#cms_model_config_win .edit_group.model_prop_list .edit_item').each(function(){
+						var $this = $(this);
+						var type = $this.attr('type');
+						that.fn().parse_prop_by_type(json_obj,type,$this);
+					});
+					$('#cms_model_config_win .edit_group.zone_prop_list .edit_item').each(function(){
+						var $this = $(this);
+						var type = $this.attr('type');
+						that.fn().parse_zone_prop_by_type(json_obj,type,$this,target_zone_id);
+					});
+
+					_this.ajax.common({
+						url : _this.urls.save_data,
+						method : 'POST',
+						data : {to_save_data : JSON.stringify(json_obj),fid:fid,mid:mid},
+						successFn : function(msg){
+							if(msg.reCode==1){
+								//$cms_model_config_win.hide();
+								window.location.reload();
+							}else{
+								console.log('失败...')
+							}
+						}
+					});
+
+				});
+
+				//点击背景，隐藏
+				_this.o.$root.delegate('#cms_model_config_win .win_bg','click',function(){
+					$('#cms_model_config_win').hide();
 				});
 			},
 			html : {
@@ -2574,16 +2632,16 @@ CMS.prototype = {
 								'<div class="model_config_win">'+
 									'<div class="bg2"></div>'+
 									'<div class="content">'+
-										'<div class="edit_group">'+
+										'<div class="edit_group model_prop_list">'+
 											'{@each model_prop_list as it}'+
 												'{@if it.type=="text"}'+
-													'<div class="edit_item">'+
+													'<div class="edit_item" key="${it.key}" type="text">'+
 														'<span>${it.title}</span>'+
 														'<input type="text" value="${it.value}"/>'+
 													'</div>'+
 												'{@/if}'+
 												'{@if it.type=="selection"}'+
-													'<div class="edit_item">'+
+													'<div class="edit_item" key="${it.key}" type="selection">'+
 														'<span>${it.title}</span>'+
 														'<select class="sel_input">'+
 															'{@each it.options as o_it}'+
@@ -2593,21 +2651,48 @@ CMS.prototype = {
 													'</div>'+
 												'{@/if}'+
 												'{@if it.type=="list"}'+
-													'这里回头再处理，没有图片的情况'+
+													'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
+														'<thead>'+
+															'<tr><th>标题</th><th>是否新窗口打开</th><th>链接</th><th>顺序</th><th>内部html</th><th class="add">新增</th></tr>'+
+														'</thead><tbody>'+
+														'{@each it.values as l_it}'+
+															'<tr>'+
+																'<td class="title">'+
+																	'<input type="text" value="${l_it.title}" />'+
+																'</td>'+
+																'<td class="open_new">'+
+																	'<input type="text" value="${l_it.open_new}" />'+
+																'</td>'+
+																'<td class="href">'+
+																	'<input type="text" value="${l_it.href}" />'+
+																'</td>'+
+																'<td class="order">'+
+																	'<input type="text" value="${l_it.order}" />'+
+																'</td>'+
+																'<td class="innerhtml">'+
+																	'<input type="text" value="${l_it.innerhtml}" />'+
+																'</td>'+
+																'<td class="del">'+
+																	'<div class="edit_list_table_tr_del">删除</div>'+
+																'</td>'+
+															'</tr>'+
+														'{@/each}'+
+														'</tbody>'+
+													'</table>'+
 												'{@/if}'+
 											'{@/each}'+
 										'</div>'+
 
-										'<div class="edit_group">'+
+										'<div class="edit_group zone_prop_list">'+
 											'{@each zone_prop_list as it}'+
 												'{@if it.type=="text"}'+
-													'<div class="edit_item">'+
+													'<div class="edit_item" key="${it.key}" type="text">'+
 														'<span>${it.title}</span>'+
 														'<input type="text" value="${it.value}"/>'+
 													'</div>'+
 												'{@/if}'+
 												'{@if it.type=="selection"}'+
-													'<div class="edit_item">'+
+													'<div class="edit_item" key="${it.key}" type="selection">'+
 														'<span>${it.title}</span>'+
 														'<select class="sel_input">'+
 															'{@each it.options as o_it}'+
@@ -2617,10 +2702,38 @@ CMS.prototype = {
 													'</div>'+
 												'{@/if}'+
 												'{@if it.type=="list"}'+
-													'这里回头再处理，没有图片的情况'+
+													'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
+														'<thead>'+
+															'<tr><th>标题</th><th>是否新窗口打开</th><th>链接</th><th>顺序</th><th>内部html</th><th class="add">新增</th></tr>'+
+														'</thead><tbody>'+
+														'{@each it.values as l_it}'+
+															'<tr>'+
+																'<td class="title">'+
+																	'<input type="text" value="${l_it.title}" />'+
+																'</td>'+
+																'<td class="open_new">'+
+																	'<input type="text" value="${l_it.open_new}" />'+
+																'</td>'+
+																'<td class="href">'+
+																	'<input type="text" value="${l_it.href}" />'+
+																'</td>'+
+																'<td class="order">'+
+																	'<input type="text" value="${l_it.order}" />'+
+																'</td>'+
+																'<td class="innerhtml">'+
+																	'<input type="text" value="${l_it.innerhtml}" />'+
+																'</td>'+
+																'<td class="del">'+
+																	'<div class="edit_list_table_tr_del">删除</div>'+
+																'</td>'+
+															'</tr>'+
+														'{@/each}'+
+														'</tbody>'+
+													'</table>'+
 												'{@/if}'+
 											'{@/each}'+
 										'</div>'+
+										'<div class="save">保存</div>'+
 									'</div>'+
 								'</div>'+
 							'</div>';
@@ -2644,18 +2757,70 @@ CMS.prototype = {
 			fn : function(){
 				var that = this;
 				return {
-					reopen_model_config_win : function(json,zone_id){
+					parse_prop_by_type : function(json_obj,type,$edit_item){
+						var key = $edit_item.attr('key');
+						if(type=='text'){
+							var value = $edit_item.find('input').val();
+							json_obj[key].value = value;
+						}else if(type=='selection'){
+							var value = $edit_item.find('option.selected').attr('value');
+							json_obj[key].value = value;
+						}else if(type=='list'){
+							var new_list = [];
+							$edit_item.find('tbody tr').each(function(){
+								var $tr = $(this);
+								new_list.push({
+									href : $tr.find('.href input').val(),
+									type : 'text',
+									open_new : $tr.find('.open_new input').val(),
+									title : $tr.find('.title input').val(),
+									innerhtml : $tr.find('.innerhtml input').val(),
+									order : $tr.find('.order input').val()
+								});
+							});
+							new_list.sort(function(a,b){return a.order-b.order;});
+
+							json_obj[key].values = new_list;
+						}else{
+							console.log('如果没有明确类型，则不进行处理...')
+						}
+					},
+					parse_zone_prop_by_type : function(json_obj,type,$edit_item,target_zone_id){
+						var zone_item_list = json_obj.zone_item_list;
+						if(zone_item_list){
+							for(var i = 0,j = zone_item_list.length;i < j;i++){
+								if(zone_item_list[i].zone_id==target_zone_id){
+									this.parse_prop_by_type(json_obj.zone_item_list[i],type,$edit_item);
+									break;
+								}
+							}
+						}
+					},
+					juicer_fn : function(){
+						juicer.register('l_it_to_a',this.l_it_to_a);
+					},
+					l_it_to_a : function(data){
+						var result = data.title;
+						if(data.innerhtml){
+							result = data.innerhtml.replace('##val##',data.title)
+						}
+						return result;
+					},
+					reopen_model_config_win : function(json,zone_id,fid,mid){
 						//进行判断，如果已有，则不添加，在使用之前，需要先清空
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
 						var tmpl = that.html.get_model_config_win();
+						this.juicer_fn();
 						translated_json.model_prop_list = this.model_obj_to_array(json);
 						translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);
 						var html = juicer(tmpl,translated_json);
 						if(!$('#cms_model_config_win').length){
-							_this.o.$root.append(html)
+							_this.o.$root.append(html);
 						}else{
-							//一些清空操作
+							$('#cms_model_config_win').remove();
+							_this.o.$root.append(html);
 						}
+						$('#cms_model_config_win').attr('fid',fid).attr('mid',mid).attr('s_json',JSON.stringify(json)).attr('target_zone_id',zone_id);
 					},
 					model_obj_to_array : function(obj){ //将对象按一定规则转换成数组
 						//对于整体来说，转换数组时不转换zone_item_list属性

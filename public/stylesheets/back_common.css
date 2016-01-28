@@ -237,7 +237,7 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 		.l_btn:hover{background: #3F67D0;}
 
 
-.model_config_win{width: 800px;height: 400px;position: fixed;top: 24%;left: 50%;margin-left: -400px;z-index: 10001;padding: 10px;}
+.model_config_win{width: 800px;position: fixed;top: 24%;left: 50%;margin-left: -400px;z-index: 10001;padding: 10px;}
 .model_config_win .bg2{opacity: .1;background: #4186F3;z-index: 1;}
 .model_config_win .content{position: relative;z-index: 2;}
 .model_config_win .content .edit_group{padding: 10px;margin-bottom: 10px;background: rgba(1,55,167,.4);}
@@ -245,3 +245,20 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .model_config_win .content .edit_group .edit_item span{width: 180px;text-align: right;font-size: 12px;color: #d4dad4;display: inline-block;margin-right: 10px;}
 .model_config_win .content .edit_group .edit_item input{width: 420px;color: #2dee2d;font-size: 14px;background: #696262;border: none;padding: 2px;}
 .sel_input{width: 424px;}
+.edit_list_table{width: 100%;margin: 4px 0;}
+.edit_list_table thead tr{}
+.edit_list_table thead th{background: #7189CB;color: #fff;padding: 2px 0;}
+.edit_list_table tbody tr{background: #14505B;}
+.edit_list_table tbody tr:hover{background: #c1505B;}
+.edit_list_table tbody td{position: relative;padding: 4px 2px;}
+#cms_model_config_win .edit_list_table input{width:40px;border: none;width: 100%;padding: 4px 0px;}
+.edit_list_table_tr_del{position: absolute;top: 4px;right: 4px;width: 54px;height: 23px;text-align: center;color: #fff;background: #aabb44;line-height: 23px;cursor: pointer;}
+.edit_list_table_tr_del:hover{background: #AC3333;}
+.edit_list_table .open_new{width:45px;}
+.edit_list_table .order{width:28px;}
+.edit_list_table .innerhtml{width:90px;}
+.edit_list_table .title{width:180px;}
+.edit_list_table .del{width:56px;}
+.edit_list_table .add:hover{background: #7865f3;cursor: pointer;}
+#cms_model_config_win .save{height: 30px;background: #909044;text-align: center;line-height: 30px;color: #fff;cursor: pointer;}
+#cms_model_config_win .save:hover{background: #148C21;}
