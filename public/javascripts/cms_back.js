@@ -180,7 +180,7 @@ CMS.prototype = {
 									'<div class="edit_item">'+
 										'<div class="chose_ul_info model_type_info hid_rx" val=1></div>'+
 			                            '<span>模板类型 :</span><input type="text" readonly value="综合" class="model_type chose_input">'+
-			                            '<ul class="chose_ul hid_rx"><li val=1>综合</li><li val=2>轮播</li><li val=3>单图</li><li val=4>其他</li></ul>'+
+			                            '<ul class="chose_ul hid_rx"><li val=1>综合</li><li val=2>轮播</li><li val=3>宫格</li><li val=4>其他</li></ul>'+
 			                        '</div>'+
 			                        '<div class="edit_item">'+
 			                        	'<div class="chose_ul_info term_type_info hid_rx" val=1></div>'+
@@ -885,6 +885,18 @@ CMS.prototype = {
 										var $current_c_floor = _this.o.$content.find('.c_floor[fid="'+fid+'"]');
 										$current_c_floor.empty().append(msg.msg);
 										_this.parseHtml.parse_c_floor($current_c_floor);
+
+										//如果有链接导航
+										if($current_c_floor.find('.floor_links').length){
+
+											$current_c_floor.find('.floor_links a').each(function(){
+												var s = $(this).html();
+												var title = $(this).attr('title');
+												if(s.indexOf('##val##')!=-1){
+													$(this).html(s.replace('##val##',title));
+												}
+											});
+										}
 									}else{
 										alert('没有数据...');
 									}
@@ -1070,47 +1082,6 @@ CMS.prototype = {
 					
 				}
 			});
-		});
-
-		//点击编辑按钮，弹出编辑窗口,查询出相关数据保存起来
-		this.o.$root.delegate('.c_edit_btn1','click',function(e){
-			var $this = $(this);
-			_this.o.$cur_c_edit_btn = $this;
-
-
-			var fid = $this.parents('.c_floor').attr('fid');
-			var mid = $this.parents('.c_model').attr('mid');
-			var zone_key = $this.parents('.c_edit').attr('zone_key');
-			var edit_type = $this.parents('.c_edit').attr('edit_type');
-
-
-			_this.ajax.common({
-				url : _this.urls.get_img_data_by_fidmid,
-				data : {fid:fid,mid:mid},
-				successFn : function(msg){
-					if(edit_type==1){
-						
-						var html = _this.html.getLunboTr(eval('('+msg.msg+')'));
-						//alert(html);
-						$("#c_edit_lunbo_win").attr('fid',fid).attr('mid',mid);
-						$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
-						$("#c_edit_lunbo_win").show();
-
-					}else if(edit_type==2){
-						alert('N宫格处理...');
-					}
-
-					/*_this.data.cur_one_img = eval('('+msg.msg+')');
-
-					var item_data_obj = _this.fn.get_json_by_zone_key(_this.data.cur_one_img,zone_key);
-
-					_this.fn.show_c_edit_s_win($this.parents('.c_edit_zone'),item_data_obj);*/
-					
-				}
-			});
-
-
-					
 		});
 
 		this.move_unit.event();//与移动相关的事件
@@ -1383,7 +1354,7 @@ CMS.prototype = {
 									}else if(msg.msg.model_type==2){
 										model_type_name = '轮播';
 									}else if(msg.msg.model_type==3){
-										model_type_name = '单图';
+										model_type_name = '宫格';
 									}else if(msg.msg.model_type==4){
 										model_type_name = '其他';
 									}
@@ -1699,8 +1670,9 @@ CMS.prototype = {
 						successFn : function(msg){
 							if(msg.reCode==1){
 								//进行DOM操作
-								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(_this.html.getLunboTr(json));
-								_this.parseHtml.re_parse_floor_model(fid,mid);
+								//$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(_this.html.getLunboTr(json));
+								//_this.parseHtml.re_parse_floor_model(fid,mid);
+								window.location.reload();
 							}else{
 								console.log('失败....');
 							}
@@ -1885,7 +1857,6 @@ CMS.prototype = {
 					$c_model.removeClass().addClass(class_s.replace(/css_namespace\w*/g,'c_'+mid));
 					$c_model.empty().append(html.replace(/css_namespace\w*/g,'c_'+mid));
 				}
-					
 				
 			},
 			parse_c_edit : function($scope){
@@ -1941,6 +1912,18 @@ CMS.prototype = {
 					var html = juicer(tmp,data);
 					$c_model.find('.translated').empty().append(html);
 					//$this.find('.tmpl').remove();
+
+					if($c_model.find('.floor_links').length){
+
+						$c_model.find('.floor_links a').each(function(){
+							var s = $(this).html();
+							var title = $(this).attr('title');
+							if(s.indexOf('##val##')!=-1){
+								$(this).html(s.replace('##val##',title));
+							}
+						});
+					}
+
 				}else if(mrendertype==1){
 					console.log('普通HTML模板，不需要进行juicer处理');
 				}
@@ -2554,18 +2537,30 @@ CMS.prototype = {
 					var mid = $c_model.attr('mid');
 					var fid = $c_floor.attr('fid');
 					var zone_id = $this.parents('.c_edit').attr('zone_id');
+					var edit_type = $this.parents('.c_edit').attr('edit_type');
 					
 					_this.ajax.common({
 						url : _this.urls.get_img_data_by_fidmid,
 						data : {fid : fid,mid : mid},
 						successFn : function(msg){
-							if(msg.reCode==1){
-								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
+							if(edit_type==1){//轮播图
+								var html = _this.html.getLunboTr(eval('('+msg.msg+')'));
+								$("#c_edit_lunbo_win").attr('fid',fid).attr('mid',mid);
+								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
+								$("#c_edit_lunbo_win").show();
+							}else if(edit_type==2){//N宫格
+								if(msg.reCode==1){
+									that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
+								}else{
+									alert('查询结果为空');
+								}
 							}else{
-								alert('查询结果为空');
+								console.log('除了N宫格，轮播图之外的其他编辑按钮（有的话，需要扩展）')
 							}
+								
 						}
 					});
+
 				});
 
 				//点击删除按钮时,首先删除的是当前表格中的当前行，保存后才保存数据,这里仅是操作DOM
@@ -2579,7 +2574,7 @@ CMS.prototype = {
 				_this.o.$root.delegate('#cms_model_config_win .edit_list_table .add','click',function(){
 					var $this = $(this);
 					var $table = $this.parents('.edit_list_table');
-					$table.append('<tr><td class="title"><input type="text" value="链接显示名称"></td><td class="open_new"><input type="text" value="true"></td><td class="href"><input type="text" value="http://test.com"></td><td class="order"><input type="text" value="3"></td><td class="innerhtml"><input type="text" value="<i class=\"icon\"></i><span>##val##</span>"></td><td class="del"><div class="edit_list_table_tr_del">删除</div></td></tr>');
+					$table.append('<tr><td class="title"><input type="text" value="链接显示名称"></td><td class="open_new"><input type="text" value="true"></td><td class="href"><input type="text" value="http://test.com"></td><td class="order"><input type="text" value="3"></td><td class="innerhtml"><input type="text" value="<i class=&#34icon&#34></i><span>##val##</span>"></td><td class="del"><div class="edit_list_table_tr_del">删除</div></td></tr>');
 				});
 
 				//点击保存按钮，拼装JSON，保存进数据库
@@ -2604,6 +2599,7 @@ CMS.prototype = {
 						that.fn().parse_zone_prop_by_type(json_obj,type,$this,target_zone_id);
 					});
 
+					
 					_this.ajax.common({
 						url : _this.urls.save_data,
 						method : 'POST',
@@ -2624,6 +2620,12 @@ CMS.prototype = {
 				_this.o.$root.delegate('#cms_model_config_win .win_bg','click',function(){
 					$('#cms_model_config_win').hide();
 				});
+
+				//多选选择的时候加上selected
+				/*_this.o.$root.delegate('#cms_model_config_win select','change',function(){
+					//$('#cms_model_config_win').hide();
+					alert($(this).css('color','red'));
+				});*/
 			},
 			html : {
 				get_model_config_win : function(){
@@ -2763,18 +2765,21 @@ CMS.prototype = {
 							var value = $edit_item.find('input').val();
 							json_obj[key].value = value;
 						}else if(type=='selection'){
-							var value = $edit_item.find('option.selected').attr('value');
+							var value = $edit_item.find('select').val();
 							json_obj[key].value = value;
 						}else if(type=='list'){
 							var new_list = [];
 							$edit_item.find('tbody tr').each(function(){
 								var $tr = $(this);
+								console.log($tr.find('.innerhtml input').val());
+								var innerhtml = $tr.find('.innerhtml input').val().replace(/\"/g,"\\\"");
+								console.log(innerhtml)
 								new_list.push({
 									href : $tr.find('.href input').val(),
 									type : 'text',
 									open_new : $tr.find('.open_new input').val(),
 									title : $tr.find('.title input').val(),
-									innerhtml : $tr.find('.innerhtml input').val(),
+									innerhtml : innerhtml,
 									order : $tr.find('.order input').val()
 								});
 							});

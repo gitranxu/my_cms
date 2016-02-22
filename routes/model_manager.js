@@ -82,6 +82,8 @@ router.get('/get_img_data_by_fidmid', function(req, res, next) {
 //如果有数据，取数据，如果没有，则取默认数据
 //得到模板，将tmpl去掉，将解析的加到translate元素中
 router.get('/model_query_content_data_by_id', function(req, res, next) {
+	
+
 	var mid = req.query.mid;
 	var fid = req.query.fid;
 	var sql = "SELECT a.*,b.data "+
@@ -114,6 +116,7 @@ router.get('/model_query_content_data_by_id', function(req, res, next) {
 				var html = juicer(tmpl,eval('('+data+')'));
 				//console.log(html+'---------------------html');
 				$('.tmpl').remove();
+
 				$('.translated').append(html);
 			}else if(mrendertype==1){
 				console.log('普通HTML模板不需要进行juicer处理');

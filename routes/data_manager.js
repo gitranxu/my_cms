@@ -45,6 +45,7 @@ router.post('/save_data',function(req,res,next){
 	}
 	var sql_update = "UPDATE c_data d "+
 					  " SET d.`data` ="+data+
+					  " ,d.connect_time = NOW() "+
 					  " WHERE d.`c_floor_id` = '"+fid+"' "+
 					    " AND d.`c_model_id` = '"+mid+"'";
 	console.log(sql_update+'--------------save_data_sql_update');
