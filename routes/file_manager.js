@@ -80,6 +80,21 @@ router.post('/upload',function(req,res,next){
 	});
 });
 
+//模板文件上传
+router.post('/uploadmodel',function(req,res,next){
+	var form = new formidable.IncomingForm();
+	form.uploadDir = "public/model";
+
+	form.parse(req,function(err,fields,files){
+		//console.log(files);
+		var s = files.content.path.lastIndexOf('\\');
+		var path = files.content.path.substring(0,s+1);
+		var file_name = path+files.content.name;
+		fs.renameSync(files.content.path, file_name);
+        res.json({reCode:1,file_name:files.content.name,msg:'上传成功'});
+	});
+});
+
 
 router.post('/generate_edit_html', function(req, res, next) {
 

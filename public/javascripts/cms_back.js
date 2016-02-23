@@ -14,7 +14,8 @@ function CMS(){
 		make_html_show : true,
 		blockGroups_move_show : true,
 		blockGroup_move_show : true,
-		floor_move_show : true
+		floor_move_show : true,
+		edit_model_show : true
 	},
 	this.urls = {//预计接口30个左右
 		layout_query : '/layout/query',//改过
@@ -234,6 +235,9 @@ CMS.prototype = {
 		},
 		getPrevViewFixBtn : function(){
 			return this.getTypeTwoBtn({btn_id:"prev_view_btn",btn_name:"预览"});
+		},
+		getEditModelFixBtn :  function(){
+			return this.getTypeTwoBtn({btn_id:"edit_model_btn",btn_name:"编辑模板"});
 		},
 		getBlockGroupsMoveFixBtn : function(){
 			return this.getTypeTwoBtn({btn_id:"blockGroups_move_btn",btn_name:"块组之间上下移动"});
@@ -494,6 +498,8 @@ CMS.prototype = {
 				_this.sys_btns.make_html_show && $main_btns.append(_this.html.getGenerateFixBtn());//加入生成静态页按钮
 
 				_this.sys_btns.prev_view_show && $main_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
+
+				_this.sys_btns.edit_model_show && $main_btns.append(_this.html.getEditModelFixBtn());//加入编辑模板按钮
 			},
 			add_chose_model_win : function(){
 				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
@@ -1085,6 +1091,11 @@ CMS.prototype = {
 		});
 
 		this.move_unit.event();//与移动相关的事件
+
+		//点击编辑模板按钮
+		this.o.$root.delegate('#edit_model_btn','click',function(){
+			window.open('/edit_model.html');
+		});
 	},
 	extra_event : function(){
 		var _this = this;
