@@ -9,113 +9,128 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
     <style>
     	.cntr{width: 1200px;margin: 10px auto;}
-        .model_list{margin-top: 50px;}
         .model_list .title{font-weight: bold;}
+        #model_list_table tbody tr.active td{background: #5cb85c;color: #fff;}
     </style>
 </head>
 <body>
     
     <div class="cntr">
-        <form class="form-horizontal" method="post" action="/edit_model_manager/saveOrUpdateModel" id="model_edit_form">
-            <input type="hidden" name="id" class="id" value=""></input>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">模板名字</label>
-                <div class="col-sm-10">
-                    <input class="form-control name" name="name"></input>
-                </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="editmodeltitle">模板表单</label>
+                <form class="form-horizontal" id="model_edit_form">
+                    <input type="hidden" name="id" class="id" value=""></input>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">模板名字</label>
+                        <div class="col-sm-10">
+                            <input class="form-control name" name="name"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">渲染类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control render_type" name="render_type">
+                                <option value="1">普通html模板</option>
+                                <option value="2">juicer模板</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">终端类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control term_type" name="term_type">
+                                <option value="1">PC</option>
+                                <option value="2">WAP</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">模板类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control model_type" name="model_type">
+                                <option value="1">综合</option>
+                                <option value="2">轮播</option>
+                                <option value="3">N宫格</option>
+                                <option value="4">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">模板宽度</label>
+                        <div class="col-sm-4">
+                            <input class="form-control model_width" name="model_width"></input>
+                        </div>
+                        <label class="col-sm-2 control-label hastitle" title="0代表不限高度">模板高度</label>
+                        <div class="col-sm-4">
+                            <input class="form-control model_height" name="model_height" value="0"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">模板图片</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="file" name="content" id="model_img_upload_id" onchange="my_ajaxImgUpload(this,100,200);"></input>
+                            <input class="form-control img_url" name="img_url" readonly></input>
+                            <img src="http://pic.shop.lenovo.com.cn/g1/M00/00/ED/CmBZD1ZyXoaAbHeEAAAERQXbP14680.gif" class="img-responsive" alt="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">json格式</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control data_model" name="data_model" rows="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">模板文件</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="file" name="content" id="model_file_upload_id" onchange="my_ajaxModelFileUpload(this)"></input>
+                            <input class="form-control content_name" name="content_name" readonly></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button class="btn btn-success btn-block" type="submit">保存</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">渲染类型</label>
-                <div class="col-sm-10">
-                    <select class="form-control render_type" name="render_type">
-                        <option value="1">普通html模板</option>
-                        <option value="2">juicer模板</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">终端类型</label>
-                <div class="col-sm-10">
-                    <select class="form-control term_type" name="term_type">
-                        <option value="1">PC</option>
-                        <option value="2">WAP</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">模板类型</label>
-                <div class="col-sm-10">
-                    <select class="form-control model_type" name="model_type">
-                        <option value="1">综合</option>
-                        <option value="2">轮播</option>
-                        <option value="3">N宫格</option>
-                        <option value="4">其他</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">模板宽度</label>
-                <div class="col-sm-4">
-                    <input class="form-control model_width" name="model_width"></input>
-                </div>
-                <label class="col-sm-2 control-label hastitle" title="0代表不限高度">模板高度</label>
-                <div class="col-sm-4">
-                    <input class="form-control model_height" name="model_height" value="0"></input>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">模板图片</label>
-                <div class="col-sm-10">
-                    <input class="form-control img_url" name="img_url" type="text"></input>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">json格式</label>
-                <div class="col-sm-10">
-                    <textarea class="form-control data_model" name="data_model" rows="10"></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">模板文件</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="file" name="content" id="model_file_upload_id" onchange="my_ajaxModelFileUpload(this)"></input>
-                    <input class="form-control content_name" name="content_name" readonly></input>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <button class="btn btn-success btn-block" type="submit">保存</button>
-                </div>
-            </div>
-        </form>
-
-        <div class="model_list">
-            <div class="title">模板列表</div>
-            <div class="row">
-                <div class="col-sm-9">
-                    <table class="table table-hover table-striped" id="model_list_table">
-                        <thead>
-                            <tr>
-                                <th>名称</th>
-                                <th>渲染类型</th>
-                                <th>终端类型</th>
-                                <th>模板类型</th>
-                                <th>宽度</th>
-                                <th>高度</th>
-                                <th>编辑</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="col-sm-6">
+                <div class="model_list">
+                    <div class="title">模板列表</div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-12">
+                                <img class="img-responsive trimg" src="http://pic.shop.lenovo.com.cn/g1/M00/00/ED/CmBZD1ZyXoaAbHeEAAAERQXbP14680.gif">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-hover table-striped" id="model_list_table">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>渲染类型</th>
+                                        <th>终端类型</th>
+                                        <th>模板类型</th>
+                                        <th>宽度</th>
+                                        <th>高度</th>
+                                        <th>编辑</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                             
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-sm-3">
-                    <img class="img-responsive trimg" src="http://pic.shop.lenovo.com.cn/g1/M00/00/ED/CmBZD1ZyXoaAbHeEAAAERQXbP14680.gif">
                 </div>
             </div>
-                    
         </div>
+                
+
+                
 
     </div>
 
@@ -133,7 +148,10 @@
                 <td>{@if it.model_type==1}综合{@/if}{@if it.model_type==2}轮播{@/if}{@if it.model_type==3}N宫格{@/if}{@if it.model_type==4}其他{@/if}</td>
                 <td>${it.model_width}</td>
                 <td>${it.model_width}</td>
-                <td><button class="btn btn-info btn-sm edit_btn">编辑</button></td>
+                <td>
+                    <button class="btn btn-info btn-sm edit_btn">编辑</button>
+                    <button class="btn btn-danger btn-sm model_del_btn">删除</button>
+                </td>
             </tr>
         {@/each}
     </script>

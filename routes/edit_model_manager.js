@@ -6,6 +6,7 @@ var sqlclient = require('../lib/mysql_cli');
 
 
 router.post('/saveOrUpdateModel',function(req,res,next){
+	//console.log(req.body);
 	var id = req.body.id;
 	var name = req.body.name;
 	var data = fs.readFileSync('public/model/'+req.body.content_name,"utf-8");
@@ -23,19 +24,32 @@ router.post('/saveOrUpdateModel',function(req,res,next){
 	sqlclient.init();
 	sqlclient.query(saveOrUpdateModel_sql,function(err,rows,fields){
 		if(err) throw err;
-		//res.json({reCode:1,msg:msg});//这里调用一个查询模板列表方法，然后跳转到一个HTML页面
-		res.render('index.html',{abc:'test'});
+		res.json({reCode:1,msg:msg});//这里调用一个查询模板列表方法，然后跳转到一个HTML页面
+		//res.render('index.html',{abc:'test'});
 	});
 });
 
 router.get('/allModel',function(req,res,next){
-	var sql = "SELECT * FROM c_model";
+	var sql = "SELECT * FROM c_model ORDER BY last_edit_time DESC ";
 	sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
 		res.json({reCode:1,msg:rows});
 	});
 });
+
+router.post('/delModel',function(req,res,next){
+	var id = req.body.id;
+	var delModel_sql = "DELETE FROM c_model WHERE id = '"+id+"'";
+	console.log(delModel_sql+'---------------delModel_sql');
+	sqlclient.init();
+	sqlclient.query(delModel_sql,function(err,rows,fields){
+		if(err) throw err;
+		res.json({reCode:1,msg:'删除成功'});
+	});
+});
+
+
 
 
 module.exports = router;

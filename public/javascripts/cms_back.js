@@ -651,6 +651,13 @@ CMS.prototype = {
 						if(msg){
 							_this.o.$content.empty().append(msg);
 							_this.parseHtml.parse();
+							//解析完了后，这时候引入loadjs文件
+							$('#loadjsid').remove();
+							var oScript= document.createElement("script"); 
+						    oScript.type = "text/javascript"; 
+						    oScript.src = "/javascripts/loadjs.js"; 
+						    oScript.id = "loadjsid";
+						    document.getElementsByTagName('BODY').item(0).appendChild( oScript);
 						}else{
 							alert('没有数据...');
 						}
@@ -2640,7 +2647,7 @@ CMS.prototype = {
 			},
 			html : {
 				get_model_config_win : function(){
-					return '<div id="cms_model_config_win" class="need_remove hid_rx1">'+
+					return '<div id="cms_model_config_win" class="need_remove">'+
 								'<div class="win_bg"></div>'+
 								'<div class="model_config_win">'+
 									'<div class="bg2"></div>'+
