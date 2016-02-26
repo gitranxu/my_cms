@@ -148,76 +148,176 @@ reCode
 
 
 
-配置统一JSON格式
+配置统一JSON格式：
+规则1：严格遵循JSON格式
+规则2：所有宫格都按顺序放到zone_item_list数据中，且有zone_id属性。在写模板时除了有zone_id属性外，还有一个edit_type属性，其中1代表轮播图编辑方式，2代表其他（目前一共就这两种方式）
+
+规则3：类型为list的对象设置时，thead_ths属性中的对象的顺序与values中子数组中对象的顺序保持一致，其中thead_ths中对象中除了有表示类型的type属性外，还有表示宽度占比的属性width_bz,表示所占宽度的比重,order_col:true表示以该th值为参考值进行排序,这个属性可以没有，但最多只能一个th有,default_v表示当点击新增时的默认值，对于类型为selection对象来说，在设置其options时，一定要注意在这儿，这是一个字符串，提供选择的数组对象要放在双引号中！
+
+规则4：如果编辑时不想显示某个编辑项，则显示声明edit_can_not_see : true，默认不加是显示的
+
 
 {
-	floor_name : {
-		value : '1F Lenovo 电脑 楼层一',
-		type : 'text',
-		title : '标题'
-	},
-	hrefs : {
-		values : [{
-			href : 'http://www.sohu.com',
-			type : 'text',
-			open_new : 'true',
-			title : '去搜狐',
-			innerhtml : '<i class=\"icon\"></i><span>##val##</span>',
-			order : 3
-		},{
-			href : 'http://www.baidu.com',
-			type : 'text',
-			open_new : 'false',
-			title : '去百度',
-			innerhtml : '<span class=\"style-red\">##val##</span>',
-			order : 1
-		}],
-		type : 'list',
-		title : '',
-		content : '对于list类型来说，提供一个编辑按钮，有增删改的功能'
-	},
-	zone_item_list : [
-		{
-			zone_id : 1,
-			
-			href : {
-				value : 'http://www.lenovo.com.cn/product/50828.html',
-				type : 'text',
-				title : '链接'
-			},
-			imgurl : {
-				value : 'http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg',
-				type : 'text',
-				title : '图片链接'
-			},
-			title : {
-				value : '标题内容',
-				type : 'text',
-				title : '标题'
-			},
-			price : {
-				value : 4981,
-				type : 'text',
-				title : '价格'
-			},
-			description : {
-				value : '外观轻薄简约 多彩时尚机身1',
-				type : 'text',
-				title : '简介'
-			},
-			ishot : {
-				value : '1',
-				type : 'selection',
-				title : '是否热卖',
-				options : [{key:1,value:'热卖'},{key:2,value:'正常'}]
-			}
-			
-		}
-		
-	]
+    "floor_name": {
+        "value": "1F Lenovo 电脑 楼层一", 
+        "type": "text", 
+        "title": "标题"
+    }, 
+    "ishot": {
+        "value": "1", 
+        "type": "selection", 
+        "title": "是否热卖", 
+        "options": [
+            {
+                "key": 1, 
+                "value": "热卖"
+            }, 
+            {
+                "key": 2, 
+                "value": "正常"
+            }
+        ]
+    }, 
+    "hrefs": {
+        "thead_ths": [
+            {
+                "title": "标题", 
+                "width_bz": 1, 
+                "type": "text", 
+                "default_v": "去联想"
+            }, 
+            {
+                "title": "是否新窗口打开", 
+                "width_bz": 1, 
+                "type": "selection", 
+                "options": "[{key:1,value:'是'},{key:2,value:'否'}]", 
+                "default_v": 1
+            }, 
+            {
+                "title": "链接", 
+                "width_bz": 1, 
+                "type": "text", 
+                "default_v": "http://www.lenovo.com.cn"
+            }, 
+            {
+                "title": "顺序", 
+                "width_bz": 1, 
+                "type": "text", 
+                "order_col": true, 
+                "default_v": 1
+            }, 
+            {
+                "title": "内部HTML", 
+                "width_bz": 1, 
+                "type": "text", 
+                "default_v": "<i class='icon'></i><span>##val##</span>"
+            }
+        ], 
+        "values": [
+            [
+                {
+                    "value": "去联想", 
+                    "title": "标题"
+                }, 
+                {
+                    "value": 1, 
+                    "title": "是否新窗口打开"
+                }, 
+                {
+                    "value": "http://www.lenovo.com.cn", 
+                    "title": "链接"
+                }, 
+                {
+                    "value": 3, 
+                    "title": "顺序"
+                }, 
+                {
+                    "value": "<i class='icon'></i><span>##val##</span>", 
+                    "title": "内部HTML"
+                }
+            ], 
+            [
+                {
+                    "value": "去联想1", 
+                    "title": "标题"
+                }, 
+                {
+                    "value": 2, 
+                    "title": "是否新窗口打开"
+                }, 
+                {
+                    "value": "http://www.lenovo.com.cn", 
+                    "title": "链接"
+                }, 
+                {
+                    "value": 4, 
+                    "title": "顺序"
+                }, 
+                {
+                    "value": "<i class='icon'></i><span>##val##</span>", 
+                    "title": "内部HTML"
+                }
+            ]
+        ], 
+        "type": "list", 
+        "title": "xxx"
+    }, 
+    "zone_item_list": [
+        {
+            "zone_id": 1, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接1"
+            }, 
+            "imgurl": {
+                "value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg", 
+                "type": "text", 
+                "title": "图片链接"
+            }, 
+            "price": {
+                "value": 4981, 
+                "type": "text", 
+                "title": "价格", 
+                "edit_can_not_see": true
+            }, 
+            "ishot": {
+                "value": "1", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 1, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "正常"
+                    }
+                ]
+            }
+        }, 
+        {
+            "zone_id": 2, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接1", 
+                "edit_can_not_see": true
+            }, 
+            "imgurl": {
+                "value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg", 
+                "type": "text", 
+                "title": "图片链接"
+            }, 
+            "price": {
+                "value": 4981, 
+                "type": "text", 
+                "title": "价格"
+            }
+        }
+    ]
 }
-
-双引号问题如何解决
 	
 
 

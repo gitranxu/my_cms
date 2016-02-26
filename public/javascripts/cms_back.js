@@ -2592,7 +2592,20 @@ CMS.prototype = {
 				_this.o.$root.delegate('#cms_model_config_win .edit_list_table .add','click',function(){
 					var $this = $(this);
 					var $table = $this.parents('.edit_list_table');
-					$table.append('<tr><td class="title"><input type="text" value="链接显示名称"></td><td class="open_new"><input type="text" value="true"></td><td class="href"><input type="text" value="http://test.com"></td><td class="order"><input type="text" value="3"></td><td class="innerhtml"><input type="text" value="<i class=&#34icon&#34></i><span>##val##</span>"></td><td class="del"><div class="edit_list_table_tr_del">删除</div></td></tr>');
+					//根据th情况进行增加
+					var html = '<tr>';
+					$table.find('thead th').each(function(){
+						var $th = $(this);
+						var _html = '';
+						if($th.attr('class')=='add'){
+							_html = '<td class="del"><div class="edit_list_table_tr_del">删除</div></td>';
+						}else{
+							_html = '<td>'+that.fn().get_td_html_by_th($th,$th.attr('default_v'))+'</td>';
+						}
+						html += _html;
+					});
+					html += '</tr>';
+					$table.append(html);
 				});
 
 				//点击保存按钮，拼装JSON，保存进数据库
@@ -2617,7 +2630,7 @@ CMS.prototype = {
 						that.fn().parse_zone_prop_by_type(json_obj,type,$this,target_zone_id);
 					});
 
-					
+					//return;
 					_this.ajax.common({
 						url : _this.urls.save_data,
 						method : 'POST',
@@ -2639,11 +2652,6 @@ CMS.prototype = {
 					$('#cms_model_config_win').hide();
 				});
 
-				//多选选择的时候加上selected
-				/*_this.o.$root.delegate('#cms_model_config_win select','change',function(){
-					//$('#cms_model_config_win').hide();
-					alert($(this).css('color','red'));
-				});*/
 			},
 			html : {
 				get_model_config_win : function(){
@@ -2655,50 +2663,46 @@ CMS.prototype = {
 										'<div class="edit_group model_prop_list">'+
 											'{@each model_prop_list as it}'+
 												'{@if it.type=="text"}'+
-													'<div class="edit_item" key="${it.key}" type="text">'+
-														'<span>${it.title}</span>'+
-														'<input type="text" value="${it.value}"/>'+
-													'</div>'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="text">'+
+															'<span>${it.title}</span>'+
+															'<input type="text" value="${it.value}"/>'+
+														'</div>'+
+													'{@/if}'+
 												'{@/if}'+
 												'{@if it.type=="selection"}'+
-													'<div class="edit_item" key="${it.key}" type="selection">'+
-														'<span>${it.title}</span>'+
-														'<select class="sel_input">'+
-															'{@each it.options as o_it}'+
-																'<option value="${o_it.key}" class="{@if o_it.key==it.value}selected{@/if}"  {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
-															'{@/each}'+
-														'</select>'+
-													'</div>'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="selection">'+
+															'<span>${it.title}</span>'+
+															'<select class="sel_input">'+
+																'{@each it.options as o_it}'+
+																	'<option value="${o_it.key}" {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
+																'{@/each}'+
+															'</select>'+
+														'</div>'+
+													'{@/if}'+
 												'{@/if}'+
 												'{@if it.type=="list"}'+
-													'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
-														'<thead>'+
-															'<tr><th>标题</th><th>是否新窗口打开</th><th>链接</th><th>顺序</th><th>内部html</th><th class="add">新增</th></tr>'+
-														'</thead><tbody>'+
-														'{@each it.values as l_it}'+
-															'<tr>'+
-																'<td class="title">'+
-																	'<input type="text" value="${l_it.title}" />'+
-																'</td>'+
-																'<td class="open_new">'+
-																	'<input type="text" value="${l_it.open_new}" />'+
-																'</td>'+
-																'<td class="href">'+
-																	'<input type="text" value="${l_it.href}" />'+
-																'</td>'+
-																'<td class="order">'+
-																	'<input type="text" value="${l_it.order}" />'+
-																'</td>'+
-																'<td class="innerhtml">'+
-																	'<input type="text" value="${l_it.innerhtml}" />'+
-																'</td>'+
-																'<td class="del">'+
-																	'<div class="edit_list_table_tr_del">删除</div>'+
-																'</td>'+
-															'</tr>'+
-														'{@/each}'+
-														'</tbody>'+
-													'</table>'+
+													'{@if !it.edit_can_not_see}'+
+														'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
+															'<thead>'+
+																'<tr>{@each it.thead_ths as th_it}'+
+																	'<th width_bz="${th_it.width_bz}" type="${th_it.type}" key="${th_it.key}" order_col="${th_it.order_col}" default_v="${th_it.default_v}" options="${th_it.options}" _title="${th_it.title}">${th_it.title}</th>'+
+																'{@/each}<th class="add" width_bz="1">新增</th></tr>'+
+															'</thead><tbody>'+
+															'{@each it.values as tr_it}'+
+																'<tr>'+
+																	'{@each tr_it as td_it}'+
+																		'<td value="${td_it.value}" _title="${td_it.title}"></td>'+
+																	'{@/each}'+
+																	'<td class="del">'+
+																		'<div class="edit_list_table_tr_del">删除</div>'+
+																	'</td>'+
+																'</tr>'+
+															'{@/each}'+
+															'</tbody>'+
+														'</table>'+
+													'{@/if}'+
 												'{@/if}'+
 											'{@/each}'+
 										'</div>'+
@@ -2706,53 +2710,50 @@ CMS.prototype = {
 										'<div class="edit_group zone_prop_list">'+
 											'{@each zone_prop_list as it}'+
 												'{@if it.type=="text"}'+
-													'<div class="edit_item" key="${it.key}" type="text">'+
-														'<span>${it.title}</span>'+
-														'<input type="text" value="${it.value}"/>'+
-													'</div>'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="text">'+
+															'<span>${it.title}</span>'+
+															'<input type="text" value="${it.value}"/>'+
+														'</div>'+
+													'{@/if}'+
 												'{@/if}'+
 												'{@if it.type=="selection"}'+
-													'<div class="edit_item" key="${it.key}" type="selection">'+
-														'<span>${it.title}</span>'+
-														'<select class="sel_input">'+
-															'{@each it.options as o_it}'+
-																'<option value="${o_it.key}" class="{@if o_it.key==it.value}selected{@/if}"  {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
-															'{@/each}'+
-														'</select>'+
-													'</div>'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="selection">'+
+															'<span>${it.title}</span>'+
+															'<select class="sel_input">'+
+																'{@each it.options as o_it}'+
+																	'<option value="${o_it.key}" {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
+																'{@/each}'+
+															'</select>'+
+														'</div>'+
+													'{@/if}'+
 												'{@/if}'+
 												'{@if it.type=="list"}'+
-													'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
-														'<thead>'+
-															'<tr><th>标题</th><th>是否新窗口打开</th><th>链接</th><th>顺序</th><th>内部html</th><th class="add">新增</th></tr>'+
-														'</thead><tbody>'+
-														'{@each it.values as l_it}'+
-															'<tr>'+
-																'<td class="title">'+
-																	'<input type="text" value="${l_it.title}" />'+
-																'</td>'+
-																'<td class="open_new">'+
-																	'<input type="text" value="${l_it.open_new}" />'+
-																'</td>'+
-																'<td class="href">'+
-																	'<input type="text" value="${l_it.href}" />'+
-																'</td>'+
-																'<td class="order">'+
-																	'<input type="text" value="${l_it.order}" />'+
-																'</td>'+
-																'<td class="innerhtml">'+
-																	'<input type="text" value="${l_it.innerhtml}" />'+
-																'</td>'+
-																'<td class="del">'+
-																	'<div class="edit_list_table_tr_del">删除</div>'+
-																'</td>'+
-															'</tr>'+
-														'{@/each}'+
-														'</tbody>'+
-													'</table>'+
+													'{@if !it.edit_can_not_see}'+
+														'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
+															'<thead>'+
+																'<tr>{@each it.thead_ths as th_it}'+
+																	'<th width_bz="${th_it.width_bz}" type="${th_it.type}" key="${th_it.key}" order_col="${th_it.order_col}" default_v="${th_it.default_v}" options="${th_it.options}" _title="${th_it.title}">${th_it.title}</th>'+
+																'{@/each}<th class="add" width_bz="1">新增</th></tr>'+
+															'</thead><tbody>'+
+															'{@each it.values as tr_it}'+
+																'<tr>'+
+																	'{@each tr_it as td_it}'+
+																		'<td value="${td_it.value}" _title="${td_it.title}"></td>'+
+																	'{@/each}'+
+																	'<td class="del">'+
+																		'<div class="edit_list_table_tr_del">删除</div>'+
+																	'</td>'+
+																'</tr>'+
+															'{@/each}'+
+															'</tbody>'+
+														'</table>'+
+													'{@/if}'+
 												'{@/if}'+
 											'{@/each}'+
 										'</div>'+
+
 										'<div class="save">保存</div>'+
 									'</div>'+
 								'</div>'+
@@ -2787,21 +2788,28 @@ CMS.prototype = {
 							json_obj[key].value = value;
 						}else if(type=='list'){
 							var new_list = [];
+							var sort_index = -1;//-1为不排序
+							$edit_item.find('thead th').each(function(index){
+								if($(this).attr('order_col')){
+									sort_index = index;
+								}
+							});
+
 							$edit_item.find('tbody tr').each(function(){
 								var $tr = $(this);
-								console.log($tr.find('.innerhtml input').val());
-								var innerhtml = $tr.find('.innerhtml input').val().replace(/\"/g,"\\\"");
-								console.log(innerhtml)
-								new_list.push({
-									href : $tr.find('.href input').val(),
-									type : 'text',
-									open_new : $tr.find('.open_new input').val(),
-									title : $tr.find('.title input').val(),
-									innerhtml : innerhtml,
-									order : $tr.find('.order input').val()
+								var tr_arr = [];
+								$tr.find('td').each(function(){
+									var td_obj = {};
+									td_obj.value = $(this).find('.tdinputsel').val();
+									td_obj.title = $(this).attr('_title');
+									tr_arr.push(td_obj);
 								});
+								new_list.push(tr_arr);
 							});
-							new_list.sort(function(a,b){return a.order-b.order;});
+							//排序
+							if(sort_index!=-1){
+								new_list.sort(function(a,b){return a[sort_index].value-b[sort_index].value});
+							}
 
 							json_obj[key].values = new_list;
 						}else{
@@ -2819,23 +2827,19 @@ CMS.prototype = {
 							}
 						}
 					},
-					juicer_fn : function(){
-						juicer.register('l_it_to_a',this.l_it_to_a);
-					},
-					l_it_to_a : function(data){
-						var result = data.title;
-						if(data.innerhtml){
-							result = data.innerhtml.replace('##val##',data.title)
-						}
-						return result;
-					},
 					reopen_model_config_win : function(json,zone_id,fid,mid){
+						//这里的zone_id属性可能为空
+						console.log(json);
+						//console.log(JSON.stringify(json));
 						//进行判断，如果已有，则不添加，在使用之前，需要先清空
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
 						var tmpl = that.html.get_model_config_win();
-						this.juicer_fn();
+						//this.juicer_fn();
 						translated_json.model_prop_list = this.model_obj_to_array(json);
-						translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);
+						if(zone_id){translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);}
+
+						console.log(translated_json);
+
 						var html = juicer(tmpl,translated_json);
 						if(!$('#cms_model_config_win').length){
 							_this.o.$root.append(html);
@@ -2844,6 +2848,76 @@ CMS.prototype = {
 							_this.o.$root.append(html);
 						}
 						$('#cms_model_config_win').attr('fid',fid).attr('mid',mid).attr('s_json',JSON.stringify(json)).attr('target_zone_id',zone_id);
+						this.parse_edit_table();
+					},
+					parse_edit_table : function(){
+						var _this = this;
+						//根据title去关联
+						$('#cms_model_config_win .edit_list_table').each(function(){
+							var $table = $(this);
+							//1.计算各列所占宽度，百分比
+							var total_bz = 0;
+							var $ths = $table.find('thead th');
+							$ths.each(function(){
+								var width_bz = $(this).attr('width_bz');
+								if(width_bz){
+									total_bz += parseInt(width_bz);
+								}
+							});
+							$ths.each(function(){
+								var $this = $(this);
+								var width_bz = $this.attr('width_bz');
+								if(width_bz){
+									$this.css('width',100*width_bz/total_bz+'%');
+								}
+							});
+
+							//2.根据title进行关联并按tr解析td
+							var $trs = $table.find('tbody tr');
+							$trs.each(function(){
+								$(this).find('td').each(function(){
+									var $td = $(this);
+									var value = $td.attr("value");
+									var $th = _this.get_th_obj_by_title($td);//通过title得到th相关的配置信息
+									var html = _this.get_td_html_by_th($th,value);
+									$td.append(html);
+								});
+							});
+						});
+					},
+					get_td_html_by_th : function($th,value){
+						var result = '';
+						if(value){
+							value = value.replace(/\"/g,"&#34");
+						}
+						if($th.length){
+							var type = $th.attr('type');
+							if(type=='text'){
+								result = '<input type="text" class="tdinputsel" value="'+value+'" />';
+							}else if(type=='selection'){
+								var opt_s = $th.attr('options');
+								var opt_o = eval('('+opt_s+')');
+								var opts = '';
+								if(opt_o.length){
+									for(var i = 0,j = opt_o.length;i < j;i++){
+										var selected_s = '';
+										if(value==opt_o[i].key){
+											selected_s = 'selected';
+										}
+										opts += '<option value="'+opt_o[i].key+'" '+selected_s+'>'+opt_o[i].value+'</option>';
+									}
+								}
+								result = '<select class="sel_td_input tdinputsel">'+opts+'</select>';
+							}else{
+								console.log('在list里面只有text,selection两种情况，其他情况不应该在这里出现.');
+							}
+						}
+						return result;
+					},
+					get_th_obj_by_title : function($td){
+						var title = $td.attr('_title');
+						var $th = $td.parents('table').find('thead th[_title='+title+']');
+						return $th;
 					},
 					model_obj_to_array : function(obj){ //将对象按一定规则转换成数组
 						//对于整体来说，转换数组时不转换zone_item_list属性

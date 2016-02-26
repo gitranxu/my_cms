@@ -37,6 +37,9 @@ router.post('/add', function(req, res, next) {
 
 router.post('/save_data',function(req,res,next){
 	var to_save_data = req.body.to_save_data;
+	//将to_save_data中的单引号进行转义
+	to_save_data = to_save_data.replace(/\'/g,"\\\'");
+	console.log(to_save_data);
 	var fid = req.body.fid;
 	var mid = req.body.mid;
 	var data = null;
