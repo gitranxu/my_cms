@@ -2704,6 +2704,16 @@ CMS.prototype = {
 														'</table>'+
 													'{@/if}'+
 												'{@/if}'+
+												'{@if it.type=="img"}'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="img">'+
+															'<span class="hastitle" title="上传图片限制：(宽:${it.width})，(高:${it.height})，(大小:${it.size})">${it.title}</span>'+
+															'<input type="file" name="content" id="${it.input_id}" onchange="my_ajaxFileUpload(this,100,200,30)">'+
+															'<span></span>'+
+															'<div class="img_upload_div"><img src="${it.value}"></div>'+
+														'</div>'+
+													'{@/if}'+
+												'{@/if}'+
 											'{@/each}'+
 										'</div>'+
 
@@ -2749,6 +2759,16 @@ CMS.prototype = {
 															'{@/each}'+
 															'</tbody>'+
 														'</table>'+
+													'{@/if}'+
+												'{@/if}'+
+												'{@if it.type=="img"}'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="img">'+
+															'<span class="hastitle" title="上传图片限制：(宽:${it.width})，(高:${it.height})，(大小:${it.size})">${it.title}</span>'+
+															'<input type="file" name="content" id="${it.input_id}" onchange="my_ajaxFileUpload(this,100,200,30)">'+
+															'<span></span>'+
+															'<div class="img_upload_div"><img src="${it.value}"></div>'+
+														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
 											'{@/each}'+
@@ -2812,6 +2832,9 @@ CMS.prototype = {
 							}
 
 							json_obj[key].values = new_list;
+						}else if(type=='img'){
+							var value = $edit_item.find('img').attr('src');
+							json_obj[key].value = value;
 						}else{
 							console.log('如果没有明确类型，则不进行处理...')
 						}
@@ -2835,10 +2858,11 @@ CMS.prototype = {
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
 						var tmpl = that.html.get_model_config_win();
 						//this.juicer_fn();
+						console.log(json);
 						translated_json.model_prop_list = this.model_obj_to_array(json);
 						if(zone_id){translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);}
 
-						console.log(translated_json);
+						//console.log(translated_json);
 
 						var html = juicer(tmpl,translated_json);
 						if(!$('#cms_model_config_win').length){
@@ -2947,6 +2971,7 @@ CMS.prototype = {
 							}
 						}
 
+						console.log(the_zone_obj);
 						if(the_zone_obj && the_zone_obj.zone_id){//如果有zone_id
 							for(var i in the_zone_obj){
 								if(i=='zone_id'){
@@ -2983,7 +3008,7 @@ function my_ajaxFileUpload(fileObj){
     var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
     var browserVersion = window.navigator.userAgent.toUpperCase();
 
-    var $img = $(fileObj).next('img');
+    var $img = $(fileObj).parent().find('img');
     var id = $(fileObj).attr('id');
     if (allowExtention.indexOf(extention) > -1) {
 
@@ -2991,13 +3016,15 @@ function my_ajaxFileUpload(fileObj){
 			url : '/file/upload',
 			secureuri:false,
 			fileElementId: id,
+			type:"post",
 			success:function(data,status){
 				if(status=='success'){
 					var reg = /\{.+\}/;
                     var msg_str = reg.exec(data)[0];
                     var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
                     var msg_obj = eval('('+msg_str_done+')');
-
+                    //alert(msg_obj.img_path);
+                    //alert($(fileObj).parent().find('.img_url').length);
                     $img.attr('src',msg_obj.img_path);
 				}
 			},

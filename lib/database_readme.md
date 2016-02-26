@@ -156,6 +156,7 @@ reCode
 
 规则4：如果编辑时不想显示某个编辑项，则显示声明edit_can_not_see : true，默认不加是显示的
 
+规则5：对于类型为img的对象设置来说，最好设置时每次给的input_id的值不要一致，当然，在zone_item_list中，每个对象之间的input_id值可以一致
 
 {
     "floor_name": {
@@ -262,6 +263,15 @@ reCode
         "type": "list", 
         "title": "xxx"
     }, 
+    "imgurl": {
+        "type": "img",
+        "title": "图片链接",
+        "height":100,
+        "width":200,
+        "size":30,
+        "input_id":"aaa",
+        "value": "http://pic.shop.lenovo.com.cn/g1/M00/00/7F/CmBZEFZdY9iALGjfAABvbEHIe5s561.jpg"
+    },
     "zone_item_list": [
         {
             "zone_id": 1, 

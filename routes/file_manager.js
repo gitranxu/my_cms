@@ -72,10 +72,11 @@ router.post('/upload',function(req,res,next){
 	var form = new formidable.IncomingForm();
 	form.uploadDir = "public/images/upload";
 	form.parse(req,function(err,fields,files){
-		var s = files.file.path.lastIndexOf('\\');
-		var path = files.file.path.substring(0,s+1);
-		var img_path = path+files.file.name;
-		fs.renameSync(files.file.path, img_path);
+		console.log(files);
+		var s = files.content.path.lastIndexOf('\\');
+		var path = files.content.path.substring(0,s+1);
+		var img_path = path+files.content.name;
+		fs.renameSync(files.content.path, img_path);
         res.json({reCode:1,img_path:img_path,msg:'上传成功'});
 	});
 });

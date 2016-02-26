@@ -14,8 +14,6 @@ function my_ajaxModelFileUpload(fileObj){
 				if(status=='success'){
 					var reg = /\{.+\}/;
                     var msg_str = reg.exec(data)[0];
-                    alert(msg_str);
-                    //var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
                     var msg_obj = eval('('+msg_str+')');
                     $('#'+id).next('input').val(msg_obj.file_name);
 				}
