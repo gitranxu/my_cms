@@ -2588,19 +2588,29 @@ CMS.prototype = {
 					$tr.remove();
 				});
 
+				//点击行时,如果有预览图片，则更新预览图片,这里仅是操作DOM
+				_this.o.$root.delegate('#cms_model_config_win .edit_list_table tr','click',function(){
+					var $img = $(this).parents('.list_group').find('.list_prev_img');
+					if($img.length){
+						var tr_imgurl = $(this).find('img').attr('src');
+						$img.attr('src',tr_imgurl);
+					}
+				});
+
 				//点击新增按钮时,仅是操作DOM
 				_this.o.$root.delegate('#cms_model_config_win .edit_list_table .add','click',function(){
 					var $this = $(this);
 					var $table = $this.parents('.edit_list_table');
 					//根据th情况进行增加
 					var html = '<tr>';
+					var index = $table.find('tbody tr').length;
 					$table.find('thead th').each(function(){
 						var $th = $(this);
 						var _html = '';
 						if($th.attr('class')=='add'){
 							_html = '<td class="del"><div class="edit_list_table_tr_del">删除</div></td>';
 						}else{
-							_html = '<td>'+that.fn().get_td_html_by_th($th,$th.attr('default_v'))+'</td>';
+							_html = '<td>'+that.fn().get_td_html_by_th($th,$th.attr('default_v'),index)+'</td>';
 						}
 						html += _html;
 					});
@@ -2684,24 +2694,29 @@ CMS.prototype = {
 												'{@/if}'+
 												'{@if it.type=="list"}'+
 													'{@if !it.edit_can_not_see}'+
-														'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
-															'<thead>'+
-																'<tr>{@each it.thead_ths as th_it}'+
-																	'<th width_bz="${th_it.width_bz}" type="${th_it.type}" key="${th_it.key}" order_col="${th_it.order_col}" default_v="${th_it.default_v}" options="${th_it.options}" _title="${th_it.title}">${th_it.title}</th>'+
-																'{@/each}<th class="add" width_bz="1">新增</th></tr>'+
-															'</thead><tbody>'+
-															'{@each it.values as tr_it}'+
-																'<tr>'+
-																	'{@each tr_it as td_it}'+
-																		'<td value="${td_it.value}" _title="${td_it.title}"></td>'+
-																	'{@/each}'+
-																	'<td class="del">'+
-																		'<div class="edit_list_table_tr_del">删除</div>'+
-																	'</td>'+
-																'</tr>'+
-															'{@/each}'+
-															'</tbody>'+
-														'</table>'+
+														'<div class="list_group">'+
+															'{@if it.has_img}'+
+																'<img class="maxh200 list_prev_img" src="">'+
+															'{@/if}'+
+															'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
+																'<thead>'+
+																	'<tr>{@each it.thead_ths as th_it}'+
+																		'<th width_bz="${th_it.width_bz}" type="${th_it.type}" key="${th_it.key}" order_col="${th_it.order_col}" default_v="${th_it.default_v}" options="${th_it.options}" _title="${th_it.title}" img_h="${th_it.height}" img_w="${th_it.width}" img_s="${th_it.size}" input_id="${th_it.input_id}">${th_it.title}</th>'+
+																	'{@/each}<th class="add" width_bz="1">新增</th></tr>'+
+																'</thead><tbody>'+
+																'{@each it.values as tr_it}'+
+																	'<tr>'+
+																		'{@each tr_it as td_it}'+
+																			'<td value="${td_it.value}" _title="${td_it.title}"></td>'+
+																		'{@/each}'+
+																		'<td class="del">'+
+																			'<div class="edit_list_table_tr_del">删除</div>'+
+																		'</td>'+
+																	'</tr>'+
+																'{@/each}'+
+																'</tbody>'+
+															'</table>'+
+														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
 												'{@if it.type=="img"}'+
@@ -2741,24 +2756,29 @@ CMS.prototype = {
 												'{@/if}'+
 												'{@if it.type=="list"}'+
 													'{@if !it.edit_can_not_see}'+
-														'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
-															'<thead>'+
-																'<tr>{@each it.thead_ths as th_it}'+
-																	'<th width_bz="${th_it.width_bz}" type="${th_it.type}" key="${th_it.key}" order_col="${th_it.order_col}" default_v="${th_it.default_v}" options="${th_it.options}" _title="${th_it.title}">${th_it.title}</th>'+
-																'{@/each}<th class="add" width_bz="1">新增</th></tr>'+
-															'</thead><tbody>'+
-															'{@each it.values as tr_it}'+
-																'<tr>'+
-																	'{@each tr_it as td_it}'+
-																		'<td value="${td_it.value}" _title="${td_it.title}"></td>'+
-																	'{@/each}'+
-																	'<td class="del">'+
-																		'<div class="edit_list_table_tr_del">删除</div>'+
-																	'</td>'+
-																'</tr>'+
-															'{@/each}'+
-															'</tbody>'+
-														'</table>'+
+														'<div class="list_group">'+
+															'{@if it.has_img}'+
+																'<img class="maxh200 list_prev_img" src="">'+
+															'{@/if}'+
+															'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
+																'<thead>'+
+																	'<tr>{@each it.thead_ths as th_it}'+
+																		'<th width_bz="${th_it.width_bz}" type="${th_it.type}" key="${th_it.key}" order_col="${th_it.order_col}" default_v="${th_it.default_v}" options="${th_it.options}" _title="${th_it.title}" img_h="${th_it.height}" img_w="${th_it.width}" img_s="${th_it.size}" input_id="${th_it.input_id}">${th_it.title}</th>'+
+																	'{@/each}<th class="add" width_bz="1">新增</th></tr>'+
+																'</thead><tbody>'+
+																'{@each it.values as tr_it}'+
+																	'<tr>'+
+																		'{@each tr_it as td_it}'+
+																			'<td value="${td_it.value}" _title="${td_it.title}"></td>'+
+																		'{@/each}'+
+																		'<td class="del">'+
+																			'<div class="edit_list_table_tr_del">删除</div>'+
+																		'</td>'+
+																	'</tr>'+
+																'{@/each}'+
+																'</tbody>'+
+															'</table>'+
+														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
 												'{@if it.type=="img"}'+
@@ -2820,7 +2840,12 @@ CMS.prototype = {
 								var tr_arr = [];
 								$tr.find('td').each(function(){
 									var td_obj = {};
-									td_obj.value = $(this).find('.tdinputsel').val();
+									var val = '';
+									val = $(this).find('.tdinputsel').val();
+									if(!val){//图片的时候，上面取不出值，这时候需用下面的方法取值
+										val = $(this).find('.tdinputsel').attr('src');
+									}
+									td_obj.value = val;
 									td_obj.title = $(this).attr('_title');
 									tr_arr.push(td_obj);
 								});
@@ -2858,7 +2883,7 @@ CMS.prototype = {
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
 						var tmpl = that.html.get_model_config_win();
 						//this.juicer_fn();
-						console.log(json);
+						//console.log(json);
 						translated_json.model_prop_list = this.model_obj_to_array(json);
 						if(zone_id){translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);}
 
@@ -2898,18 +2923,18 @@ CMS.prototype = {
 
 							//2.根据title进行关联并按tr解析td
 							var $trs = $table.find('tbody tr');
-							$trs.each(function(){
-								$(this).find('td').each(function(){
+							$trs.each(function(tr_index){
+								$(this).find('td').each(function(index){
 									var $td = $(this);
 									var value = $td.attr("value");
 									var $th = _this.get_th_obj_by_title($td);//通过title得到th相关的配置信息
-									var html = _this.get_td_html_by_th($th,value);
+									var html = _this.get_td_html_by_th($th,value,tr_index);
 									$td.append(html);
 								});
 							});
 						});
 					},
-					get_td_html_by_th : function($th,value){
+					get_td_html_by_th : function($th,value,index){
 						var result = '';
 						if(value){
 							value = value.replace(/\"/g,"&#34");
@@ -2932,8 +2957,15 @@ CMS.prototype = {
 									}
 								}
 								result = '<select class="sel_td_input tdinputsel">'+opts+'</select>';
+							}else if(type=='img'){
+								//console.log('img情况');
+								var id = $th.attr('input_id')+''+index;
+								var width = $th.attr('img_w');
+								var height = $th.attr('img_h');
+								var size = $th.attr('img_s');
+								result = '<input type="file" name="content" id="'+id+'" onchange="my_ajaxFile2Upload(this,'+width+','+height+','+size+')" style="width:48%;margin-right:4px;" /><img src="'+value+'" class="tdinputsel tdimg">';
 							}else{
-								console.log('在list里面只有text,selection两种情况，其他情况不应该在这里出现.');
+								console.log('在list里面只有text,selection,img三种情况，其他情况不应该在这里出现.');
 							}
 						}
 						return result;
@@ -3003,12 +3035,30 @@ $().ready(function(){
 	var cms = new CMS();
 	cms.init();
 });
-function my_ajaxFileUpload(fileObj){
+
+function my_ajaxFile2Upload(fileObj,width,height,size){
+	console.log(fileObj);
+	var $img = $(fileObj).parents('.list_group').find('.list_prev_img');
+	var $tdimg = $(fileObj).parent().find('img');
+
+	ajaxImgUpload(fileObj,width,height,size,function(imgurl){
+		$img.attr('src',imgurl);
+		$tdimg.attr('src',imgurl);
+	});
+}
+function my_ajaxFileUpload(fileObj,width,height,size){
+	var $img = $(fileObj).parent().find('img');
+	ajaxImgUpload(fileObj,width,height,size,function(imgurl){
+		$img.attr('src',imgurl);
+	});
+}
+
+function ajaxImgUpload(fileObj,width,height,size,fn){
 	var allowExtention = ".jpg,.bmp,.gif,.png"; //允许上传文件的后缀名
     var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
     var browserVersion = window.navigator.userAgent.toUpperCase();
 
-    var $img = $(fileObj).parent().find('img');
+    //var $img = $(fileObj).parent().find('img');
     var id = $(fileObj).attr('id');
     if (allowExtention.indexOf(extention) > -1) {
 
@@ -3023,9 +3073,8 @@ function my_ajaxFileUpload(fileObj){
                     var msg_str = reg.exec(data)[0];
                     var msg_str_done = msg_str.replace(/\\\\/g,'/').replace('public','');
                     var msg_obj = eval('('+msg_str_done+')');
-                    //alert(msg_obj.img_path);
-                    //alert($(fileObj).parent().find('.img_url').length);
-                    $img.attr('src',msg_obj.img_path);
+                    //$img.attr('src',msg_obj.img_path);
+                    fn&&fn(msg_obj.img_path);
 				}
 			},
 			error:function(){

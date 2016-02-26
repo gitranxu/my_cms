@@ -248,6 +248,9 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .sel_td_input{width: 100%;}
 .img_upload_div{display: inline-block;width: 420px;position: relative;}
 .img_upload_div img{display: block;max-height: 200px;width: auto;}
+img.maxh200{display: block;max-height: 200px;width: auto;}
+img.tdimg{display: inline-block;max-height: 30px;width: auto;}
+
 .edit_list_table{width: 100%;margin: 4px 0;}
 .edit_list_table thead tr{}
 .edit_list_table thead th{background: #7189CB;color: #fff;padding: 2px 0;}
