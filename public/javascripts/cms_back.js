@@ -332,7 +332,7 @@ CMS.prototype = {
 					    '</div>'+
 					'</div>';
 		},
-		getEditOneImgWin : function(){
+		/*getEditOneImgWin : function(){
 			return '<div id="c_edit_s_win_id" class="c_edit_s_win animated hid_rx need_remove">'+
 						'<div class="title">图片信息编辑</div>'+
 						'<div class="content clear_rx">'+
@@ -356,7 +356,7 @@ CMS.prototype = {
 							'</div>'+
 						'</div>'+
 					'</div>';
-		},
+		},*/
 		//jsondata:{first_class_name:"down",first_text:"向下移动",last_class_name:"up",last_text:"向上移动",mask:"floor_mask",bg:"floor_bg",c_x_btn_group:"c_floor_btn_group"}
 		getXMoveBtns : function(index,total,jsondata){
 			var items = null;
@@ -402,7 +402,7 @@ CMS.prototype = {
 			                '</div>'+
 			            '</div>'+
 			        '</div>';
-		},
+		}/*,
 		getEdit_Lunbo_win : function(){
 			return '<div id="c_edit_lunbo_win" class="hid_rx need_remove">'+
 						'<div class="win_bg"></div>'+
@@ -459,7 +459,7 @@ CMS.prototype = {
 							'</div>'+
 						'</div>'+
 					'</div>';
-		}
+		}*/
 	},
 	fn : function(){
 		var _this = this;
@@ -538,16 +538,16 @@ CMS.prototype = {
 					$('#chose_page_cntr').show();
 				}
 			},
-			add_edit_one_img_win : function(){
+			/*add_edit_one_img_win : function(){
 				var edit_one_img_win_str = _this.html.getEditOneImgWin();
 				_this.o.$root.append(edit_one_img_win_str);
 				_this.extra_event.edit_one_img_win_event();
-			},
-			getEdit_Lunbo_win : function(){
+			},*/
+			/*getEdit_Lunbo_win : function(){
 				var edit_lunbo_win_str = _this.html.getEdit_Lunbo_win();
 				_this.o.$root.append(edit_lunbo_win_str);
 				_this.extra_event.edit_lunbo_win_event();
-			},
+			},*/
 
 			removeDefaultHeightColor : function($obj){
 				$obj.removeClass('h50 h100 h150 h200 h250 h300 h350 h400 h450 h500 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18');
@@ -572,14 +572,14 @@ CMS.prototype = {
 				}
 				return '';
 			},
-			set_json_by_zone_key : function(jsondata_all,jsondata_item){
+			/*set_json_by_zone_key : function(jsondata_all,jsondata_item){
 				for(var i = 0,j = jsondata_all.length; i < j; i++ ){
 					if(jsondata_all[i]['zone_key'] == jsondata_item['zone_key']){
 						jsondata_all[i] = jsondata_item;
 					}
 				}
 				return jsondata_all;
-			},
+			},*/
 			show_c_edit_s_win : function($this,data){
 				var top = $this.offset().top;
 				var height = $this.height();
@@ -1107,7 +1107,7 @@ CMS.prototype = {
 	extra_event : function(){
 		var _this = this;
 		return {
-			edit_one_img_win_event : function(){
+			/*edit_one_img_win_event : function(){
 				_this.o.$root.delegate('#c_edit_s_win_id .yesorno','click',function(){
 					var $this = $(this);
 					$('.yesorno').removeClass('active');
@@ -1155,7 +1155,7 @@ CMS.prototype = {
 					});
 
 				});
-			},
+			},*/
 			edit_layout_btn_event : function(){
 				//点击编辑布局按钮时，添加子按钮（没有则添加，有则显示）
 				_this.o.$root.delegate('#edit_layout_btn','click',function(){
@@ -1652,11 +1652,11 @@ CMS.prototype = {
 			},
 			edit_lunbo_win_event : function(){
 
-				_this.o.$root.delegate('#c_edit_lunbo_win .win_bg','click',function(){
+				/*_this.o.$root.delegate('#c_edit_lunbo_win .win_bg','click',function(){
 					$('#c_edit_lunbo_win').hide();
-				});
+				});*/
 
-				_this.o.$root.delegate('#c_edit_lunbo_win .saveBtn','click',function(){
+				/*_this.o.$root.delegate('#c_edit_lunbo_win .saveBtn','click',function(){
 					//先新增或修改DOM，然后按照顺序组装成json，保存进数据库
 					var $win = $('#c_edit_lunbo_win');
 					var $tr_active = $win.find('.list_item tr.active');
@@ -1696,10 +1696,10 @@ CMS.prototype = {
 							}
 						}
 					});
-				});
+				});*/
 
 				//删除操作
-				_this.o.$root.delegate('#c_edit_lunbo_win .l_del','click',function(){
+				/*_this.o.$root.delegate('#c_edit_lunbo_win .l_del','click',function(){
 					//保存成功后再进行DOM操作
 					var $cur_tr = $(this).parents('tr');
 					$cur_tr.addClass('for_del');
@@ -1731,9 +1731,9 @@ CMS.prototype = {
 						}
 					});
 
-				});
+				});*/
 
-				_this.o.$root.delegate('#c_edit_lunbo_win .list_item tr','click',function(ev){
+				/*_this.o.$root.delegate('#c_edit_lunbo_win .list_item tr','click',function(ev){
 					if($(ev.target).hasClass('l_del')){
 						return;
 					}
@@ -1746,7 +1746,7 @@ CMS.prototype = {
 					$win.find('.lunbo_item_desc').val($this.find('.l_desc').text());
 					$win.find('.lunbo_item_new_open').val($this.find('.l_open_new').attr('open_new'));
 					$win.find('.upload_img_comp img').attr('src',$this.find('.l_img img').attr('src'));
-				});
+				});*/
 
 
 
@@ -1977,9 +1977,9 @@ CMS.prototype = {
 		this.fn.add_chose_model_win();//加入选择模板窗口
 		this.fn.add_chose_page_win();//加入选择页面窗口
 
-		this.fn.add_edit_one_img_win();//加入编辑图片小窗口
+		//this.fn.add_edit_one_img_win();//加入编辑图片小窗口
 
-		this.fn.getEdit_Lunbo_win();//加入编辑轮播图的窗口
+		//this.fn.getEdit_Lunbo_win();//加入编辑轮播图的窗口
 
 		this.fn.show_chose_page_win();//根据情况是否显示选择页面窗口
 
@@ -2561,21 +2561,21 @@ CMS.prototype = {
 						url : _this.urls.get_img_data_by_fidmid,
 						data : {fid : fid,mid : mid},
 						successFn : function(msg){
-							if(edit_type==1){//轮播图
+							/*if(edit_type==1){//轮播图
 								var html = _this.html.getLunboTr(eval('('+msg.msg+')'));
 								$("#c_edit_lunbo_win").attr('fid',fid).attr('mid',mid);
 								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
 								$("#c_edit_lunbo_win").show();
 							}else if(edit_type==2){//N宫格
-								if(msg.reCode==1){
-									that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
-								}else{
-									alert('查询结果为空');
-								}
+								
 							}else{
 								console.log('除了N宫格，轮播图之外的其他编辑按钮（有的话，需要扩展）')
+							}*/
+							if(msg.reCode==1){
+								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
+							}else{
+								alert('查询结果为空');
 							}
-								
 						}
 					});
 
@@ -2838,16 +2838,23 @@ CMS.prototype = {
 							$edit_item.find('tbody tr').each(function(){
 								var $tr = $(this);
 								var tr_arr = [];
-								$tr.find('td').each(function(){
-									var td_obj = {};
+								$tr.find('td').each(function(index){
+									
 									var val = '';
 									val = $(this).find('.tdinputsel').val();
 									if(!val){//图片的时候，上面取不出值，这时候需用下面的方法取值
 										val = $(this).find('.tdinputsel').attr('src');
 									}
-									td_obj.value = val;
-									td_obj.title = $(this).attr('_title');
-									tr_arr.push(td_obj);
+									//var title = $(this).attr('_title');
+									var title = $(this).parents('table').find('thead th:eq('+index+')').attr('_title');
+									console.log(title+'-----'+val);
+									if(val && title){
+										var td_obj = {};
+										td_obj.value = val;
+										td_obj.title = title;
+										tr_arr.push(td_obj);
+									}
+									
 								});
 								new_list.push(tr_arr);
 							});
@@ -2877,7 +2884,7 @@ CMS.prototype = {
 					},
 					reopen_model_config_win : function(json,zone_id,fid,mid){
 						//这里的zone_id属性可能为空
-						console.log(json);
+						//console.log(json);
 						//console.log(JSON.stringify(json));
 						//进行判断，如果已有，则不添加，在使用之前，需要先清空
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
