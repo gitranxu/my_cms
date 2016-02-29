@@ -1,0 +1,30 @@
+<div class="c_model css_namespaceabc c_edit">
+	<style>
+		.css_namespaceabc .lunbo_fade{height : 365px;width:770px;overflow:hidden;position:relative;}
+
+		.css_namespaceabc .lunbo_fade li img{height : 365px;width:770px;}
+		
+		.css_namespaceabc .lunbo_arrow_btn {background-image: url(http://pic.shop.lenovo.com.cn/g1/M00/00/4B/CmBZD1ZMC-6AKzbpAADV05uCIzQ915.png);background-repeat: no-repeat;cursor:pointer;}
+		.css_namespaceabc .lunbo_left_btn {float: left;width: 41px;height: 69px;position: absolute;left: 0px;top: 148px;z-index: 10;background-position: -88px -192px}
+		.css_namespaceabc .lunbo_right_btn {float: right;width: 41px;height: 69px;position: absolute;right: 0;top: 148px;z-index: 10;background-position: -130px -192px}
+		
+	</style>
+
+	<script class="tmpl need_remove" type="text/template">
+		<div class="lenovoplugin lunbo_fade" optp='{"container_width":770,"container_height":365,"direct":"right","dots_show":true,"dot_align":"center","auto_play":true,"move_pause":true,"test":false,"arrow_btn_show":true,"arrow_btn_align":"center"}'>
+			<div class="wrap">
+				<ul>
+					{@each list as it,index}
+						<li {@if index==0}class="nohid"{@/if} >
+							<a href="${it.href}" {@if it.open_new=="true"}target="_blank"{@/if}>
+								<img src="${it.imgurl}" alt="" _src="${it.imgurl}">
+							</a>
+						</li>
+					{@/each}
+				</ul>
+			</div>
+		</div>
+	</script>
+
+	<div class="translated"></div>
+</div>

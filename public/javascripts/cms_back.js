@@ -48,9 +48,6 @@ function CMS(){
 		$sys_main_btns : null,
 		$sys_sub_btns : null,
 		$cur_c_edit_btn : null //这个对象是点击编辑按钮时赋值的，用于图片编辑小窗口查询相关参数用
-	},
-	this.data = {
-		cur_one_img : {}//点击编辑按钮时，先去查询这个编辑按钮对应的fidmid的data数据，保存在该属性中
 	}
 }
 
@@ -332,31 +329,6 @@ CMS.prototype = {
 					    '</div>'+
 					'</div>';
 		},
-		/*getEditOneImgWin : function(){
-			return '<div id="c_edit_s_win_id" class="c_edit_s_win animated hid_rx need_remove">'+
-						'<div class="title">图片信息编辑</div>'+
-						'<div class="content clear_rx">'+
-							'<div class="upload_img_comp fl_rx">'+
-								'<input type="file" id="file1" name="file" class="input_file_btn" onchange="my_ajaxFileUpload(this);">'+
-								'<img src="/images/sys/default_upload.jpg" alt="">'+
-							'</div>'+
-							'<div class="img_info fl_rx">'+
-								'<div class="input">'+
-									'<div class="dec">请输入图片链接地址</div>'+
-									'<input type="text" class="text" placeholder="请输入图片链接地址">'+
-								'</div>'+
-								'<div class="input">'+
-									'<div class="dec">是否在新窗口打开</div>'+
-									'<div class="div clear_rx">'+
-										'<div class="yesorno yes fl_rx" open_new="yes">是</div>'+
-										'<div class="yesorno no active fr_rx" open_new="no">否</div>'+
-									'</div>'+
-								'</div>'+
-								'<div class="btn btn-success btn-block save" style="width:81%;">保存</div>'+
-							'</div>'+
-						'</div>'+
-					'</div>';
-		},*/
 		//jsondata:{first_class_name:"down",first_text:"向下移动",last_class_name:"up",last_text:"向上移动",mask:"floor_mask",bg:"floor_bg",c_x_btn_group:"c_floor_btn_group"}
 		getXMoveBtns : function(index,total,jsondata){
 			var items = null;
@@ -402,64 +374,7 @@ CMS.prototype = {
 			                '</div>'+
 			            '</div>'+
 			        '</div>';
-		}/*,
-		getEdit_Lunbo_win : function(){
-			return '<div id="c_edit_lunbo_win" class="hid_rx need_remove">'+
-						'<div class="win_bg"></div>'+
-						'<div class="lunbo_edit_win">'+
-							'<div class="bg"></div>'+
-							'<div class="content">'+
-								'<div class="edit_lunbo_item_zone clear_rx">'+
-									'<div class="fl_rx edit_lunbo_item">'+
-										'<div class="edit_group">'+
-											'<div class="edit_item">'+
-												'<span>排序：</span>'+
-												'<input type="text" class="lunbo_item_order edit_input">'+
-											'</div>'+
-											'<div class="edit_item">'+
-												'<span>链接：</span>'+
-												'<input type="text" class="lunbo_item_href edit_input">'+
-											'</div>'+
-											'<div class="edit_item">'+
-												'<span>简介：</span>'+
-												'<input type="text" class="lunbo_item_desc edit_input">'+
-											'</div>'+
-											'<div class="edit_item">'+
-												'<span>新窗口打开：</span>'+
-												'<select name="" id="" class="lunbo_item_new_open edit_input">'+
-													'<option value=true>是</option>'+
-													'<option value=false>否</option>'+
-												'</select>'+
-											'</div>'+
-											'<div class="saveBtn">保存</div>'+
-										'</div>'+
-									'</div>'+
-									'<div class="fl_rx img_upload">'+
-										'<div class="upload_img_comp fl_rx">'+
-											'<input type="file" id="lunbo_item_file" name="file" class="input_file_btn" onchange="my_ajaxFileUpload(this);">'+
-											'<img src="/images/sys/default_upload.jpg" alt="">'+
-										'</div>'+
-									'</div>'+
-								'</div>'+
-								'<div class="list_item">'+
-									'<table>'+
-										'<thead>'+
-											'<tr>'+
-												'<th>排序</th>'+
-												'<th>链接</th>'+
-												'<th>图片</th>'+
-												'<th>简介</th>'+
-												'<th>是否在新窗口打开</th>'+
-												'<th>操作</th>'+
-											'</tr>'+
-										'</thead>'+
-										'<tbody></tbody>'+
-									'</table>'+
-								'</div>'+
-							'</div>'+
-						'</div>'+
-					'</div>';
-		}*/
+		}
 	},
 	fn : function(){
 		var _this = this;
@@ -470,7 +385,7 @@ CMS.prototype = {
 				_this.o.$sys_sub_btns.hide();
 				_this.o.$sys_sub_btns.find('.choseBtn').removeClass('active');
 				//删除<script src="/javascripts/other/lunbo.js" id="lunbojsid"></script>，然后再重新生成
-				console.log('---------------执行...');
+				//console.log('---------------执行...');
 				$('#lunbojsid').remove();
 				var oScript= document.createElement("script"); 
 			    oScript.type = "text/javascript"; 
@@ -538,16 +453,6 @@ CMS.prototype = {
 					$('#chose_page_cntr').show();
 				}
 			},
-			/*add_edit_one_img_win : function(){
-				var edit_one_img_win_str = _this.html.getEditOneImgWin();
-				_this.o.$root.append(edit_one_img_win_str);
-				_this.extra_event.edit_one_img_win_event();
-			},*/
-			/*getEdit_Lunbo_win : function(){
-				var edit_lunbo_win_str = _this.html.getEdit_Lunbo_win();
-				_this.o.$root.append(edit_lunbo_win_str);
-				_this.extra_event.edit_lunbo_win_event();
-			},*/
 
 			removeDefaultHeightColor : function($obj){
 				$obj.removeClass('h50 h100 h150 h200 h250 h300 h350 h400 h450 h500 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18');
@@ -563,23 +468,6 @@ CMS.prototype = {
 					console.log('fid为【'+fid+'】的楼层的高度为0，楼层高度要么有默认高度，要么会被模板元素撑高，如果为0，可能是模板元素为绝对定位状态(请在样式表中手动明确规定楼层高度)或浮动状态(请给楼层元素加上clear_rx样式类)');
 				}
 			},
-			//这里假设jsondata结构为[{},{},{... zone_key:xxx}]
-			get_json_by_zone_key : function(jsondata,zone_key){
-				for(var i = 0,j = jsondata.length; i < j; i++ ){
-					if(jsondata[i]['zone_key'] == zone_key){
-						return jsondata[i];
-					}
-				}
-				return '';
-			},
-			/*set_json_by_zone_key : function(jsondata_all,jsondata_item){
-				for(var i = 0,j = jsondata_all.length; i < j; i++ ){
-					if(jsondata_all[i]['zone_key'] == jsondata_item['zone_key']){
-						jsondata_all[i] = jsondata_item;
-					}
-				}
-				return jsondata_all;
-			},*/
 			show_c_edit_s_win : function($this,data){
 				var top = $this.offset().top;
 				var height = $this.height();
@@ -632,13 +520,6 @@ CMS.prototype = {
 								$this.empty().append(html);
 							}
 						});
-					},
-					data : {
-						t_type : 1,
-						t_width : 2,
-						term_type : 3,
-						floor_id : 4,
-						t_height : 5
 					}
 				});
 			},
@@ -672,38 +553,6 @@ CMS.prototype = {
 					$saveBtn.parents('.edit_win').hide();
 					$saveBtn.parents('.edit_blocks_mask').find('.btn_group .edit').removeClass('clicked');
 				}
-			},
-			get_lunbo_sortjson : function(one_lunbo_item,addActive){
-				var result = {list:[]};
-				$('#c_edit_lunbo_win .list_item tbody tr').each(function(){
-					var $this = $(this);
-					if($this.hasClass('active')){
-						if(addActive){
-							var order = $this.find('.l_sort').text();
-							var href = $this.find('.l_href').text();
-							var desc = $this.find('.l_desc').text();
-							var new_open = $this.find('.l_open_new').attr('open_new');
-							var imgurl = $this.find('.l_img img').attr('src');
-							result.list.push({sort:order,imgurl:imgurl,href:href,desc:desc,open_new:new_open});
-						}
-					}else if($this.hasClass('for_del')){
-						console.log('准备删除，不用添加....')
-					}else{
-						var order = $this.find('.l_sort').text();
-						var href = $this.find('.l_href').text();
-						var desc = $this.find('.l_desc').text();
-						var new_open = $this.find('.l_open_new').attr('open_new');
-						var imgurl = $this.find('.l_img img').attr('src');
-						result.list.push({sort:order,imgurl:imgurl,href:href,desc:desc,open_new:new_open});
-					}
-				});
-				if(one_lunbo_item){
-					result.list.push(one_lunbo_item);
-				}
-				
-				//然后再排序
-				result.list.sort(function(a,b){return a.sort - b.sort;});
-				return result;
 			}
 		}
 		
@@ -755,19 +604,19 @@ CMS.prototype = {
 		},
 		list_tpl : function(){
 			return '{@each list as it}'+
-						'<li class="border_top_none" imgurl="${it.t_url}" dataid="${it.id}"><div class="bgli"></div>'+
+						'<li class="border_top_none" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
 							'<div class="ctnli">${it.name}'+
 								'{@if it.isUpdate}'+
 									'<span class="isupdate">有更新</span>'+
 								'{@/if}'+
 							'</div>'+
 						'</li>'+
-					'{@/each}'
+					'{@/each}';
 		},
 		list_sys_tpl : function(){
 			return '{@each list as it}'+
 						'{@if it.type==1}'+
-						'<li class="border_top_none" imgurl="${it.t_url}" dataid="${it.id}"><div class="bgli"></div>'+
+						'<li class="border_top_none" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
 							'<div class="ctnli">${it.name}'+
 								'{@if it.isUpdate}'+
 									'<span class="isupdate">有更新</span>'+
@@ -775,7 +624,7 @@ CMS.prototype = {
 							'</div>'+
 						'</li>'+
 						'{@/if}'+
-					'{@/each}'
+					'{@/each}';
 		},
 		list_user_tpl : function(){
 			return '{@each list as it}'+
@@ -830,10 +679,6 @@ CMS.prototype = {
 		//选择布局
 		this.o.$root.delegate('#chose_or_edit_page_btn','click',function(){
 			$('#chose_page_cntr').show();
-
-
-			//$('#chose_layouts_cntr').show();
-			//_this.fn.query_layout($('#chose_layouts_cntr').find('.piece_ul'));
 		});
 
 		//点击遮罩层关闭弹出窗口
@@ -932,30 +777,6 @@ CMS.prototype = {
 			$('#chose_models_cntr').hide();
 		});
 
-
-		//点击布局item时,选择布局这个按钮应该用最新的代替
-		/*this.o.$root.delegate('#chose_layouts_cntr .piece_ul li',{
-			click : function(){
-				var dataid = $(this).attr('dataid');//这里我应该要页面id
-				_this.ajax.common({
-					url : _this.urls.layout_query_content_by_id,
-					successFn : function(msg){
-						//alert(msg);
-						//这里msg返回的是html结构，一开始是隐藏的，append后，再进行了相关的处理后(块默认高度是否去掉，楼层默认高度是否去掉等，顺便判断一下，如果楼层高度为0，则进行提示)，再显示
-						$('#chose_layouts_cntr').hide();
-						if(msg){
-							_this.o.$content.empty().append(msg);
-							_this.parseHtml.parse();
-						}else{
-							alert('没有数据...');
-						}
-						_this.fn.page_reinit();
-					},
-					data : { pageid : '6a7ded55-b670-11e5-828f-003067b83487'},
-					dataType : 'html'
-				});
-			}
-		});*/
 
 		//删除楼层时
 		this.o.$root.delegate('.c_floor_btn_group .delete_model','click',function(){
@@ -1107,55 +928,6 @@ CMS.prototype = {
 	extra_event : function(){
 		var _this = this;
 		return {
-			/*edit_one_img_win_event : function(){
-				_this.o.$root.delegate('#c_edit_s_win_id .yesorno','click',function(){
-					var $this = $(this);
-					$('.yesorno').removeClass('active');
-					$this.addClass('active');
-				});
-
-				//点击保存时，将当前取的数据放进json中
-				_this.o.$root.delegate('#c_edit_s_win_id .save','click',function(){
-					var $this = $(this);
-					var $edit_btn = _this.o.$cur_c_edit_btn;
-					var fid = $edit_btn.parents('.c_floor').attr('fid');
-					var mid = $edit_btn.parents('.c_model').attr('mid');
-
-					var zone_key = $edit_btn.parents('.c_edit').attr('zone_key');
-					var imgurl = $this.parents('.content').find('img').attr('src');
-					var alt_name = $this.parents('.content').find('img').attr('alt');
-					var href = $this.parents('.content').find('.text').val();
-
-					var new_open = $this.parents('.content').find('.yesorno.active').attr('open_new');
-					var to_save_data = _this.fn.set_json_by_zone_key(_this.data.cur_one_img,{imgurl:imgurl,name:alt_name,href:href,new_open:new_open,zone_key:zone_key});
-
-					_this.ajax.common({
-						url : _this.urls.save_data,
-						method : 'POST',
-						data : {to_save_data : JSON.stringify(to_save_data),fid:fid,mid:mid},
-						successFn : function(msg){
-							if(msg.reCode==1){
-								$('#c_edit_s_win_id').removeClass('bounceInUp').hide();
-								alert(msg.msg);
-								//根据保存结果，修改DOM
-								//1.是否target,2.href,3.imgurl,4.name
-								var $c_edit = $edit_btn.parents('.c_edit');
-								if(new_open=="yes"){
-									$c_edit.find('a').attr('target','_blank').attr('href',href);
-								}else{
-									$c_edit.find('a').removeAttr('target').attr('href',href);
-								}
-								$c_edit.find('img').attr('src',imgurl).attr('alt',alt_name);
-								
-								$this.parents('.c_edit_s_win').hide();
-							}else{
-								console.log('返回的结果reCode不等于1')
-							}
-						}
-					});
-
-				});
-			},*/
 			edit_layout_btn_event : function(){
 				//点击编辑布局按钮时，添加子按钮（没有则添加，有则显示）
 				_this.o.$root.delegate('#edit_layout_btn','click',function(){
@@ -1626,9 +1398,6 @@ CMS.prototype = {
 
 				//双击page列表时
 				_this.o.$root.delegate('#chose_page_cntr .c_bottom .page_ul li','dblclick',function(){
-					/*var layout_id = $(this).parents('.content').find('.pageinfo .p_layout').attr('layoutid');
-					var pid = $(this).attr('pid');
-					_this.fn.parse_page(pid,layout_id);*/
 					var edit_url = $(this).attr('p_edit_page_url');
 					window.open('/generate_html/edit'+edit_url);
 				});
@@ -1649,107 +1418,6 @@ CMS.prototype = {
 					window.open('/create_layout.html');
 				});
 				
-			},
-			edit_lunbo_win_event : function(){
-
-				/*_this.o.$root.delegate('#c_edit_lunbo_win .win_bg','click',function(){
-					$('#c_edit_lunbo_win').hide();
-				});*/
-
-				/*_this.o.$root.delegate('#c_edit_lunbo_win .saveBtn','click',function(){
-					//先新增或修改DOM，然后按照顺序组装成json，保存进数据库
-					var $win = $('#c_edit_lunbo_win');
-					var $tr_active = $win.find('.list_item tr.active');
-
-					var fid = $('#c_edit_lunbo_win').attr('fid');
-					var mid = $('#c_edit_lunbo_win').attr('mid');
-
-					var addActive = true;
-					if($tr_active.length){//如果有，说明是更新操作
-						addActive = false;
-					}else{//这里是新增操作
-						addActive = true;
-					}
-
-					var order = $win.find('.lunbo_item_order').val();
-					var href = $win.find('.lunbo_item_href').val();
-					var desc = $win.find('.lunbo_item_desc').val();
-					var new_open = $win.find('.lunbo_item_new_open').val();//true,false
-					var imgurl = $win.find('.upload_img_comp img').attr('src');
-
-					var update_json = {sort:order,imgurl:imgurl,href:href,desc:desc,open_new:new_open};
-					//将active之外的tr进行遍历,再加上更新的这个，排序后保存到数据库
-					var json = _this.fn.get_lunbo_sortjson(update_json,addActive);
-
-					_this.ajax.common({
-						url : _this.urls.save_data,
-						data : {to_save_data : JSON.stringify(json),fid:fid,mid:mid},
-						method : 'POST',
-						successFn : function(msg){
-							if(msg.reCode==1){
-								//进行DOM操作
-								//$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(_this.html.getLunboTr(json));
-								//_this.parseHtml.re_parse_floor_model(fid,mid);
-								window.location.reload();
-							}else{
-								console.log('失败....');
-							}
-						}
-					});
-				});*/
-
-				//删除操作
-				/*_this.o.$root.delegate('#c_edit_lunbo_win .l_del','click',function(){
-					//保存成功后再进行DOM操作
-					var $cur_tr = $(this).parents('tr');
-					$cur_tr.addClass('for_del');
-
-					var fid = $('#c_edit_lunbo_win').attr('fid');
-					var mid = $('#c_edit_lunbo_win').attr('mid');
-
-					var update_json = null;
-					var json = _this.fn.get_lunbo_sortjson(update_json,true);
-					if(json.list.length==0){
-						json = null;
-					}else{
-						json = JSON.stringify(json);
-					}
-
-					_this.ajax.common({
-						url : _this.urls.save_data,
-						data : {to_save_data : json,fid:fid,mid:mid},
-						method : 'POST',
-						successFn : function(msg){
-							if(msg.reCode==1){
-								//进行DOM操作
-								var html = _this.html.getLunboTr(eval('('+json+')'));
-								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
-								_this.parseHtml.re_parse_floor_model(fid,mid);
-							}else{
-								console.log('失败....');
-							}
-						}
-					});
-
-				});*/
-
-				/*_this.o.$root.delegate('#c_edit_lunbo_win .list_item tr','click',function(ev){
-					if($(ev.target).hasClass('l_del')){
-						return;
-					}
-
-					var $this = $(this);
-					var $win = $('#c_edit_lunbo_win');
-					$this.addClass('active').siblings().removeClass('active');
-					$win.find('.lunbo_item_order').val($this.find('.l_sort').text());
-					$win.find('.lunbo_item_href').val($this.find('.l_href').text());
-					$win.find('.lunbo_item_desc').val($this.find('.l_desc').text());
-					$win.find('.lunbo_item_new_open').val($this.find('.l_open_new').attr('open_new'));
-					$win.find('.upload_img_comp img').attr('src',$this.find('.l_img img').attr('src'));
-				});*/
-
-
-
 			}
 		};
 	},
@@ -1889,28 +1557,8 @@ CMS.prototype = {
 				if(json.length){
 					_this.o.$content.find('.c_model').each(function(){
 						var $c_model = $(this);
-						//var mid = $this.attr('mid');
 						var $c_floor = $c_model.parents('.c_floor');
-						//var fid = $c_floor.attr('fid');
 						that.parse_c_floor_model(json,$c_floor,$c_model);
-						/*var $this = $(this);
-						var mid = $this.attr('mid');
-						var $c_floor = $this.parents('.c_floor');
-						var fid = $c_floor.attr('fid');
-
-						var mrendertype = $this.attr('mrendertype');
-						if(mrendertype==2){//如果模板类型为2，则需要进行加工，
-							var tmp = $this.find('.tmpl').html();
-							var data = that.get_data_by_fidmid(fid+mid,json);
-							var html = juicer(tmp,data);
-							$this.find('.translated').empty().append(html);
-							//$this.find('.tmpl').remove();
-						}else if(mrendertype==1){
-							console.log('普通HTML模板，不需要进行juicer处理');
-						}
-							
-
-						_this.fn.checkHeight($c_floor);//去掉默认高度后，检查一下如果该元素高度为0，则进行提示*/
 					});
 				}
 				//that.parse_c_edit(_this.o.$content);
@@ -1969,24 +1617,15 @@ CMS.prototype = {
 	init : function(){
 		
 		this.init_o();
-
 		this.init_unit();
 		//显示选择布局按钮
 		this.fn.add_fixed_btns();//加入悬浮按钮组
-		//this.fn.add_chose_layout_win();//加入选择布局窗口
 		this.fn.add_chose_model_win();//加入选择模板窗口
 		this.fn.add_chose_page_win();//加入选择页面窗口
-
-		//this.fn.add_edit_one_img_win();//加入编辑图片小窗口
-
-		//this.fn.getEdit_Lunbo_win();//加入编辑轮播图的窗口
-
 		this.fn.show_chose_page_win();//根据情况是否显示选择页面窗口
 
 		this.bind();
 		this.model_config_unit.bind();
-
-		//this.model_config_unit.fn().get_model_config_win();//测试
 	},
 	init_o : function(){
 		this.o.$root = $('#back');
@@ -2561,16 +2200,6 @@ CMS.prototype = {
 						url : _this.urls.get_img_data_by_fidmid,
 						data : {fid : fid,mid : mid},
 						successFn : function(msg){
-							/*if(edit_type==1){//轮播图
-								var html = _this.html.getLunboTr(eval('('+msg.msg+')'));
-								$("#c_edit_lunbo_win").attr('fid',fid).attr('mid',mid);
-								$("#c_edit_lunbo_win").find('.list_item table tbody').empty().append(html);
-								$("#c_edit_lunbo_win").show();
-							}else if(edit_type==2){//N宫格
-								
-							}else{
-								console.log('除了N宫格，轮播图之外的其他编辑按钮（有的话，需要扩展）')
-							}*/
 							if(msg.reCode==1){
 								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
 							}else{
@@ -2847,7 +2476,7 @@ CMS.prototype = {
 									}
 									//var title = $(this).attr('_title');
 									var title = $(this).parents('table').find('thead th:eq('+index+')').attr('_title');
-									console.log(title+'-----'+val);
+									//console.log(title+'-----'+val);
 									if(val && title){
 										var td_obj = {};
 										td_obj.value = val;
@@ -2889,12 +2518,9 @@ CMS.prototype = {
 						//进行判断，如果已有，则不添加，在使用之前，需要先清空
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
 						var tmpl = that.html.get_model_config_win();
-						//this.juicer_fn();
 						//console.log(json);
 						translated_json.model_prop_list = this.model_obj_to_array(json);
 						if(zone_id){translated_json.zone_prop_list = this.zone_obj_to_array(json,zone_id);}
-
-						//console.log(translated_json);
 
 						var html = juicer(tmpl,translated_json);
 						if(!$('#cms_model_config_win').length){

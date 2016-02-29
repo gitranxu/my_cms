@@ -1,0 +1,202 @@
+<div class="c_model css_namespace_xxx">
+	<style>
+        .css_namespace_xxx{height: 565px;}
+		.css_namespace_xxx .title1{font-size: 28px;position: absolute;top: 36px;left: 30px;color: #fff;z-index: 10;}
+		.css_namespace_xxx .title2{font-size: 16px;position: absolute;top: 106px;left: 30px;color: #fff;z-index: 10;}
+		.css_namespace_xxx .title3{font-size: 25px;position: absolute;top: 132px;left: 30px;color: #fff;z-index: 10;}
+		.css_namespace_xxx .bg{position: absolute;z-index: 1;top: 0;left: 0;}
+		.css_namespace_xxx .big{width: 397px;height: 565px;background: #abc123;position: relative;}
+			.css_namespace_xxx .big .showimg{position: absolute;z-index: 2;top: 213px;left: 97px;}
+		.css_namespace_xxx .small{width: 397px;height: 310px;background: #d44123;margin-left: 5px;position: relative;}
+			.css_namespace_xxx .small .showimg{position: absolute;z-index: 2;top: 88px;left: 195px;}
+		.css_namespace_xxx .small2{width: 396px;background: #d44dd3;position: relative;}
+		.css_namespace_xxx .middle{width: 798px;height: 250px;margin-top: 5px;margin-left: 5px;background: #12c423;position: relative;}
+			.css_namespace_xxx .middle .showimg{position: absolute;z-index: 2;top: 27px;left: 275px;}
+	</style>
+	<script class="tmpl" type="text/template">
+		{@each zone_item_list as it,index}
+			<div class="{@if index==0}big{@/if}{@if index==1}small{@/if}{@if index==2}small small2{@/if}{@if index==3}middle{@/if} fl_rx c_edit" zone_id="${it.zone_id}">
+				<div class="title1">${it.title.value}</div>
+				<div class="title2">${it.description.value}</div>
+				<div class="title3">${it.price.value}元</div>
+				<img src="${it.bg_imgurl.value}" alt="" class="bg">
+				<img src="${it.product_imgurl.value}" alt="" class="showimg">
+			</div>
+		{@/each}
+	</script>
+	<div class="translated">
+		
+	</div>
+</div>
+
+<!--
+
+{
+    "zone_item_list": [
+        {
+            "zone_id": "1", 
+            "title": {
+                "value": "乐檬k31", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "千元性价比新选择", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "700", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "bg_imgurl": {
+                "value": "/images/upload/QQ图片20160229155512.png", 
+                "type": "img", 
+                "title": "背景图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "bg_img", 
+                "key": "bg_imgurl"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/lenovo-phone01.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            }
+        }, 
+        {
+            "zone_id": "2", 
+            "title": {
+                "value": "乐檬k32", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "千元性价比新选择", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "699", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "bg_imgurl": {
+                "value": "/images/upload/QQ图片20160229160321.png", 
+                "type": "img", 
+                "title": "背景图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "bg_img", 
+                "key": "bg_imgurl"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/QQ图片20160229160419.png", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            }
+        }, 
+        {
+            "zone_id": "3", 
+            "title": {
+                "value": "乐檬k33", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "千元性价比新选择", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "699", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "bg_imgurl": {
+                "value": "/images/upload/QQ图片20160229160536.png", 
+                "type": "img", 
+                "title": "背景图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "bg_img", 
+                "key": "bg_imgurl"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/QQ图片20160229160615.png", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            }
+        }, 
+        {
+            "zone_id": "4", 
+            "title": {
+                "value": "乐檬k34", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "千元性价比新选择", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "699", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "bg_imgurl": {
+                "value": "/images/upload/QQ图片20160229160756.png", 
+                "type": "img", 
+                "title": "背景图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "bg_img", 
+                "key": "bg_imgurl"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/QQ图片20160229160833.png", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            }
+        }
+    ]
+}
+-->

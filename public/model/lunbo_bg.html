@@ -1,0 +1,111 @@
+<div class="c_model css_namespaceabc c_edit">
+	<style>
+		.css_namespaceabc .lunbo_fade{height : 510px;width:1200px;overflow:hidden;position:relative;}
+
+		.css_namespaceabc .lunbo_fade li img{height : 365px;width:770px;margin: 0 auto;}
+		
+		.css_namespaceabc .lunbo_arrow_btn {background-image: url(http://pic.shop.lenovo.com.cn/g1/M00/00/4B/CmBZD1ZMC-6AKzbpAADV05uCIzQ915.png);background-repeat: no-repeat;cursor:pointer;}
+		.css_namespaceabc .lunbo_left_btn {float: left;width: 41px;height: 69px;position: absolute;left: 0px;top: 148px;z-index: 10;background-position: -88px -192px}
+		.css_namespaceabc .lunbo_right_btn {float: right;width: 41px;height: 69px;position: absolute;right: 0;top: 148px;z-index: 10;background-position: -130px -192px}
+		
+	</style>
+
+	<script class="tmpl need_remove" type="text/template">
+		<div class="lenovoplugin lunbo_fade" optp='{"container_width":1200,"container_height":510,"direct":"right","dots_show":true,"dot_align":"center","auto_play":true,"move_pause":true,"test":false,"arrow_btn_show":true,"arrow_btn_align":"center","time":7000}' complete="change_bg">
+			<div class="wrap">
+				<ul>
+					{@each imgs.values as it,index}
+						<li {@if index==0}class="nohid"{@/if} >
+							<a href="{@each it as td_it}{@if td_it.title=='链接'}${td_it.value}{@/if}{@/each}" {@each it as td_it}{@if td_it.title=='是否新窗口打开'}{@if td_it.value==1}target="_blank"{@/if}{@/if}{@/each}>
+								<img src="{@each it as td_it}{@if td_it.title=='图片'}${td_it.value}{@/if}{@/each}" alt="" _src="{@each it as td_it}{@if td_it.title=='图片'}${td_it.value}{@/if}{@/each}">
+							</a>
+						</li>
+					{@/each}
+				</ul>
+			</div>
+		</div>
+	</script>
+
+	<div class="translated"></div>
+    <div class="jsurl hid_rx">/javascripts/model/lunbo_bg.js</div>
+</div>
+
+<!--
+{
+   "imgs": {
+        "thead_ths": [
+            {
+                "title": "是否新窗口打开", 
+                "width_bz": 1, 
+                "type": "selection", 
+                "options": "[{key:1,value:'是'},{key:2,value:'否'}]", 
+                "default_v": 2
+            }, 
+            {
+                "title": "链接", 
+                "width_bz": 1, 
+                "type": "text", 
+                "default_v": "http://www.lenovo.com.cn"
+            }, 
+            {
+                "title": "顺序", 
+                "width_bz": 1, 
+                "type": "text", 
+                "order_col": true, 
+                "default_v": 1
+            }, 
+            {
+                "title": "图片", 
+                "width_bz": 1, 
+                "type": "img", 
+        		"height":100,
+        		"width":200,
+        		"size":30,
+        		"input_id":"aaa",
+                "default_v": "http://pic.shop.lenovo.com.cn/g1/M00/01/4A/CmBZEFaXWu2Acc00AAF_K3-N-gw384.jpg"
+            }
+        ], 
+        "values": [
+            [
+                {
+                    "value": 1, 
+                    "title": "是否新窗口打开"
+                }, 
+                {
+                    "value": "http://www.lenovo.com.cn", 
+                    "title": "链接"
+                }, 
+                {
+                    "value": 3, 
+                    "title": "顺序"
+                }, 
+                {
+                    "value": "http://pic.shop.lenovo.com.cn/g1/M00/01/51/CmBZEFach9CASdQpAAF7jqqwsQM530.jpg", 
+                    "title": "图片"
+                }
+            ], 
+            [
+                {
+                    "value": 2, 
+                    "title": "是否新窗口打开"
+                }, 
+                {
+                    "value": "http://www.lenovo.com.cn", 
+                    "title": "链接"
+                }, 
+                {
+                    "value": 4, 
+                    "title": "顺序"
+                }, 
+                {
+                    "value": "http://pic.shop.lenovo.com.cn/g1/M00/01/36/CmBZD1aE4biAVEW7AAEKzgPExeY346.jpg", 
+                    "title": "图片"
+                }
+            ]
+        ], 
+        "type": "list", 
+	    "has_img":true,
+        "title": "xxx"
+    }
+}
+-->

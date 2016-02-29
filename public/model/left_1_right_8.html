@@ -1,0 +1,824 @@
+<div class="c_model css_namespace_first">
+	<style type="text/css">
+		.css_namespace_first .floor_section{width: 1200px;color: #000;}
+		.css_namespace_first .floor_section .floor_title{height: 48px;}
+		.css_namespace_first .floor_section .floor_title h3{float: left;height: 48px;line-height: 48px;font-size: 20px;font-weight: normal;width: 240px;}
+		.css_namespace_first .floor_section .floor_links{float: right;width: 960px;text-align: right;padding-top: 20px;}
+		.css_namespace_first .floor_section .floor_links a{color: #6f7170;margin-left: 12px;}
+		.css_namespace_first .floor_img{width: 1200px;}
+		.css_namespace_first .floor_left{float: left;width: 240px;height: 535px;overflow: hidden;}
+		.css_namespace_first .floor_section a,.css_namespace_first .floor_section a:focus{outline: none!important;text-decoration: none;color: #000;}
+		.css_namespace_first .floor_left img{width: 240px;height: 535px;}
+		.css_namespace_first .floor_right{float: right;width: 960px;border-top: 1px solid #dedede;}
+		.css_namespace_first .floor_item{width: 239px;height: 266px;border-right: 1px solid #dedede;border-bottom: 1px solid #dedede;float: left;position: relative;background: #fff;text-align: center;}
+		.css_namespace_first .floor_item .pro_img{overflow: hidden;padding: 12px 0;}
+		.css_namespace_first .floor_item a{display: block;}
+		.css_namespace_first .floor_item a img{border: 0;vertical-align: top;}
+		.css_namespace_first .floor_item .pro_img img{height: 164px;position: relative;top: 0;}
+		.css_namespace_first .floor_item .pro_name{font-size: 14px;height: 22px;line-height: 22px;overflow: hidden;padding: 0 14px;}
+		.css_namespace_first .floor_item .pro_description{color: #6f7170;height: 20px;line-height: 20px;overflow: hidden;padding: 0 12px;}
+		.css_namespace_first .floor_item .pro_price{font-size: 14px;color: #e2231a;height: 22px;line-height: 22px;overflow: hidden;}
+		.css_namespace_first .floor_item .floor_label{display: block;width: 54px;height: 54px;position: absolute;top: 0;right: 0;background-image: url(http://pic.shop.lenovo.com.cn/g1/M00/00/F0/CmBZD1ZynUyAUnWjAAGn0mxLsoI703.png);}
+		.css_namespace_first .floor_item .floor_label1{background-position: 0 -700px;}
+		.css_namespace_first .floor_item .floor_label2{background-position: 0 -760px;}
+		.css_namespace_first .floor_item .floor_label3{background-position: 0 -820px;}
+		.css_namespace_first .floor_item .floor_label4{background-position: 0 -880px;}
+		.css_namespace_first .floor_item .floor_label5{background-position: 0 -940px;}
+		.css_namespace_first .floor_item .floor_label6{background-position: 0 -1000px;}
+		.css_namespace_first .floor_item .floor_label7{background-position: 0 -1060px;}
+		.css_namespace_first .floor_item .floor_label8{background-position: 0 -1120px;}
+		.css_namespace_first .floor_item .floor_label9{background-position: 0 -1180px;}
+	</style>
+
+	<script class="tmpl" type="text/template">
+		<div class="floor_section floor_l1_r8">
+		    <div class="floor_title clear_rx">
+		        <h3>
+		            ${floor_name.value}
+		        </h3>
+		        <div class="floor_links">
+			    	{@each hrefs.values as it}
+			    		
+			    			<a {@each it as td_it}{@if td_it.title=='是否新窗口打开'}{@if td_it.value==1}target="_blank"{@/if}{@/if}{@/each} href="{@each it as td_it}{@if td_it.title=='链接'}${td_it.value}{@/if}{@/each}"
+				            title="{@each it as td_it}{@if td_it.title=='标题'}${td_it.value}{@/if}{@/each}">
+				            	{@each it as td_it}{@if td_it.title=='内部HTML'}$${td_it.value}{@/if}{@/each}
+				            </a>
+			    		
+		            {@/each}
+		        </div>
+		    </div>
+		    <div class="floor_img clear_rx">
+			{@each zone_item_list as it}
+				{@if it.zone_id=='leftimg'}
+					<div class="floor_left c_edit" zone_id="${it.zone_id}">
+						<a target="_blank" href="${it.href.value}"
+						    latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p1_goods_code_no_exists"
+						    title="">
+							<img width="240" height="535" src="${it.imgurl.value}"
+							_src="${it.imgurl.value}"
+							alt="" class="lazy_img">
+						    </a>
+					</div>
+				{@/if}
+			{@/each}
+		        <div class="floor_right">
+		        	{@each zone_item_list as it}
+					{@if it.zone_id!='leftimg'}
+					    <div class="floor_item c_edit" zone_id="${it.zone_id}">
+						<a target="_blank" href="${it.href.value}"
+						latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+						title="${it.title.value}" class="pro_img">
+						    <img width="164" height="164" src="${it.imgurl.value}"
+						    _src="${it.imgurl.value}"
+						    alt="${it.title.value}" class="lazy_img" style="left: 0px;">
+						</a>
+						<a target="_blank" href="${it.href.value}"
+						latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+						title="${it.title.value}" class="pro_name">
+						    ${it.title.value}
+						</a>
+						<a target="_blank" href="${it.href.value}"
+						latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+						title="${it.title.value}" class="pro_description">
+						    ${it.description.value}
+						</a>
+						<a target="_blank" href="${it.href.value}"
+						latag="latag_home_MD532_9f1edcb1-6b77-4863-8a4b-ef1d77bd3087_p2_50509"
+						title="${it.title.value}" class="pro_price.value">
+						    ${it.price.value}元
+						</a>
+						<span class="{@if it.ishot.value > 0}floor_label floor_label${it.ishot.value}{@/if}"></span>
+					    </div>
+					{@/if}
+				{@/each}
+		        </div>
+		    </div>
+		</div>
+	</script>
+
+	<div class="translated"></div>
+</div>
+
+<!--
+{
+    "floor_name": {
+        "value": "楼层名称可以设置哦", 
+        "type": "text", 
+        "title": "标题"
+    }, 
+    "zone_item_list": [
+        {
+            "zone_id": "leftimg", 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50982.html", 
+                "type": "text", 
+                "title": "链接"
+            }, 
+	    "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/g1/M00/00/7F/CmBZEFZdY9iALGjfAABvbEHIe5s561.jpg"
+	    }
+        }, 
+        {
+            "zone_id": 1, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接1"
+            }, 
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "price": {
+                "value": 4981, 
+                "type": "text", 
+                "title": "价格", 
+                "edit_can_not_see": true
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身1", 
+                "type": "text", 
+                "title": "简介"
+            }, 
+	    "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "ishot": {
+                "value": "1", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 1, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "正常"
+                    }
+                ]
+            }
+        }, 
+        {
+            "zone_id": 2, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接", 
+                "key": "href"
+            }, 
+	    "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "price": {
+                "value": "4982", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身b", 
+                "type": "text", 
+                "title": "简介", 
+                "key": "description"
+            }, 
+            "ishot": {
+                "value": "1", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ], 
+                "key": "ishot"
+            }
+        }, 
+        {
+            "zone_id": 3, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接"
+            }, 
+            "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "price": {
+                "value": 4983, 
+                "type": "text", 
+                "title": "价格"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身c", 
+                "type": "text", 
+                "title": "简介"
+            }, 
+            "ishot": {
+                "value": "2", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ]
+            }
+        }, 
+        {
+            "zone_id": 4, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接"
+            }, 
+            "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "price": {
+                "value": 4984, 
+                "type": "text", 
+                "title": "价格"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身d", 
+                "type": "text", 
+                "title": "简介"
+            }, 
+            "ishot": {
+                "value": "3", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ]
+            }
+        }, 
+        {
+            "zone_id": 5, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接"
+            }, 
+            "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "price": {
+                "value": 4985, 
+                "type": "text", 
+                "title": "价格"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身e", 
+                "type": "text", 
+                "title": "简介"
+            }, 
+            "ishot": {
+                "value": "4", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ]
+            }
+        }, 
+        {
+            "zone_id": 6, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接", 
+                "key": "href"
+            }, 
+            "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "price": {
+                "value": "4986", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身f", 
+                "type": "text", 
+                "title": "简介", 
+                "key": "description"
+            }, 
+            "ishot": {
+                "value": "5", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ], 
+                "key": "ishot"
+            }
+        }, 
+        {
+            "zone_id": 7, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接"
+            }, 
+            "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    },
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "price": {
+                "value": 4987, 
+                "type": "text", 
+                "title": "价格"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身g", 
+                "type": "text", 
+                "title": "简介"
+            }, 
+            "ishot": {
+                "value": "6", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ]
+            }
+        }, 
+        {
+            "zone_id": 8, 
+            "href": {
+                "value": "http://www.lenovo.com.cn/product/50828.html", 
+                "type": "text", 
+                "title": "链接"
+            }, 
+            "imgurl": {
+		"type": "img",
+		"title": "图片链接",
+		"height":100,
+		"width":200,
+		"size":30,
+		"input_id":"aaa",
+		"value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg"
+	    }, 
+            "title": {
+                "value": "标题内容", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "price": {
+                "value": 4988, 
+                "type": "text", 
+                "title": "价格"
+            }, 
+            "description": {
+                "value": "外观轻薄简约 多彩时尚机身h", 
+                "type": "text", 
+                "title": "简介"
+            }, 
+            "ishot": {
+                "value": "7", 
+                "type": "selection", 
+                "title": "是否热卖", 
+                "options": [
+                    {
+                        "key": 0, 
+                        "value": "不显示"
+                    }, 
+                    {
+                        "key": 1, 
+                        "value": "爆款"
+                    }, 
+                    {
+                        "key": 2, 
+                        "value": "热卖"
+                    }, 
+                    {
+                        "key": 3, 
+                        "value": "新品"
+                    }, 
+                    {
+                        "key": 4, 
+                        "value": "满赠"
+                    }, 
+                    {
+                        "key": 5, 
+                        "value": "满减"
+                    }, 
+                    {
+                        "key": 6, 
+                        "value": "直降"
+                    }, 
+                    {
+                        "key": 7, 
+                        "value": "首发"
+                    }, 
+                    {
+                        "key": 8, 
+                        "value": "鼎配"
+                    }, 
+                    {
+                        "key": 9, 
+                        "value": "送"
+                    }
+                ]
+            }
+        }
+    ], 
+    "hrefs": {
+        "thead_ths": [
+            {
+                "title": "标题", 
+                "width_bz": 1, 
+                "type": "text", 
+                "default_v": "去联想"
+            }, 
+            {
+                "title": "是否新窗口打开", 
+                "width_bz": 1, 
+                "type": "selection", 
+                "options": "[{key:1,value:'是'},{key:2,value:'否'}]", 
+                "default_v": 2
+            }, 
+            {
+                "title": "链接", 
+                "width_bz": 1, 
+                "type": "text", 
+                "default_v": "http://www.lenovo.com.cn"
+            }, 
+            {
+                "title": "顺序", 
+                "width_bz": 1, 
+                "type": "text", 
+                "order_col": true, 
+                "default_v": 1
+            }, 
+            {
+                "title": "内部HTML", 
+                "width_bz": 4, 
+                "type": "text", 
+                "default_v": "<i class='icon'></i><span>##val##</span>"
+            }
+        ], 
+        "values": [
+            [
+                {
+                    "value": "去联想", 
+                    "title": "标题"
+                }, 
+                {
+                    "value": 1, 
+                    "title": "是否新窗口打开"
+                }, 
+                {
+                    "value": "http://www.lenovo.com.cn", 
+                    "title": "链接"
+                }, 
+                {
+                    "value": 3, 
+                    "title": "顺序"
+                }, 
+                {
+                    "value": "<i class='icon'></i><span>##val##</span>", 
+                    "title": "内部HTML"
+                }
+            ], 
+            [
+                {
+                    "value": "去联想1", 
+                    "title": "标题"
+                }, 
+                {
+                    "value": 2, 
+                    "title": "是否新窗口打开"
+                }, 
+                {
+                    "value": "http://www.lenovo.com.cn", 
+                    "title": "链接"
+                }, 
+                {
+                    "value": 4, 
+                    "title": "顺序"
+                }, 
+                {
+                    "value": "<i class='icon'></i><span>##val##</span>", 
+                    "title": "内部HTML"
+                }
+            ]
+        ], 
+        "type": "list", 
+        "title": "xxx"
+    }
+}
+-->

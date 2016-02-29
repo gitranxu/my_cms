@@ -1,0 +1,245 @@
+<div class="c_model css_namespace_xxx">
+	<style>
+		.css_namespace_xxx {}
+		.css_namespace_xxx .margin_left0{margin-left: 0px;}
+		.css_namespace_xxx ul > li{float: left;margin-left: 46px;}
+		.css_namespace_xxx ul > li img{width: 265px;height: 254px;}
+		.css_namespace_xxx .title{font-size: 18px;color: #000;text-align: center;line-height: 28px;margin-top: 35px;}
+		.css_namespace_xxx .description{font-size: 14px;color: #707070;text-align: center;line-height: 30px;}
+		.css_namespace_xxx .price{text-align: center;margin-top: 12px;margin-bottom: 66px;}
+		.css_namespace_xxx .price span{background: #f9e304;color: #000;font-size: 16px;border-radius: 10px;line-height: 25px;text-align: center;padding: 1px 10px;}
+	</style>
+	<script class="tmpl" type="text/template">
+		
+		<ul class="clear_rx">
+			{@each zone_item_list as it,index}
+				<li class="c_edit {@if index==0}margin_left0{@/if}" zone_id="${it.zone_id}">
+					<a href="${it.href.value}">
+						<img src="${it.product_imgurl.value}" alt="实物图片">
+						<div class="title">${it.title.value}</div>
+						<div class="description">${it.description.value}</div>
+						<div class="price">
+							<span>${it.price.value}元</span>
+						</div>
+					</a>
+				</li>
+			{@/each}
+		</ul>
+		
+	</script>
+	<div class="translated">
+	</div>
+</div>
+
+<!--
+
+{
+	"zone_item_list": [
+        {
+            "zone_id": "1", 
+            "title": {
+                "value": "Jabra蓝牙耳机", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "舒适佩戴 语音导航 可同时与两部手机配对", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "399", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/lenovo-phone01.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            },
+            "href": {
+		        "value": "700", 
+		        "type": "text", 
+		        "title": "href", 
+		        "key": "price"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        },
+        {
+            "zone_id": "2", 
+            "title": {
+                "value": "Jabra蓝牙耳机", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "舒适佩戴 语音导航 可同时与两部手机配对", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "399", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/lenovo-phone01.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            },
+            "href": {
+		        "value": "700", 
+		        "type": "text", 
+		        "title": "href", 
+		        "key": "price"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        },
+        {
+            "zone_id": "3", 
+            "title": {
+                "value": "Jabra蓝牙耳机", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "舒适佩戴 语音导航 可同时与两部手机配对", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "399", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/lenovo-phone01.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            },
+            "href": {
+		        "value": "700", 
+		        "type": "text", 
+		        "title": "href", 
+		        "key": "price"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        }, 
+        {
+            "zone_id": "4", 
+            "title": {
+                "value": "乐檬k31", 
+                "type": "text", 
+                "title": "标题", 
+                "key": "title"
+            }, 
+            "description": {
+                "value": "千元性价比新选择", 
+                "type": "text", 
+                "title": "描述", 
+                "key": "description"
+            }, 
+            "price": {
+                "value": "700", 
+                "type": "text", 
+                "title": "价格", 
+                "key": "price"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/lenovo-phone01.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 100, 
+                "width": 200, 
+                "size": 30, 
+                "input_id": "product_img", 
+                "key": "product_imgurl"
+            },
+            "href": {
+		        "value": "700", 
+		        "type": "text", 
+		        "title": "href", 
+		        "key": "price"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        }
+    ]
+}
+
+-->

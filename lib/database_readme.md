@@ -150,7 +150,7 @@ reCode
 
 配置统一JSON格式：
 规则1：严格遵循JSON格式
-规则2：所有宫格都按顺序放到zone_item_list数据中，且有zone_id属性。在写模板时除了有zone_id属性外，还有一个edit_type属性，其中1代表轮播图编辑方式，2代表其他（目前一共就这两种方式）
+规则2：所有宫格都按顺序放到zone_item_list数据中，且有zone_id属性,一般情况下，该元素上同时要加上c_edit类名。
 
 规则3：类型为list的对象设置时，thead_ths属性中的对象的顺序与values中子数组中对象的顺序保持一致，其中thead_ths中对象中除了有表示类型的type属性外，还有表示宽度占比的属性width_bz,表示所占宽度的比重,order_col:true表示以该th值为参考值进行排序,这个属性可以没有，但最多只能一个th有,default_v表示当点击新增时的默认值，对于类型为selection对象来说，在设置其options时，一定要注意在这儿，这是一个字符串，提供选择的数组对象要放在双引号中！
 如果list有图片，则需要加上"has_img":true
