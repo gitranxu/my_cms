@@ -27,6 +27,8 @@ $().ready(function(){
 
 		    oScript.src = jsurl; 
 
+		    oScript.className = "need_remove";
+
 		    oBODY.appendChild( oScript);
 
 		},delay_time);

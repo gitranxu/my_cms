@@ -384,14 +384,6 @@ CMS.prototype = {
 				_this.o.$content.removeAttr('style');
 				_this.o.$sys_sub_btns.hide();
 				_this.o.$sys_sub_btns.find('.choseBtn').removeClass('active');
-				//删除<script src="/javascripts/other/lunbo.js" id="lunbojsid"></script>，然后再重新生成
-				//console.log('---------------执行...');
-				$('#lunbojsid').remove();
-				var oScript= document.createElement("script"); 
-			    oScript.type = "text/javascript"; 
-			    oScript.src = "/javascripts/other/lunbo.js"; 
-			    oScript.id = "lunbojsid";
-			    document.getElementsByTagName('BODY').item(0).appendChild( oScript);
 			},
 			add_fixed_btns : function(){
 
@@ -593,6 +585,7 @@ CMS.prototype = {
 			return html;
 		},
 		msg_to_sys_lis_html : function(msg){
+			//console.log(msg);
 			var tpl = this.list_sys_tpl();
 			var html = juicer(tpl,msg);
 			return html;
@@ -604,7 +597,7 @@ CMS.prototype = {
 		},
 		list_tpl : function(){
 			return '{@each list as it}'+
-						'<li class="border_top_none" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
+						'<li class="border_top_none" img_data="${it.t_url}" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
 							'<div class="ctnli">${it.name}'+
 								'{@if it.isUpdate}'+
 									'<span class="isupdate">有更新</span>'+
@@ -616,7 +609,7 @@ CMS.prototype = {
 		list_sys_tpl : function(){
 			return '{@each list as it}'+
 						'{@if it.type==1}'+
-						'<li class="border_top_none" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
+						'<li class="border_top_none" img_data="${it.t_url}" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
 							'<div class="ctnli">${it.name}'+
 								'{@if it.isUpdate}'+
 									'<span class="isupdate">有更新</span>'+
@@ -629,7 +622,7 @@ CMS.prototype = {
 		list_user_tpl : function(){
 			return '{@each list as it}'+
 						'{@if it.type==2}'+
-						'<li class="border_top_none" imgurl="${it.t_url}" dataid="${it.id}"><div class="bgli"></div>'+
+						'<li class="border_top_none" img_data="${it.t_url}" imgurl="${it.img_url}" dataid="${it.id}"><div class="bgli"></div>'+
 							'<div class="ctnli">${it.name}'+
 								'{@if it.isUpdate}'+
 									'<span class="isupdate">有更新</span>'+
@@ -637,7 +630,7 @@ CMS.prototype = {
 							'</div>'+
 						'</li>'+
 						'{@/if}'+
-					'{@/each}'
+					'{@/each}';
 		}
 	},
 	bind : function(){
@@ -1256,7 +1249,7 @@ CMS.prototype = {
 					var $this = $(this);
 					$this.addClass('active').siblings().removeClass('active');
 					//2.换图片
-					var imgurl = $this.attr('imgurl');
+					var imgurl = $this.attr('img_data');
 					imgurl && $this.parents('.content').find('.prev_view img').attr('src',imgurl);
 
 					//3.存信息
@@ -1390,10 +1383,10 @@ CMS.prototype = {
 					var $piece_ul = $this.parents('.content').find('.layoutlist .piece_ul');
 					var $target_li = $piece_ul.find('li[dataid="'+c_layout_id+'"]');
 					$target_li.addClass('active').siblings().removeClass('active');
-					var imgurl = $target_li.attr('imgurl');
+					var img_data = $target_li.attr('img_data');
 					var layout_name = $target_li.find('.ctnli').text();
 					$edit_group.find('.p_layout').val(layout_name);
-					$this.parents('.content').find('.prev_view img').attr('src',imgurl);
+					$this.parents('.content').find('.prev_view img').attr('src',img_data);
 				});
 
 				//双击page列表时

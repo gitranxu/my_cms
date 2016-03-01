@@ -1,0 +1,202 @@
+<div class="c_model css_namespace_xxx">
+	<style>
+		.css_namespace_xxx {}
+		img{border: 0;}
+		/*hot*/
+		.css_namespace_xxx .mbg-hot-product{width: 1200px; height: 180px; margin: 0 auto; overflow: hidden;}
+		.css_namespace_xxx .mbg-hot-product ul{width: 1210px;}
+		.css_namespace_xxx .mbg-hot-product li{position: relative; width: 400px; height: 180px; float: left; border-right: 1px solid #eee;}
+		.css_namespace_xxx .mbg-hot-product li .hot-content{position: absolute; top: 36px; right: 0; bottom: 0; left: 24px;}
+		.css_namespace_xxx .mbg-hot-product li h6, .css_namespace_xxx .mbg-hot-product li p{width: 180px; line-height: 22px; overflow:hidden;text-overflow:ellipsis;-o-text-overflow:ellipsis;white-space:nowrap;}
+		.css_namespace_xxx .mbg-hot-product li h6{font-size: 16px; color: #333; margin-bottom: 4px;}
+		.css_namespace_xxx .mbg-hot-product li p{font-size: 14px; color: #a0a0a0;}
+		.css_namespace_xxx .mbg-hot-product li a{position: relative; z-index: 1; -webkit-backface-visibility: hidden; display: block; width: 86px; height: 26px; margin-top: 15px; text-align: center; line-height: 26px; font-size: 14px; box-sizing: border-box;}
+		.css_namespace_xxx .mbg-hot-product li a.buy-btn{background-color: #dc2a2a; color: #fff; transition: background-color 0.3s, color 0.3s; -webkit-transition: background-color 0.3s, color 0.3s;}
+		.css_namespace_xxx .mbg-hot-product li a.buy-btn:before{content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1px solid #dc2a2a; z-index: -1; opacity: 0; -webkit-transform: scale3d(0.6, 0.6, 1); transform: scale3d(0.6, 0.6, 1); -webkit-transition: -webkit-transform 0.3s, opacity 0.3s; transition: transform 0.3s, opacity 0.3s; -webkit-transition-timing-function: cubic-bezier(0.75, 0, 0.125, 1); transition-timing-function: cubic-bezier(0.75, 0, 0.125, 1);}
+		.css_namespace_xxx .mbg-hot-product li a.buy-btn:hover{background-color: #fff; color: #dc2a2a;}
+		.css_namespace_xxx .mbg-hot-product li a.buy-btn:hover::before{-webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1); opacity: 1;}
+		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn{overflow: hidden; background-color: #fff; border: 1px solid #dc2a2a; color: #dc2a2a;-webkit-transition: border-color 0.3s, background-color 0.3s; transition: border-color 0.3s, background-color 0.3s; -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1); transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);}
+		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn span, .css_namespace_xxx .mbg-hot-product li a.yuyue-btn::after{-webkit-transition: -webkit-transform 0.3s, opacity 0.3s; transition: transform 0.3s, opacity 0.3s; -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1); transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);}
+		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn:hover span{opacity: 0; -webkit-transform: translate3d(0, -50px, 0); transform: translate3d(0, -50px, 0); color: #fff;}
+		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn::after{content: attr(data-text); position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; color: #fff; -webkit-transform: translate3d(0, 50px, 0); transform: translate3d(0, 50px, 0);}
+		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn:hover{background-color: #dc2a2a; border-color: #dc2a2a;}
+		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn:hover::after{opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0);}
+		.css_namespace_xxx .mbg-hot-product li .img-box img{float: right;}
+	</style>
+	<script class="tmpl" type="text/template">
+		<div class="mbg-hot-product">
+			<ul>
+				{@each zone_item_list as it}
+					<li class="c_edit" zone_id="${it.zone_id}">
+						<div class="hot-content">
+							<h6>${it.title.value}</h6>
+							<p>${it.description.value}</p>
+							{@if it.buy_title.value=='立即预约'}
+								<a href="#" {@if it.new_open.value==1}target="_blank"{@/if} class="yuyue-btn" data-text="立即预约">
+									<span>立即预约</span>
+								</a>
+							{@/if}
+							{@if it.buy_title.value=='立即购买'}
+								<a href="#" {@if it.new_open.value==1}target="_blank"{@/if} class="buy-btn">
+									<span>立即购买</span>
+								</a>
+							{@/if}
+						</div>
+						<div class="img-box">
+							<img src="${it.product_imgurl.value}" width="400" height="180">
+						</div>
+					</li>
+				{@/each}
+			</ul>
+		</div>
+
+	</script>
+	<div class="translated"></div>
+</div>
+
+<!--
+	
+{
+	"zone_item_list": [
+        {
+            "zone_id": "1", 
+            "title": {
+                "value": "微游戏机 MINI Station", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "description": {
+                "value": "预约送手机代金券", 
+                "type": "text", 
+                "title": "描述"
+            }, 
+            "buy_title": {
+                "value": "立即预约", 
+                "type": "text", 
+                "title": "购买类型"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/hot-proimg.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 180, 
+                "width": 400, 
+                "size": 30, 
+                "input_id": "product_img"
+            },
+            "href": {
+		        "value": "http://www.baidu.com", 
+		        "type": "text", 
+		        "title": "href"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        },
+        {
+            "zone_id": "2", 
+            "title": {
+                "value": "微游戏机 MINI Station", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "description": {
+                "value": "预约送手机代金券", 
+                "type": "text", 
+                "title": "描述"
+            }, 
+            "buy_title": {
+                "value": "立即购买", 
+                "type": "text", 
+                "title": "购买类型"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/hot-proimg.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 180, 
+                "width": 400, 
+                "size": 30, 
+                "input_id": "product_img"
+            },
+            "href": {
+		        "value": "http://www.baidu.com", 
+		        "type": "text", 
+		        "title": "href"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        },
+        {
+            "zone_id": "3", 
+            "title": {
+                "value": "微游戏机 MINI Station", 
+                "type": "text", 
+                "title": "标题"
+            }, 
+            "description": {
+                "value": "预约送手机代金券", 
+                "type": "text", 
+                "title": "描述"
+            }, 
+            "buy_title": {
+                "value": "立即购买", 
+                "type": "text", 
+                "title": "购买类型"
+            }, 
+            "product_imgurl": {
+                "value": "/images/upload/hot-proimg.jpg", 
+                "type": "img", 
+                "title": "实物图片", 
+                "height": 180, 
+                "width": 400, 
+                "size": 30, 
+                "input_id": "product_img"
+            },
+            "href": {
+		        "value": "http://www.baidu.com", 
+		        "type": "text", 
+		        "title": "href"
+		    },
+		    "new_open": {
+		        "value": "1", 
+		        "type": "selection", 
+		        "title": "是否新窗口打开", 
+		        "options": [
+		            {
+		                "key": 1, 
+		                "value": "是"
+		            }, {
+		                "key": 2, 
+		                "value": "否"
+		            }
+		        ]
+		    }
+        }
+    ]
+}
+
+-->

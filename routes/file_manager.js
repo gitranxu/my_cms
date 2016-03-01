@@ -22,6 +22,7 @@ router.post('/generate_html', function(req, res, next) {
 	$('head').append(head);
 	$('body').append(body);
 	$('.need_remove').remove();
+	$('body').append('<script src="/javascripts/other/lunbo.js" id="back_create"></script>');
 
 	var the_url = '';
 	var generate_html_query_url_sql = "SELECT page_url,prev_view_url FROM c_generate_html_config WHERE c_page_id = '"+pid+"' AND c_layout_id = '"+lid+"'";

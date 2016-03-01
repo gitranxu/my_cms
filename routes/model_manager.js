@@ -4,6 +4,7 @@ var juicer = require('juicer');//后台经量的jquery
 var router = express.Router();
 var sqlclient = require('../lib/mysql_cli');
 
+//查询模板时，如果传过来的宽度大于1200，则意思为通屏，通屏可以查询宽度满足大于等于1200的模板
 router.get('/query', function(req, res, next) {
 	var fid = req.query.fid;
 	var pid = req.query.pid;
@@ -18,8 +19,13 @@ router.get('/query', function(req, res, next) {
 			var model_type = rows[0].model_type;//如果为综合，则查找全部，否则直等
 			var term_type = rows[0].term_type;
 			var query_height = rows[0].query_height; //如果为0，则查找全部，否则直等
-
-			var query_model_sql = "SELECT id,name,img_url FROM c_model WHERE term_type ="+term_type+" AND model_width="+f_width;
+			var model_width_s = "";
+			if(f_width > 1200){
+				model_width_s = " model_width >= 1200 ";
+			}else{
+				model_width_s = " model_width = " + f_width;
+			}
+			var query_model_sql = "SELECT id,name,img_url FROM c_model WHERE term_type ="+term_type+" AND " + model_width_s;
 
 			if(model_type!=1){//如果不为综合，则直等
 				query_model_sql += " AND `model_type`="+model_type;

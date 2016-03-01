@@ -105,6 +105,7 @@ Fade.prototype = {
 				_this.play(target_index);
 			},
 			'mouseenter' : function(index){
+				console.log(_this.$dots_ul.find('>li').length);
 				var target_index = _this.$dots_ul.find('>li').index($(this));
 				_this.play(target_index);
 			}
@@ -134,6 +135,7 @@ Fade.prototype = {
 			this.cssurl = $GRUNTCONFIG.DEV.componentspath + '/plugin/lunbo/css/fade.css';
 		}catch(e){
 			console.log('测试环境下$GRUNTCONFIG是不支持的');
+			this.cssurl = "/stylesheets/fade.css";
 		}
 		
 		
@@ -867,8 +869,10 @@ $().ready(function(){
 		var $this = $(this);
 
 		if($this.hasClass('lunbo_fade')){
+			//console.log($this.html())
 			var optO = get_optO($this);
 			new Fade($this,optO).start();
+			//console.log($this.html())
 		}
 		if($this.hasClass('lunbo_slide')){
 			var optO = get_optO($this);
