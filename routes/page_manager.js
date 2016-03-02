@@ -260,7 +260,7 @@ function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layo
 			});
 		})
 		.task(function(done){
-			var insert_to_generate_config_sql = "INSERT INTO c_generate_html_config(id,c_page_id,c_layout_id,page_url,prev_view_url,edit_page_url,create_time,last_edit_time) VALUES(UUID(),'"+page_id+"','"+layout_id+"','"+page_url+"','"+edit_page_url+"','"+prev_view_url+"',NOW(),NOW())";
+			var insert_to_generate_config_sql = "INSERT INTO c_generate_html_config(id,c_page_id,c_layout_id,page_url,edit_page_url,prev_view_url,create_time,last_edit_time) VALUES(UUID(),'"+page_id+"','"+layout_id+"','"+page_url+"','"+edit_page_url+"','"+prev_view_url+"',NOW(),NOW())";
 			console.log(insert_to_generate_config_sql+'-----------------insert_to_generate_config_sql');
 			sqlclient.query(insert_to_generate_config_sql,function(err,rows,fields){
 				if(err) throw err;
