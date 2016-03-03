@@ -2284,6 +2284,29 @@ CMS.prototype = {
 					$('#cms_model_config_win').hide();
 				});
 
+				//点击node保存按钮，暂时保存json数据，不放到数据库
+				_this.o.$root.delegate('#cms_model_config_win .edit_tree_save','click',function(){
+					var $edit_tree_node_zone = $(this).parents('.edit_tree').find('.edit_tree_node_zone');
+					var $cms_model_config_win = $('#cms_model_config_win');
+					var s_json = $cms_model_config_win.attr('s_json');
+					var json_obj = eval('('+s_json+')');
+					var tree_id = $edit_tree_node_zone.attr('tree_id');
+					var node_id = $edit_tree_node_zone.attr('node_id');
+
+					$edit_tree_node_zone.find('.node_edit_input_item').each(function(){
+						var value = $(this).val() || $(this).attr('src');
+						console.log(value);
+						var _title = $(this).attr('_title');
+						that.fn().change_json_by_node(json_obj,tree_id,node_id,_title,value);
+					});
+					//console.log(JSON.stringify(json_obj));
+					$cms_model_config_win.attr('s_json',JSON.stringify(json_obj));
+
+					//保存后按钮跟编辑区都隐藏掉
+					$edit_tree_node_zone.empty();
+					$(this).hide();
+				});
+
 			},
 			html : {
 				get_model_config_win : function(){
@@ -2297,7 +2320,7 @@ CMS.prototype = {
 												'{@if it.type=="text"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="text">'+
-															'<span>${it.title}</span>'+
+															'<span class="title">${it.title}</span>'+
 															'<input type="text" value="${it.value}"/>'+
 														'</div>'+
 													'{@/if}'+
@@ -2305,7 +2328,7 @@ CMS.prototype = {
 												'{@if it.type=="selection"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="selection">'+
-															'<span>${it.title}</span>'+
+															'<span class="title">${it.title}</span>'+
 															'<select class="sel_input">'+
 																'{@each it.options as o_it}'+
 																	'<option value="${o_it.key}" {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
@@ -2344,10 +2367,19 @@ CMS.prototype = {
 												'{@if it.type=="img"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="img">'+
-															'<span class="hastitle" title="上传图片限制：(宽:${it.width})，(高:${it.height})，(大小:${it.size})">${it.title}</span>'+
+															'<span class="hastitle title" title="上传图片限制：(宽:${it.width})，(高:${it.height})，(大小:${it.size})">${it.title}</span>'+
 															'<input type="file" name="content" id="${it.input_id}" onchange="my_ajaxFileUpload(this,100,200,30)">'+
-															'<span></span>'+
+															'<span class="title"></span>'+
 															'<div class="img_upload_div"><img src="${it.value}"></div>'+
+														'</div>'+
+													'{@/if}'+
+												'{@/if}'+
+												'{@if it.type=="tree"}'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_tree">'+
+															'<div class="edit_item ztree" key="${it.key}" type="tree" id="${it.tree_id}"></div>'+
+															'<div class="edit_tree_node_zone"></div>'+
+															'<div class="edit_tree_save">保存</div>'+
 														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
@@ -2359,7 +2391,7 @@ CMS.prototype = {
 												'{@if it.type=="text"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="text">'+
-															'<span>${it.title}</span>'+
+															'<span class="title">${it.title}</span>'+
 															'<input type="text" value="${it.value}"/>'+
 														'</div>'+
 													'{@/if}'+
@@ -2367,7 +2399,7 @@ CMS.prototype = {
 												'{@if it.type=="selection"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="selection">'+
-															'<span>${it.title}</span>'+
+															'<span class="title">${it.title}</span>'+
 															'<select class="sel_input">'+
 																'{@each it.options as o_it}'+
 																	'<option value="${o_it.key}" {@if o_it.key==it.value}selected{@/if}>${o_it.value}</option>'+
@@ -2406,9 +2438,9 @@ CMS.prototype = {
 												'{@if it.type=="img"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="img">'+
-															'<span class="hastitle" title="上传图片限制：(宽:${it.width})，(高:${it.height})，(大小:${it.size})">${it.title}</span>'+
+															'<span class="hastitle title" title="上传图片限制：(宽:${it.width})，(高:${it.height})，(大小:${it.size})">${it.title}</span>'+
 															'<input type="file" name="content" id="${it.input_id}" onchange="my_ajaxFileUpload(this,100,200,30)">'+
-															'<span></span>'+
+															'<span class="title"></span>'+
 															'<div class="img_upload_div"><img src="${it.value}"></div>'+
 														'</div>'+
 													'{@/if}'+
@@ -2420,21 +2452,6 @@ CMS.prototype = {
 									'</div>'+
 								'</div>'+
 							'</div>';
-				},
-				getlist : function(jsondata){
-					var tmpl = '{@each list as it}'+
-									'<tr>'+
-										'<td class="l_sort">${it.sort}</td>'+
-										'<td class="l_href">${it.href}</td>'+
-										'<td class="l_img">'+
-											'<img src="${it.imgurl}" alt="">'+
-										'</td>'+
-										'<td class="l_desc">${it.desc}</td>'+
-										'<td open_new="${it.open_new}" class="l_open_new">{@if it.open_new=="true"}是{@else}否{@/if}</td>'+
-										'<td class="l_opt"><div class="l_del l_btn">删除</div></td>'+
-									'</tr>'+
-								'{@/each}';
-					return juicer(tmpl,jsondata);
 				}
 			},
 			fn : function(){
@@ -2524,6 +2541,232 @@ CMS.prototype = {
 						}
 						$('#cms_model_config_win').attr('fid',fid).attr('mid',mid).attr('s_json',JSON.stringify(json)).attr('target_zone_id',zone_id);
 						this.parse_edit_table();
+						this.parse_edit_tree(json);
+					},
+					parse_edit_tree : function(json){
+						var _this = this;
+
+						$('#cms_model_config_win .edit_tree .ztree').each(function(){
+							var $tree = $(this);
+							var id = $tree.attr('id');
+							var tree_obj = _this.get_tree_obj_by_tree_id(json,id);
+
+							var setting = {
+								view: {
+									addHoverDom: addHoverDom,
+									removeHoverDom: removeHoverDom,
+									selectedMulti: false
+								},
+								edit: {
+									enable: true
+								},
+								data: {
+									simpleData: {
+										enable: true
+									}
+								},
+								callback:{
+									beforeDrag: function(treeId,treeNodes){return false},
+									onClick: function(event,treeId,treeNode,clickFlag){
+										//第一步，显示
+										tree_obj = _this.get_tree_obj_by_tree_id(null,id);
+										var node_obj = _this.get_node_obj_by_node(tree_obj,treeNode);
+										_this.show_node_edit_info(treeId,node_obj);
+										var $edit_tree = $('#'+treeId).parents('.edit_tree');
+										var edit_item_length = $edit_tree.find('.edit_tree_node_zone .edit_item').length;
+										if(edit_item_length){ //如果有，则保存按钮显示
+											$edit_tree.find('.edit_tree_save').show();
+										}else{
+											$edit_tree.find('.edit_tree_save').hide();
+										}
+										
+										//第三步，保存(点击保存按钮时进行保存)
+									},
+									onRemove: function(event,treeId,treeNode){
+										//删除的时候，根据treeId,nodeId对s_json进行操作
+										_this.del_node_by_treeid_nodeid(treeId,treeNode.id);
+									},
+									onRename: function(event,treeId,treeNode,isCancel){
+										if(!isCancel){
+											_this.rename_node_by_treeid_nodeid(treeId,treeNode);
+										}
+									}
+								}
+							};
+
+							var zNodes = tree_obj.zNodes;
+							$.fn.zTree.init($("#"+id), setting, zNodes); //这里要保证treeNode的id是全局唯一
+						});
+
+						function addHoverDom(treeId, treeNode) {
+
+							var sObj = $("#" + treeNode.tId + "_span");
+							if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+							var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+								+ "' title='add node' onfocus='this.blur();'></span>";
+							sObj.after(addStr);
+							var btn = $("#addBtn_"+treeNode.tId);
+							if (btn) btn.bind("click", function(){
+								var zTree = $.fn.zTree.getZTreeObj(treeId);
+								var add_node_default_info = _this.get_add_node_default_info_by_treeId(treeId);
+								add_node_default_info.id = new UUID().id;
+								add_node_default_info.pId = treeNode.id;
+								add_node_default_info.name = 'xxx';
+								zTree.addNodes(treeNode, add_node_default_info);
+								_this.add_node_by_treeId(treeId,add_node_default_info);
+								return false;
+							});
+						};
+						function removeHoverDom(treeId, treeNode) {
+							$("#addBtn_"+treeNode.tId).unbind().remove();
+						};
+
+						
+					},
+					get_add_node_default_info_by_treeId : function(treeId){
+						var s_json = $('#cms_model_config_win').attr('s_json');
+						var json_obj = eval('('+s_json+')');
+
+						for(var i in json_obj){
+							if(json_obj[i].type=='tree'&&json_obj[i].tree_id==treeId){
+								return json_obj[i].add_node_default_info;
+							}
+						}
+					},
+					add_node_by_treeId : function(treeId,node_obj){
+						var s_json = $('#cms_model_config_win').attr('s_json');
+						var json_obj = eval('('+s_json+')');
+
+						for(var i in json_obj){
+							if(json_obj[i].type=='tree'&&json_obj[i].tree_id==treeId){
+								json_obj[i].zNodes.push(node_obj);
+							}
+						}
+						$('#cms_model_config_win').attr('s_json',JSON.stringify(json_obj));
+					},
+					del_node_by_treeid_nodeid : function(treeId,node_id){
+						var s_json = $('#cms_model_config_win').attr('s_json');
+						var json_obj = eval('('+s_json+')');
+						//删除的时候，根据删除后剩下的数组与原数组进行比对，剩下的留下，否则删除
+						var zTree = $.fn.zTree.getZTreeObj(treeId);
+						var leave_arr = zTree.transformToArray(zTree.getNodes());
+						var new_arr = [];
+						for(var i in json_obj){
+							if(json_obj[i].type=='tree'&&json_obj[i].tree_id==treeId){
+								//var index = 0;
+								var zNodes = json_obj[i].zNodes;
+								for(var k = 0,length = zNodes.length;k < length;k++){
+									var cur_node_id = zNodes[k].id;
+									var leave = isLeave(cur_node_id);//是否保留，默认不保留
+									if(leave){//如果不保留，则删除
+										new_arr.push(zNodes[k]);
+									}
+								}
+								json_obj[i].zNodes = new_arr;
+							}
+						}
+						$('#cms_model_config_win').attr('s_json',JSON.stringify(json_obj));
+
+						function isLeave(node_id){
+							var result = false;
+							for(var i = 0,j = leave_arr.length; i < j;i++){
+								if(leave_arr[i].id==node_id){
+									result = true;
+									break;
+								}
+							}
+							return result;
+						}
+					},
+					rename_node_by_treeid_nodeid : function(treeId,treeNode){
+						var s_json = $('#cms_model_config_win').attr('s_json');
+						var json_obj = eval('('+s_json+')');
+
+						for(var i in json_obj){
+							if(json_obj[i].type=='tree'&&json_obj[i].tree_id==treeId){
+								var zNodes = json_obj[i].zNodes;
+								for(var k = 0,length = zNodes.length;k < length;k++){
+									if(zNodes[k].id == treeNode.id){
+										zNodes[k].name = treeNode.name;
+										break;
+									}
+								}
+							}
+						}
+						$('#cms_model_config_win').attr('s_json',JSON.stringify(json_obj));
+					},
+					show_node_edit_info : function(treeId,node_obj){
+						//console.log(node_obj)
+						var html = '';
+						for(var i in node_obj){
+							if(typeof node_obj[i]=='object'){
+								if(node_obj[i].type=='text'){
+									html += '<div class="edit_item"><span class="title">'+node_obj[i].title+'</span><input type="text" value="'+node_obj[i].value+'" class="node_edit_input_item" _title="'+node_obj[i].title+'"/></div>';
+								}else if(node_obj[i].type=='selection'){
+									var opt_o = node_obj[i].options;
+									var opts = '';
+									if(opt_o.length){
+										for(var k = 0,j = opt_o.length;k < j;k++){
+											var selected_s = '';
+											console.log(node_obj[i])
+											if(node_obj[i].value==opt_o[k].key){
+												selected_s = 'selected';
+											}
+											opts += '<option value="'+opt_o[k].key+'" '+selected_s+'>'+opt_o[k].value+'</option>';
+										}
+									}
+									html += '<div class="edit_item"><span class="title">'+node_obj[i].title+'</span><select class="sel_input node_edit_input_item" _title="'+node_obj[i].title+'">'+opts+'</select></div>';
+								}else if(node_obj[i].type=='img'){
+
+									var id = node_obj[i].input_id+''+treeId;
+									var width = node_obj[i].width || 100;
+									var height = node_obj[i].height || 200;
+									var size = node_obj[i].size || '30';
+
+									html += '<div class="edit_item"><span class="hastitle title" title="上传图片限制：(宽:'+width+')，(高:'+height+')，(大小:'+size+')">'+node_obj[i].title+'</span><input type="file" name="content" id="'+id+'" onchange="my_ajaxFileUpload(this,'+width+','+height+','+size+')"><span class="title"></span><div class="img_upload_div"><img src="'+node_obj[i].value+'" class="node_edit_input_item" _title="'+node_obj[i].title+'"></div></div>';
+								}
+								
+							}
+						}
+						$('#'+treeId).parents('.edit_tree').find('.edit_tree_node_zone').attr('node_id',node_obj.id).attr('tree_id',treeId).empty().append(html);
+					},
+					change_json_by_node : function(json_obj,tree_id,node_id,_title,value){
+						var node_obj = null;
+						for(var i in json_obj){
+							if(json_obj[i].type == 'tree' && json_obj[i].tree_id == tree_id){
+								var nodes = json_obj[i].zNodes;
+								for(var k = 0,length = nodes.length;k < length;k++){
+									if(nodes[k].id==node_id){
+										node_obj = nodes[k];
+										break;
+									}
+								}
+							}
+						}
+						for(var i in node_obj){
+							if(node_obj[i].title == _title){
+								node_obj[i].value = value;
+							}
+						}
+					},
+
+					get_node_obj_by_node : function(tree_obj,treeNode){
+						var id = treeNode.id;
+						for(var i in tree_obj.zNodes){
+							if(tree_obj.zNodes[i].id==id){
+								return tree_obj.zNodes[i];
+							}
+						}
+					},
+					get_tree_obj_by_tree_id : function(json,id){
+						if(!json){
+							json = eval('('+$('#cms_model_config_win').attr('s_json')+')');
+						}
+						for(var i in json){
+							if(json[i].tree_id && json[i].tree_id==id){
+								return json[i];
+							}
+						}
 					},
 					parse_edit_table : function(){
 						var _this = this;
