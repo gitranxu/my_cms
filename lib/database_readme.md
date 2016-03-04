@@ -161,6 +161,8 @@ reCode
 
 规则5：对于类型为img的对象设置来说，最好设置时每次给的input_id的值不要一致，当然，在zone_item_list中，每个对象之间的input_id值可以一致
 
+规则6：类型为tree的，根节点的pId为0
+
 {
     "floor_name": {
         "value": "1F Lenovo 电脑 楼层一", 
@@ -329,11 +331,93 @@ reCode
                 "title": "价格"
             }
         }
-    ]
+    ],
+    "test":{
+        "type":"tree",
+        "tree_id":"testid",
+        "add_node_default_info":{
+            "id":1,
+            "pId":0,
+            "name":"父节点1",
+            "a_title":{
+                    "value":"1f axcf",
+                    "type":"text",
+                    "title":"标题"
+                },
+            "new_open": {
+                "value": "1", 
+                "type": "selection", 
+                "title": "是否新窗口打开", 
+                "options": [
+                    {
+                    "key": 1, 
+                    "value": "是"
+                    }, {
+                    "key": 2, 
+                    "value": "否"
+                    }
+                ]
+                }
+        },
+        "zNodes":[
+            {
+                "id":1,
+                "pId":0,
+                "name":"父节点1",
+                "open":true,
+                "a_title":{
+                        "value":"1f axcf",
+                        "type":"text",
+                        "title":"标题"
+                    },
+                "new_open": {
+                    "value": "1", 
+                    "type": "selection", 
+                    "title": "是否新窗口打开", 
+                    "options": [
+                        {
+                        "key": 1, 
+                        "value": "是"
+                        }, {
+                        "key": 2, 
+                        "value": "否"
+                        }
+                    ]
+                    }
+            },
+            {"id":2,"pId":0,"name":"父节点2","open":true,
+                "bg_imgurl": {
+                    "value": "http://pic.shop.lenovo.com.cn/164/g1/M00/03/9D/CmBZEFY4fFOAGMOiAACVIl7z1UQ956.jpg",
+                    "type": "img",
+                    "title": "背景图片",
+                    "height":100,
+                    "width":200,
+                    "size":30,
+                    "input_id":"bg_img"
+                 }
+            },
+            {"id":11,"pId":1,"name":"叶子节点11","open":false}
+        ]
+    }
 }
 	
 
 
+
+
+<div>
+    {@each test.zNodes as node}
+        {@if node.pId==0}
+            <span>一级菜单${node.name}</span>
+            {@each test.zNodes as node2}
+                {@if node2.pId==node.id}
+                    <span>二级菜单${node2.name}</span>
+                {@/if}
+            {@/each}
+        {@/if}
+        
+    {@/each}
+</div>
 
 
 
