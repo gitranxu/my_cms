@@ -1,6 +1,6 @@
 html,body{height: 100%;}
 body{background: #957E45;}
-#tools{position: fixed;top: 10px;left: 10px;width: 200px;height: 600px;background: rgba(77,44,33,.7);}
+#tools{position: fixed;top: 10px;left: 10px;width: 200px;height: 650px;background: rgba(77,44,33,.7);}
 .comps{position: relative;}
 .toolitem{width: 180px;height: 40px;line-height: 40px;text-align: center;color: #fff;position: absolute;left: 10px;}
 .toolitem span{position: absolute;right: 6px;line-height: 40px;height: 40px;font-size: 20px;}

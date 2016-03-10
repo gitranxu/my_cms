@@ -12,8 +12,11 @@
 							<div class="list_name">
 								<a href="http://www.lenovo.com.cn/lenovoindex.html" target="_blank" class="list_nm" style="height:10.56px;line-height:10.56px" latag="latag_pc_common_navcategory_1_Lenovo 电脑">
 										${node1.name}
-									<span class="list_usepng list_icona"></span>
-									
+									{@each menutree.zNodes as node2,index}
+										{@if node2.pId==node1.id}
+											<span class="list_usepng list_icona"></span>
+										{@/if}
+									{@/each}
 								</a>
 								<div class="list_cont" style="display: none;">
 									<div class="list_lt">

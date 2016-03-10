@@ -6,13 +6,14 @@ var sqlclient = require('../lib/mysql_cli');
 
 //查询模板时，如果传过来的宽度大于1200，则意思为通屏，通屏可以查询宽度满足大于等于1200的模板
 router.get('/query', function(req, res, next) {
-	var fid = req.query.fid;
-	var pid = req.query.pid;
-	var f_width = req.query.f_width;
+	var _pool = sqlclient.init()._pool;
+	var fid = _pool.escape(req.query.fid);
+	var pid = _pool.escape(req.query.pid);
+	var f_width = _pool.escape(req.query.f_width);
 
-	var filter_model_sql = "SELECT model_type,term_type,query_height FROM c_page_floor WHERE c_floor_id = '"+fid+"' AND c_page_id = '"+pid+"'";
+	var filter_model_sql = "SELECT model_type,term_type,query_height FROM c_page_floor WHERE c_floor_id = "+fid+" AND c_page_id = "+pid;
 	console.log(filter_model_sql+'------------filter_model_sql');
-	sqlclient.init();
+	//sqlclient.init();
 	sqlclient.query(filter_model_sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
@@ -54,19 +55,20 @@ router.get('/query', function(req, res, next) {
 
 
 router.get('/get_img_data_by_fidmid', function(req, res, next) {
-	var fid = req.query.fid;
-	var mid = req.query.mid;
-	var sql = 'SELECT '+
-				  ' d.data, '+
-				  ' m.data_model '+ 
-				' FROM '+
-				  ' c_data d, '+
-				  ' c_model m '+ 
-				' WHERE d.c_model_id = m.id '+ 
-				  ' AND d.c_floor_id = "'+fid+'" '+ 
-				  ' AND d.c_model_id = "'+mid+'"';
-	console.log(sql+'-----------------get_img_data_by_fidmid');
-	sqlclient.init();
+	var _pool = sqlclient.init()._pool;
+	var fid = _pool.escape(req.query.fid);
+	var mid = _pool.escape(req.query.mid);
+	var sql = "SELECT "+
+				  " d.data, "+
+				  " m.data_model "+ 
+				" FROM "+
+				  " c_data d, "+
+				  " c_model m "+ 
+				" WHERE d.c_model_id = m.id "+ 
+				  " AND d.c_floor_id = "+fid+
+				  " AND d.c_model_id = "+mid;
+	console.log(sql+'---------111--------get_img_data_by_fidmid');
+	//sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
@@ -88,22 +90,22 @@ router.get('/get_img_data_by_fidmid', function(req, res, next) {
 //如果有数据，取数据，如果没有，则取默认数据
 //得到模板，将tmpl去掉，将解析的加到translate元素中
 router.get('/model_query_content_data_by_id', function(req, res, next) {
-	
+	var _pool = sqlclient.init()._pool;
 
-	var mid = req.query.mid;
-	var fid = req.query.fid;
+	var mid = _pool.escape(req.query.mid);
+	var fid = _pool.escape(req.query.fid);
 	var sql = "SELECT a.*,b.data "+
 				  " FROM ( "+
 					" SELECT   m.content,m.`data_model`,m.`id`,m.render_type mrendertype "+
 					" FROM c_model m  "+
-					" WHERE m.id = '"+mid+"' "+
+					" WHERE m.id = "+mid+" "+
 					" ) a LEFT JOIN  "+
 					" (SELECT d.`c_model_id`,d.`data`  "+
 					" FROM c_data d  "+
-					" WHERE d.`c_floor_id`='"+fid+"') b "+
+					" WHERE d.`c_floor_id`="+fid+") b "+
 				   " ON a.id = b.`c_model_id`";
-	console.log(sql+'------------------------model_query_content_data_by_id_sql');
-	sqlclient.init();
+	console.log(sql+'------------111------------model_query_content_data_by_id_sql');
+	//sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){

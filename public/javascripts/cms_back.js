@@ -1,4 +1,10 @@
 //DEBUG=my_sec_app npm start
+/*
+	author:ranxu
+	qq:610944015
+	email:ranxu2@lenovo.com
+	date:20160308
+*/
 function CMS(){
 	this.setting = {
 		version : '1.0.0',
@@ -33,6 +39,7 @@ function CMS(){
 		save_data : '/data/save_data',//不需要改
 		generate_html : '/file/generate_html',//不需要改
 		generate_edit_html : '/file/generate_edit_html',
+		is_file_url_exist : '/file/is_file_url_exist',
 		get_bs_b_css_by_bsid : '/page/get_bs_b_css_by_bsid',//改过
 		update_css_by_id_table_col : '/page/update_css_by_id_table_col', //第16个接口 //改过
 		get_f_css_by_fid : '/page/get_f_css_by_fid',//改过
@@ -202,7 +209,7 @@ CMS.prototype = {
 		},
 		getPageLis : function(jsondata){//name,id pid,url,project_name,c_layout_id
 			var tmpl = 	'{@each pagelist as it}'+
-							'<li pid="${it.c_page_id}" p_name="${it.name}" p_page_url="${it.page_url}" p_prev_view_url="${it.prev_view_url}" p_edit_page_url="${it.edit_page_url}"  p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}">'+
+							'<li pid="${it.c_page_id}" p_name="${it.name}" p_page_url="${it.page_url}" p_prev_view_url="${it.prev_view_url}" p_edit_page_url="${it.edit_page_url}"  p_project_name="${it.project_name}" p_c_layout_id="${it.c_layout_id}" layout_name="${it.layout_name}" img_data="${it.img_data}">'+
 	                            '<div class="bgli"></div>'+
 	                            '<div class="ctnli">${it.name}</div>'+
 	                        '</li>'+
@@ -306,15 +313,15 @@ CMS.prototype = {
 										    '</div>'+
 										    '<div class="edit_item">'+
 										        '<span title="用于生成编辑页面,注意格式" class="hastitle">编辑url :</span>'+
-										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_edit_url edit_input">'+
+										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_edit_url edit_input" col="edit_page_url">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
 										        '<span title="用于查看页面的预览效果,注意格式" class="hastitle">预览url :</span>'+
-										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_prev_view_url edit_input">'+
+										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_prev_view_url edit_input" col="prev_view_url">'+
 										    '</div>'+
 										    '<div class="edit_item">'+
 										        '<span title="生成的正式页面的路径,注意格式" class="hastitle" >正式url :</span>'+
-										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_page_url edit_input">'+
+										        '<input type="text" value="" placeholder="/xxx/x.html" class="p_page_url edit_input" col="page_url">'+
 										    '</div>'+
 										    '<div class="saveBtn">保存</div>'+
 										'</div>'+
@@ -684,8 +691,9 @@ CMS.prototype = {
 			var $this = $(this);
 			$this.addClass('active').siblings().removeClass('active');
 			var index = $('.layoutlist .tabs li').index($('.layoutlist .tabs li.active'));
+			//alert(index)
 			$('#chose_page_cntr .layoutlist').find('.piece_ul').addClass('hid_rx');
-			$('#chose_page_cntr .layoutlist').find('.piece_ul:eq('+index+')').removeClass('hid_rx');
+			$('#chose_page_cntr .layoutlist').find('.piece_ul').eq(index).removeClass('hid_rx');
 		});
 
 		//选择模板
@@ -1048,6 +1056,10 @@ CMS.prototype = {
 					var $bs_edit_group = $this.parents('.edit_win').find('.bs_edit_group');
 						var bsid = $bs_edit_group.attr('bsid');
 						var width = $bs_edit_group.find('.width').val();
+						if(width==0||!width){
+							alert('块组宽度不能为空或0');
+							return;
+						}
 						var marginA = $bs_edit_group.find('.marginA').val();
 						var marginB = $bs_edit_group.find('.marginB').val();
 						var bs_css_s = 'width:'+width+'px!important;margin-top:'+marginA+'px!important;margin-bottom:'+marginB+'px!important;';
@@ -1069,6 +1081,10 @@ CMS.prototype = {
 							var $this = $(this);
 							var bid = $this.attr('bid');
 							var width = $this.find('.width').val();
+							if(width==0||!width){
+								alert('块宽度不能为空或0');
+								return;
+							}
 							var marginA = $this.find('.marginA').val();
 							var marginB = $this.find('.marginB').val();
 							var b_css_s = 'width:'+width+'px!important;margin-left:'+marginA+'px!important;margin-right:'+marginB+'px!important;';
@@ -1272,8 +1288,9 @@ CMS.prototype = {
 									$pageinfo.find('.p_project').val(msg.project_name);
 
 								}else if(msg.reCode==10000){ //如果没有数据，则清空
-									$pageinfo.find('.p_page_url').val('');
+									$pageinfo.find('.p_edit_url').val('');
 									$pageinfo.find('.p_prev_view_url').val('');
+									$pageinfo.find('.p_page_url').val('');
 									$pageinfo.find('.p_project').val('');
 								}else{
 									alert(msg.msg);
@@ -1285,6 +1302,30 @@ CMS.prototype = {
 					$p_layout.val(layout_name);
 					$p_layout.attr('layoutid',layout_id);
 					
+				});
+
+				//URL发生变化时检查是否已存在，如果被占用则给出提示
+				_this.o.$root.find('#chose_page_cntr .pageinfo').delegate('.p_edit_url,.p_prev_view_url,.p_page_url','change',function(){
+					var $this = $(this);
+					_this.ajax.common({
+						url : _this.urls.is_file_url_exist,
+						data : {
+							col : $this.attr('col'),
+							url : $this.val()
+						},
+						successFn : function(msg){
+							if(msg.reCode==1){
+								if(msg.msg){
+									//说明已被占用，给出提示
+									$this.addClass('unvalidate');
+									$this.parent().append('<div class="hintinfo">url已被占用，请修改</div>');
+								}else{
+									$this.removeClass('unvalidate');
+									$this.parent().find('.hintinfo').remove();
+								}
+							}
+						}
+					});
 				});
 
 				//编辑页的保存按钮事件
@@ -1300,6 +1341,14 @@ CMS.prototype = {
 					var page_url = $edit_group.find('.p_page_url').val();
 					var prev_view_url = $edit_group.find('.p_prev_view_url').val();
 
+					if(/^\s*$/.test(name)){
+						alert('【页面名称】不能为空！');
+						return;
+					}
+					if(!layout_id){
+						alert('请选择一种布局！');
+						return;
+					}
 					if(/^\s*$/.test(edit_url)){
 						alert('【编辑url】不能为空！');
 						return;
@@ -1326,6 +1375,10 @@ CMS.prototype = {
 						alert('【正式url】格式为【/xxx/x.html】，即斜杠+目录名+文件名.html,注意前后没有空格！');
 						return;
 					}
+					if($edit_group.find('.hintinfo').length){
+						alert('请修改完错误后再保存');
+						return;
+					}
 
 					_this.ajax.common({
 						url : _this.urls.save_or_update_page_info,
@@ -1345,7 +1398,7 @@ CMS.prototype = {
 								_this.ajax.common({
 									url : _this.urls.generate_edit_html,
 									method : 'POST',
-									data : {pid : msg.pid,lid : layout_id,edit_url:edit_url},
+									data : {pid : msg.pid.replace(/\'/g,""),lid : layout_id,edit_url:edit_url},
 									successFn : function(msg){
 										if(msg.reCode==1){
 											window.open(msg.the_url);
@@ -1382,9 +1435,18 @@ CMS.prototype = {
 
 					var $piece_ul = $this.parents('.content').find('.layoutlist .piece_ul');
 					var $target_li = $piece_ul.find('li[dataid="'+c_layout_id+'"]');
-					$target_li.addClass('active').siblings().removeClass('active');
-					var img_data = $target_li.attr('img_data');
-					var layout_name = $target_li.find('.ctnli').text();
+					$target_li.parent().parent().find('.piece_ul li').removeClass('active');
+					$target_li.addClass('active');
+					var show_index = $target_li.parent().parent().find('.piece_ul').index($target_li.parent());
+					$target_li.parent().parent().find('.piece_ul').addClass('hid_rx');
+					$target_li.parent().parent().find('.piece_ul').eq(show_index).removeClass('hid_rx');
+					$target_li.parent().parent().find('.tabs li').removeClass('active');
+					$target_li.parent().parent().find('.tabs li').eq(show_index).addClass('active');
+
+					//$target_li.addClass('active').siblings().removeClass('active');
+
+					var img_data = $this.attr('img_data');
+					var layout_name = $this.attr('layout_name');
 					$edit_group.find('.p_layout').val(layout_name);
 					$this.parents('.content').find('.prev_view img').attr('src',img_data);
 				});
@@ -2187,7 +2249,6 @@ CMS.prototype = {
 					var mid = $c_model.attr('mid');
 					var fid = $c_floor.attr('fid');
 					var zone_id = $this.parents('.c_edit').attr('zone_id');
-					var edit_type = $this.parents('.c_edit').attr('edit_type');
 					
 					_this.ajax.common({
 						url : _this.urls.get_img_data_by_fidmid,
@@ -2442,6 +2503,13 @@ CMS.prototype = {
 															'<input type="file" name="content" id="${it.input_id}" onchange="my_ajaxFileUpload(this,100,200,30)">'+
 															'<span class="title"></span>'+
 															'<div class="img_upload_div"><img src="${it.value}"></div>'+
+														'</div>'+
+													'{@/if}'+
+												'{@/if}'+
+												'{@if it.type=="ajax_win"}'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="ajax_win">'+
+															'<div>123</div>'+
 														'</div>'+
 													'{@/if}'+
 												'{@/if}'+

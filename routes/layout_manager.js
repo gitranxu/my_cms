@@ -14,10 +14,10 @@ router.get('/query', function(req, res, next) {
 	});
 });
 router.get('/layout_query_content_by_id', function(req, res, next) {
-
+	var _pool = sqlclient.init()._pool;
 	//var layoutid = req.query.layoutid;'"+layoutid+"'
-	var pageid = req.query.pid;
-	var layoutid = req.query.lid;
+	var pageid = _pool.escape(req.query.pid);
+	var layoutid = _pool.escape(req.query.lid);
 	var core_sql = "SELECT "+
 					  " b.*, "+
 					  " cm.id 'mid', "+
@@ -54,9 +54,9 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					      " AND bs.id = b.c_blocks_id  "+
 					      " AND bs.id = pbs.`c_blocks_id` "+ 
 					      " AND b.id = pb.c_block_id  "+
-					      " AND l.id = '"+layoutid+"'  "+
-					      " AND pbs.`c_page_id` = '"+pageid+"'  "+
-					      " AND pb.`c_page_id` = '"+pageid+"') a "+ 
+					      " AND l.id = "+layoutid+"  "+
+					      " AND pbs.`c_page_id` = "+pageid+"  "+
+					      " AND pb.`c_page_id` = "+pageid+") a "+ 
 					    " LEFT JOIN  "+
 					      " (SELECT  "+
 					        " cf.`content`, "+
@@ -68,7 +68,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					        " c_floor cf, "+
 					        " c_page_floor pf  "+
 					      " WHERE cf.`id` = pf.`c_floor_id` "+ 
-					        " AND pf.`c_page_id` = '"+pageid+"') f "+ 
+					        " AND pf.`c_page_id` = "+pageid+") f "+ 
 					      " ON a.bid = f.`c_block_id`) b  "+
 					  " LEFT JOIN  "+
 					    " (SELECT  "+
@@ -95,7 +95,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 					 " b.forder ASC ";
 				 
 		console.log(core_sql+'-----layout_query_content_by_id(core_sql)');
-	sqlclient.init();
+	//sqlclient.init();
 	sqlclient.query(core_sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
@@ -162,7 +162,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 				$('.cntr').prepend('<style></style>');
 			}
 			$('.cntr > style').prepend(css_s);
-			$('.cntr').attr('pid',pageid).attr('lid',layoutid);
+			$('.cntr').attr('pid',req.query.pid).attr('lid',req.query.lid);
 			res.status(200).send($.html());
 			
 		}else{
@@ -178,7 +178,7 @@ router.get('/layout_query_content_by_id', function(req, res, next) {
 //得到某个页面中所有的楼层模板数据json,如果模板没有数据，则使用默认数据
 router.post('/get_floor_model_datas_of_layout',function(req,res,next){
 	var queryparams = req.body.queryparams;
-	if(!queryparams){
+	if(!queryparams||queryparams.toLowerCase().indexOf('delete')!=-1){
 		res.json({reCode:10001,msg:'传入的参数违法'});
 		return;
 	}

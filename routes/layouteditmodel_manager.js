@@ -7,15 +7,17 @@ var sqlclient = require('../lib/mysql_cli');
 
 
 router.post('/change_layout_status',function(req,res,next){
-	var layout_id = req.body.layout_id;
+	var _pool = sqlclient.init()._pool;
+
+	var layout_id = _pool.escape(req.body.layout_id);
 	var cur_status = req.body.cur_status;
 	var changed_status = 1;
 	if(cur_status==1){
 		changed_status = 2;
 	}
-	var change_layout_status_sql = "UPDATE c_layout l SET l.`valid` = "+changed_status+",last_edit_time = NOW() WHERE l.`id` = '"+layout_id+"'";
+	var change_layout_status_sql = "UPDATE c_layout l SET l.`valid` = "+changed_status+",last_edit_time = NOW() WHERE l.`id` = "+layout_id;
 	console.log(change_layout_status_sql+'------------------------------------------change_layout_status_sql');
-	sqlclient.init();
+	//sqlclient.init();
 	sqlclient.query(change_layout_status_sql,function(err,rows,fields){
 		if(err) throw err;
 		res.json({reCode:1,msg:'更改状态成功!',changed_status:changed_status});
@@ -46,15 +48,16 @@ router.get('/query_layout_edit_model',function(req,res,next){
 
 //得到某个页面中所有的楼层模板数据json,如果模板没有数据，则使用默认数据
 router.post('/generate_layout',function(req,res,next){
+	var _pool = sqlclient.init()._pool;
 
 	var cntr_html = req.body.cntr_html;
-	var layout_name = req.body.layout_name;
-	var img_data = req.body.img_data;
+	var layout_name = _pool.escape(req.body.layout_name);
+	var img_data = _pool.escape(req.body.img_data);
 
 	//先根据layout_name去查询一下，如果该名字已存在，则给用户提示
-	var is_layout_name_exist_sql = "SELECT 1 FROM c_layout l WHERE l.`name` = '"+layout_name+"'";
+	var is_layout_name_exist_sql = "SELECT 1 FROM c_layout l WHERE l.`name` = "+layout_name;
 	console.log(is_layout_name_exist_sql+'------------------------------------------is_layout_name_exist_sql');
-	sqlclient.init();
+	//sqlclient.init();
 	sqlclient.query(is_layout_name_exist_sql,function(err,rows,fields){
 		if(err) throw err;
 		if(rows.length){
@@ -98,7 +101,7 @@ router.post('/generate_layout',function(req,res,next){
 
 
 			//保存到c_layout,c_blocks,c_block三张表中
-			var insert_into_c_layout_sql = "INSERT INTO c_layout(id,`name`,content,img_data,create_time,edit_model,last_edit_time) VALUES('"+layout_id+"','"+layout_name+"','<div class=\"cntr\"></div>','"+img_data+"',NOW(),'"+cntr_html+"',NOW())";
+			var insert_into_c_layout_sql = "INSERT INTO c_layout(id,`name`,content,img_data,create_time,edit_model,last_edit_time) VALUES('"+layout_id+"',"+layout_name+",'<div class=\"cntr\"></div>',"+img_data+",NOW(),"+_pool.escape(cntr_html)+",NOW())";
 
 			howdo
 				.task(function(done){
@@ -199,8 +202,6 @@ function insert_blocks(sqlclient,data,fn){
 }
 
 function insert_block(sqlclient,data,fn){
-	console.log(data);
-	console.log('--------------------999');
 	if(data){
 		var insert_into_c_block_sql = "INSERT INTO c_block(id,content,c_blocks_id,create_time,default_order) VALUES('"+data.id+"','"+data.content+"','"+data.c_blocks_id+"',NOW(),"+data.default_order+");";
 
