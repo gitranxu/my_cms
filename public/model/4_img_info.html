@@ -14,10 +14,10 @@
 		<ul class="clear_rx">
 			{@each zone_item_list as it,index}
 				<li class="c_edit {@if index==0}margin_left0{@/if}" zone_id="${it.zone_id}">
-					<a href="${it.href.value}">
+					<a href="${it.product_imgurl.value}">
 						<img src="${it.product_imgurl.value}" alt="实物图片">
-						<div class="title">${it.title.value}</div>
-						<div class="description">${it.description.value}</div>
+						<div class="title">${it.product_name.value}</div>
+						<div class="description">${it.cp_name.value}</div>
 						<div class="price">
 							<span>${it.price.value}元</span>
 						</div>

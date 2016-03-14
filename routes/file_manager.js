@@ -135,8 +135,10 @@ router.post('/generate_edit_html', function(req, res, next) {
 					'<title>编辑页面区</title>'+
 					'<link rel="stylesheet" href="/stylesheets/base.css">'+
 					'<link rel="stylesheet" href="/stylesheets/animate.min.css">'+
+					'<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">'+
 					'<link rel="stylesheet" href="/stylesheets/back_common.css" class="need_remove">'+
 					'<link rel="stylesheet" href="/stylesheets/metroStyle/metroStyle.css" class="need_remove">'+
+					'<link rel="stylesheet" href="/stylesheets/jPaginate/style.css" class="need_remove">'+
 				'</head>'+
 				'<body>'+
 				  	'<div id="back"><div id="content"><div class="cntr" pid="'+pid+'" lid="'+lid+'"></div></div><div id="config" class="need_remove"></div></div>'+

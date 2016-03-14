@@ -16,6 +16,9 @@ var floor_manager = require('./routes/floor_manager');
 var model_manager = require('./routes/model_manager');
 var data_manager = require('./routes/data_manager');
 var page_manager = require('./routes/page_manager');
+
+var test_manager = require('./routes/test_manager');
+
 var edit_model_manager = require('./routes/edit_model_manager');
 
 var layouteditmodel_manager = require('./routes/layouteditmodel_manager');
@@ -45,6 +48,7 @@ app.use('/data', data_manager);
 app.use('/page', page_manager);
 app.use('/layouteditmodel_manager', layouteditmodel_manager);
 app.use('/edit_model_manager', edit_model_manager);
+app.use('/test_manager', test_manager);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

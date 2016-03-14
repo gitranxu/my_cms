@@ -2255,7 +2255,7 @@ CMS.prototype = {
 						data : {fid : fid,mid : mid},
 						successFn : function(msg){
 							if(msg.reCode==1){
-								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid);
+								that.fn().reopen_model_config_win(eval('('+msg.msg+')'),zone_id,fid,mid,$this);
 							}else{
 								alert('查询结果为空');
 							}
@@ -2368,6 +2368,37 @@ CMS.prototype = {
 					$(this).hide();
 				});
 
+				//点击ajax_btn按钮
+				var service_fn = null;
+				_this.o.$root.delegate('#cms_model_config_win .ajax_btn','click',function(){
+					var that = this;
+					var service = $(this).attr("service");//这里生成JS
+					if($('#'+service).length==0){//如果没有，则动态加进去
+						var oBODY = document.getElementsByTagName('BODY').item(0);
+						var oScript= document.createElement("script"); 
+					    oScript.type = "text/javascript"; 
+					    oScript.src = "/javascripts/service/"+service+".js"; 
+					    oScript.id = service;
+					    oScript.className = "need_remove";
+					    oBODY.appendChild( oScript);
+					    oScript.onload = oScript.onreadystatechange = function(){
+					    	if(!this.readyState||this.readyState=='loaded'||this.readyState=='complete'){
+					    		if(typeof service_fn != 'function'){
+					    			service_fn = eval('('+$(that).attr("fn_name")+'())');
+					    		}
+								service_fn(_this.o.$root,_this.o.$c_edit_btn_of_model_config_win,$('#cms_model_config_win'));
+					    	}
+					    }
+					}else{
+						if(typeof service_fn != 'function'){
+			    			service_fn = eval('('+$(that).attr("fn_name")+'())');
+			    		}
+						service_fn(_this.o.$root,_this.o.$c_edit_btn_of_model_config_win,$('#cms_model_config_win'));
+					}
+					
+					
+				});
+
 			},
 			html : {
 				get_model_config_win : function(){
@@ -2444,6 +2475,14 @@ CMS.prototype = {
 														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
+												'{@if it.type=="ajax_win"}'+
+													'{@if !it.edit_can_not_see}'+
+														'<div class="edit_item" key="${it.key}" type="ajax_win">'+
+															'<span class="title"></span>'+
+															'<div class="ajax_btn" fn_name="${it.fn_name}" service="${it.service}">${it.title}</div>'+
+														'</div>'+
+													'{@/if}'+
+												'{@/if}'+
 											'{@/each}'+
 										'</div>'+
 
@@ -2509,7 +2548,8 @@ CMS.prototype = {
 												'{@if it.type=="ajax_win"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="edit_item" key="${it.key}" type="ajax_win">'+
-															'<div>123</div>'+
+															'<span class="title"></span>'+
+															'<div class="ajax_btn" fn_name="${it.fn_name}" service="${it.service}">${it.title}</div>'+
 														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
@@ -2589,10 +2629,8 @@ CMS.prototype = {
 							}
 						}
 					},
-					reopen_model_config_win : function(json,zone_id,fid,mid){
+					reopen_model_config_win : function(json,zone_id,fid,mid,$c_edit_btn){
 						//这里的zone_id属性可能为空
-						//console.log(json);
-						//console.log(JSON.stringify(json));
 						//进行判断，如果已有，则不添加，在使用之前，需要先清空
 						var translated_json = {model_prop_list:null,zone_prop_list:null};
 						var tmpl = that.html.get_model_config_win();
@@ -2610,6 +2648,9 @@ CMS.prototype = {
 						$('#cms_model_config_win').attr('fid',fid).attr('mid',mid).attr('s_json',JSON.stringify(json)).attr('target_zone_id',zone_id);
 						this.parse_edit_table();
 						this.parse_edit_tree(json);
+
+						//将点击的那个编辑按钮对象保存起来
+						_this.o.$c_edit_btn_of_model_config_win = $c_edit_btn;
 					},
 					parse_edit_tree : function(json){
 						var _this = this;

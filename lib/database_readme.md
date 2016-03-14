@@ -163,12 +163,20 @@ reCode
 
 规则6：类型为tree的，根节点的pId为0
 
+规则7：类型为ajax_win的，意思是提供了一个点击按钮，点击的时候弹出一个选择窗口，双击里面的列表项，则将对应的值自动带出。(目前提供了一个选择商品列表的服务，service,fn_name的值固定写死，以后加其他服务时，这两个值会变，该服务双击列表项时，带出的值，固定为product_name[商品名称],cp_name[产品名称],wl_no[物料编号],cp_no[产品编号],sale_type[销售类型],term_type[平台],price[价格],product_imgurl[图片链接]，所以用到该服务的模板，如果想使用该功能，则在定义json格式时，key值对应成相应的值即可)
+
 {
     "floor_name": {
         "value": "1F Lenovo 电脑 楼层一", 
         "type": "text", 
         "title": "标题"
     }, 
+    "chose_product":{
+        "type":"ajax_win",
+        "title":"选择商品",
+        "service":"chose_product",
+        "fn_name":"chose_product_service"
+    },
     "ishot": {
         "value": "1", 
         "type": "selection", 

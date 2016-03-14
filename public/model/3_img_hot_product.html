@@ -22,6 +22,8 @@
 		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn:hover{background-color: #dc2a2a; border-color: #dc2a2a;}
 		.css_namespace_xxx .mbg-hot-product li a.yuyue-btn:hover::after{opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0);}
 		.css_namespace_xxx .mbg-hot-product li .img-box img{float: right;}
+
+		
 	</style>
 	<script class="tmpl" type="text/template">
 		<div class="mbg-hot-product">
@@ -31,12 +33,12 @@
 						<div class="hot-content">
 							<h6>${it.title.value}</h6>
 							<p>${it.description.value}</p>
-							{@if it.buy_title.value=='立即预约'}
+							{@if it.buy_title.value=="立即预约"}
 								<a href="#" {@if it.new_open.value==1}target="_blank"{@/if} class="yuyue-btn" data-text="立即预约">
 									<span>立即预约</span>
 								</a>
 							{@/if}
-							{@if it.buy_title.value=='立即购买'}
+							{@if it.buy_title.value=="立即购买"}
 								<a href="#" {@if it.new_open.value==1}target="_blank"{@/if} class="buy-btn">
 									<span>立即购买</span>
 								</a>
@@ -52,6 +54,93 @@
 
 	</script>
 	<div class="translated"></div>
+	<!-- <div class="ajax_win hid_rx" class="need_remove">
+		<div class="bg"></div>
+		<div class="content">
+			<div class="product_one_page_info">
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="product_name">商品名称：</label>
+						<input type="text" class="form-control" placeholder="商品名称">
+					</div>
+					<div class="form-group">
+						<label for="cp_name">产品名称：</label>
+						<input type="text" class="form-control" placeholder="产品名称">
+					</div>
+					<div class="form-group">
+						<label for="wl_no">物料编号：</label>
+						<input type="text" class="form-control" placeholder="物料编号">
+					</div>
+					<div class="form-group">
+						<label for="cp_no">产品编码：</label>
+						<input type="text" class="form-control" placeholder="产品编码">
+					</div>
+					<div class="form-group">
+						<label for="sale_type">销售类型：</label>
+						<select name="" class="form-control" id="sale_type">
+							<option value="1">普通</option>
+							<option value="2">非普通</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="term_type">平台：</label>
+						<select name="" class="form-control" id="term_type">
+							<option value="1">不区分平台</option>
+							<option value="2">PC</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<button type="button" class="btn btn-info">查询</button>
+					</div>
+				</form>
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>商品名称</th>
+							<th>物料编号</th>
+							<th>产品名称</th>
+							<th>产品编号</th>
+							<th>销售类型</th>
+							<th>平台</th>
+							<th>价格</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>小新v4000(win10升级版)</td>
+							<td>80MY000DCD</td>
+							<td>小新bigger版V4000升级-win10标准版</td>
+							<td>50509</td>
+							<td>普通</td>
+							<td>PC</td>
+							<td>5199.00</td>
+						</tr>
+						<tr>
+							<td>小新v4000(win10升级版)</td>
+							<td>80MY000DCD</td>
+							<td>小新bigger版V4000升级-win10标准版</td>
+							<td>50509</td>
+							<td>普通</td>
+							<td>PC</td>
+							<td>5199.00</td>
+						</tr>
+						<tr>
+							<td>小新v4000(win10升级版)</td>
+							<td>80MY000DCD</td>
+							<td>小新bigger版V4000升级-win10标准版</td>
+							<td>50509</td>
+							<td>普通</td>
+							<td>PC</td>
+							<td>5199.00</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="product_page_list"></div>
+		</div>
+	</div> -->
+	<!-- <div class="jsurl hid_rx">/javascripts/jPaginate/jquery.paginate.js</div>
+	<div class="jsurl hid_rx">/javascripts/model/chose_product.js</div> -->
 </div>
 
 <!--
