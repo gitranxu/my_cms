@@ -59,6 +59,8 @@ c_model下面的style有一个id c_model_id+'style'
 加上双击的时候，将信息带到config页面
 
 
+先将index.html进入的页面的fixedbtns去掉
+
 
 
 

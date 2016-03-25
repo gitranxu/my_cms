@@ -396,7 +396,7 @@ CMS.prototype = {
 
 				var $main_btns = _this.o.$sys_main_btns;
 
-				_this.sys_btns.chose_or_edit_page_show && $main_btns.append(_this.html.getChoseOrEditPageFixBtn());//加入选择布局按钮
+				//_this.sys_btns.chose_or_edit_page_show && $main_btns.append(_this.html.getChoseOrEditPageFixBtn());//加入选择或编辑页面按钮
 
 				_this.sys_btns.edit_layout_show && $main_btns.append(_this.html.getEditLayoutFixBtn()) && _this.extra_event.edit_layout_btn_event();//加入编辑布局按钮
 				
@@ -431,7 +431,14 @@ CMS.prototype = {
 					var pid = $('#back .cntr').attr('pid');
 					var lid = $('#back .cntr').attr('lid');
 					this.parse_page(pid,lid);
-					$('#chose_or_edit_page_btn').remove();//这种情况下，【选择或编辑页面】按钮不可见
+					//$('#chose_or_edit_page_btn').remove();//这种情况下，【选择或编辑页面】按钮不可见
+
+					//以下是加入悬浮按钮
+					var sys_btns_html = _this.html.getSysBtns();
+					_this.o.$config.append(sys_btns_html);
+					_this.o.$sys_main_btns = $('#sys_btns').find('.main_btns');
+					_this.o.$sys_sub_btns = $('#sys_btns').find('.sub_btns');
+					_this.fn.add_fixed_btns();//加入悬浮按钮组
 				}else{
 					//还未生成页面，用户必须生成页面才可以进行操作
 					_this.ajax.common({
@@ -1674,7 +1681,7 @@ CMS.prototype = {
 		this.init_o();
 		this.init_unit();
 		//显示选择布局按钮
-		this.fn.add_fixed_btns();//加入悬浮按钮组
+		
 		this.fn.add_chose_model_win();//加入选择模板窗口
 		this.fn.add_chose_page_win();//加入选择页面窗口
 		this.fn.show_chose_page_win();//根据情况是否显示选择页面窗口
@@ -1686,15 +1693,11 @@ CMS.prototype = {
 		this.o.$root = $('#back');
 		if(!$('#content').length){
 			this.o.$root.append('<div id="content"></div><div id="config" class="need_remove"></div>');
+
 		}
 		
 		this.o.$content = $('#content');
 		this.o.$config = $('#config');
-
-		var sys_btns_html = this.html.getSysBtns();
-		this.o.$config.append(sys_btns_html);
-		this.o.$sys_main_btns = $('#sys_btns').find('.main_btns');
-		this.o.$sys_sub_btns = $('#sys_btns').find('.sub_btns');
 	},
 	init_unit : function(){
 		this.fn = this.fn();
