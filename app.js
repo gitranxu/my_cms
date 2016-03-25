@@ -19,6 +19,8 @@ var page_manager = require('./routes/page_manager');
 
 var test_manager = require('./routes/test_manager');
 
+var rights_manager = require('./routes/rights_manager');
+
 var edit_model_manager = require('./routes/edit_model_manager');
 
 var layouteditmodel_manager = require('./routes/layouteditmodel_manager');
@@ -49,6 +51,8 @@ app.use('/page', page_manager);
 app.use('/layouteditmodel_manager', layouteditmodel_manager);
 app.use('/edit_model_manager', edit_model_manager);
 app.use('/test_manager', test_manager);
+app.use('/rights_manager', rights_manager);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

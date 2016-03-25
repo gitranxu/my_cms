@@ -25,7 +25,7 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .c_left{position: absolute;top:0;left:0;width: 45%;height:100%;}
 .c_right{position: absolute;top:0;right:0;width: 50%;height:100%;}
 .piece_ul{height: 90%;overflow: auto;}
-.piece_ul li{border-top: 1px solid #cccccc;height: 32px;line-height: 32px;padding-left: 20px;cursor: pointer;position: relative;}
+.piece_ul li{border-top: 1px solid #cccccc;height: 28px;line-height: 28px;padding-left: 20px;cursor: pointer;position: relative;}
 .bgli{filter:alpha(opacity=50);opacity: .5;}
 .isupdate{color: red;margin-left: 10px;}
 .ctnli{position: relative;z-index: 2;}
@@ -160,14 +160,14 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .edit_floor_mask .edit_group .super:hover{color: #fff;background: rgba(111,51,156,.9);}
 .edit_floor_mask .edit_group .super.clicked{color: #6BEDD3;}
 .edit_floor_mask .edit_group .floor_config{position: absolute;left: 140px;top: 0px;width: 110px;background: rgba(211,116,113,.4);padding: 20px 10px;}
-
-#chose_page_cntr .piece_ul{height: 160px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
+#chose_page_cntr h3{margin-top: 0;}
+#chose_page_cntr .piece_ul{height: 182px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .piece_ul li.active{background: #479F03;color: #00FB0B;}
-#chose_page_cntr .prevview{height: 226px;overflow: auto;width: 260px;margin-left: 10px;}
-#chose_page_cntr .prevview .prev_view{height: 192px;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
+#chose_page_cntr .prevview{height: 256px;overflow: auto;width: 250px;margin-left: 10px;}
+#chose_page_cntr .prevview .prev_view{height: 222px;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .prevview .prev_view img{height: 192px;width: 260px;}
-#chose_page_cntr .layoutlist{height: 226px;overflow: auto;width:160px;}
-#chose_page_cntr .pageinfo{width: 360px;margin-left: 10px;position: relative;}
+#chose_page_cntr .layoutlist{height: 256px;width:160px;}
+#chose_page_cntr .pageinfo{width: 350px;margin-left: 10px;position: relative;}
 #chose_page_cntr .pageinfo .edit_group{padding:10px;background: rgba(116,116,207,0.4);padding-top: 15px;width: 340px;}
 #chose_page_cntr .edit_group .edit_item{margin-bottom: 4px;position: relative;}
 #chose_page_cntr .edit_group .edit_input{width: 215px;color: #2DEE2D;font-size: 14px;background: #696262;border: none;padding: 2px 10px;}
@@ -179,7 +179,7 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 #chose_page_cntr .edit_group .saveBtn:hover{background: green;}
 
 
-#chose_page_cntr .c_bottom{padding: 10px;height: 145px;background: rgb(100,100,100);background: rgba(100,100,100,.6);margin-top: 10px;}
+#chose_page_cntr .c_bottom{padding: 10px;height: 168px;background: rgb(100,100,100);background: rgba(100,100,100,.6);margin-top: 10px;}
 #chose_page_cntr .c_bottom .c_bottom_content{position: relative;}
 #chose_page_cntr .c_bottom .page_ul{height: 146px;overflow: auto;background: rgb(100,100,100);background: rgba(100,100,100,.6);}
 #chose_page_cntr .c_bottom .page_ul li{height: 146px;float: left;width: 32px;padding-left: 0;border-top: none;}

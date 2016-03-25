@@ -1,0 +1,37 @@
+.liitem li{background: #5cb85c;color: #fff;padding: 2px 10px;position: relative;}
+.liitem li:hover{background: #136D13;}
+.liitem li.active{background: #077EB0;}
+
+.btnslist li{cursor: pointer;}
+	.btnslist .unright_li{background: tomato;}
+		.btnslist .unright_li .add{display: none;position: absolute;top: 2px;right: 10px;}
+		.btnslist .unright_li:hover .add{display: inline-block;cursor: pointer;}
+		.btnslist .unright_li:hover .add:hover{color:#66ffac; }
+
+	.btnslist .right_li{background: #5cb85c;}
+		.btnslist .right_li .remove{display: none;position: absolute;top: 2px;right: 10px;}
+		.btnslist .right_li:hover .remove{display: inline-block;cursor: pointer;}
+		.btnslist .right_li:hover .remove:hover{color:tomato; }
+
+.pagelist li{cursor: pointer;}
+.userlist li{cursor: pointer;}
+	.userlist .unright_li{background: tomato;}
+		.userlist .unright_li .add{display: none;position: absolute;top: 2px;right: 10px;}
+		.userlist .unright_li:hover .add{display: inline-block;cursor: pointer;}
+		.userlist .unright_li:hover .add:hover{color:#66ffac; }
+
+	.userlist .right_li{background: #5cb85c;}
+		.userlist .right_li .remove{display: none;position: absolute;top: 2px;right: 10px;}
+		.userlist .right_li:hover .remove{display: inline-block;cursor: pointer;}
+		.userlist .right_li:hover .remove:hover{color:tomato; }
+
+.modellist li{background: #5cb85c;color: #fff;}
+.modellist li .glyphicon{display: none;position: absolute;top: 2px;right: 10px;}
+.modellist li:hover .glyphicon{display: inline-block;cursor: pointer;}
+.modellist li:hover .glyphicon:hover{color:#66ffac; }
+
+
+.hasmodellist li{background: #5cb85c;color: #fff;}
+.hasmodellist li .glyphicon{display: none;position: absolute;top: 2px;right: 10px;}
+.hasmodellist li:hover .glyphicon{display: inline-block;cursor: pointer;}
+.hasmodellist li:hover .glyphicon:hover{color:tomato; }

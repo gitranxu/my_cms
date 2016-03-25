@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>权限管理</title>
+	<link rel="stylesheet" href="/stylesheets/base.css">
+    <link rel="stylesheet" href="/stylesheets/back_common.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/rights.css">
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-2">
+				<div>用户信息</div>
+				<form id="user_form">
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input class="form-control name" type="text" name="name"></input>
+                        <input type="hidden" class="user_id" name="user_id"></input>
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input class="form-control password" type="password" name="password"></input>
+                    </div>
+                    <div class="form-group">
+                        <label>确认密码</label>
+                        <input class="form-control repassword" type="password" name="repassword"></input>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success btn-block user_save" type="submit">保存</button>
+                    </div>
+                </form>
+			</div>
+			<div class="col-sm-2">
+				<div>用户列表</div>
+				<ul class="liitem userlist"></ul>
+			</div>
+			<div class="col-sm-2">
+				<div>按钮列表</div>
+				<ul class="liitem btnslist"></ul>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-4">
+					<div>页列表</div>
+					<ul class="liitem pagelist"></ul>
+				</div>
+				<div class="col-sm-4">
+					<div>未授权模板列表</div>
+					<ul class="liitem modellist"></ul>
+				</div>
+				<div class="col-sm-4">
+					<div>已授权页(模板)列表</div>
+					<ul class="liitem hasmodellist"></ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/javascripts/other/jquery-1.9.1.min.js"></script>
+	<script src="/javascripts/other/jquery.validate.min.js"></script>
+	<script src="/javascripts/other/juicer-min.js"></script>
+	<script type="text/javascript" src="/javascripts/rights.js"></script>
+	<script type="text/template" id="userlist">
+
+		{@each msg as it}
+			{@if it.status==2}
+				<li class="unright_li" u_id="${it.id}"><span class="glyphicon glyphicon-remove"></span><span>${it.name}</span><span class="glyphicon glyphicon-ok add" title="恢复"></span></li>
+			{@/if}
+			{@if it.status==1}
+				<li class="right_li" u_id="${it.id}"><span class="glyphicon glyphicon-ok"></span><span>${it.name}</span><span class="glyphicon glyphicon-remove remove" title="注销"></span></li>
+			{@/if}
+			
+		{@/each}
+	</script>
+	<script type="text/template" id="btnslist">
+		{@each msg as it}
+			{@if it.flag==0}
+				<li class="unright_li" btn_id="${it.id}"><span class="glyphicon glyphicon-remove"></span><span>${it.name}</span><span class="glyphicon glyphicon-ok add" title="授权"></span></li>
+			{@else}
+				<li class="right_li" btn_id="${it.id}"><span class="glyphicon glyphicon-ok"></span><span>${it.name}</span><span class="glyphicon glyphicon-remove remove" title="收回"></span></li>
+			{@/if}
+			
+		{@/each}
+	</script>
+	<script type="text/template" id="pagelist">
+		{@each msg as it}
+			<li p_id="${it.id}">${it.name}</li>
+		{@/each}
+	</script>
+	<script type="text/template" id="modellist">
+		{@each msg as it}
+			<li m_id="${it.c_model_id}"><span class="model_name">${it.name}</span><span class="glyphicon glyphicon-ok add" title="授权"></span></li>
+		{@/each}
+	</script>
+	<script type="text/template" id="hasmodellist">
+		{@each msg as it}
+			<li m_id="${it.m_id}" p_id="${it.p_id}" m_name="${it.m_name}" p_name="${it.p_name}">${it.p_name}(${it.m_name})<span class="glyphicon glyphicon-remove remove" title="收回"></span></li>
+		{@/each}
+	</script>
+</body>
+</html>
