@@ -202,7 +202,7 @@ CMS_layout.prototype = {
 						opt.successFn&&opt.successFn(msg);
 					},
 					error : function(msg){
-						_this.log(msg)
+						console.log(msg);
 					},
 					complete : function(msg){
 						opt.completeFn&&opt.completeFn(msg);

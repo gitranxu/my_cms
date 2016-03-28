@@ -55,7 +55,7 @@ router.get('/get_all_btns', function(req, res, next) {
 							    " ELSE 1  "+
 							  " END flag, "+
 							  " b.`name`, "+
-							  " b.id "+
+							  " b.id,b.right_prop_name "+
 							" FROM "+
 							 " c_btns b ";
 	console.log(get_all_btns_sql+'-------------------------get_all_btns_sql');

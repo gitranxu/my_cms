@@ -452,3 +452,28 @@ reCode
 
 
 
+权限JSON
+{
+    base : {
+        edit_layout_btn : true, //编辑布局按钮
+        create_floor_btn : true,//增加楼层按钮
+        prev_view_btn : true,//预览按钮
+        make_html_btn : true,//生成静态页面按钮
+        blockGroups_move_btn : true,//块组之间上下移动按钮
+        blockGroup_move_btn : true,//块组内部左右移动按钮
+        floor_move_btn : true,//块内楼层上下移动按钮
+        edit_model_btn : true//编辑模板按钮
+    },
+    models : {
+        "delete_floor_btn" : true,
+        "c_edit_btn":true,
+        items : {
+            "d7798623-debf-11e5-8716-68f728f3bf19":{ //mid
+                "delete_floor_btn" : false,
+                "chose_model_btn" : true,
+                "c_edit_btn":false
+            }
+        }
+    }
+    
+}

@@ -5,7 +5,6 @@ function my_ajaxModelFileUpload(fileObj){
 
     var id = $(fileObj).attr('id');
     if (allowExtention.indexOf(extention) > -1) {
-        //console.log('here.....................aaa');
         $.ajaxFileUpload({
 			url : '/file/uploadmodel',
 			secureuri:false,

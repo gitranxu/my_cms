@@ -29,6 +29,10 @@ function user_list(){
 	$.ajax({
 		url : get_all_users,
 		success : function(msg){
+			if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
+			}
 			var tmpl = document.getElementById('userlist').innerHTML;
 			var html = juicer(tmpl,msg);
 			$('.userlist').empty().append(html);
@@ -43,6 +47,10 @@ function btns_list(){
 			user_id : $('.userlist li.active').attr('u_id')
 		},
 		success : function(msg){
+			if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
+			}
 			var tmpl = document.getElementById('btnslist').innerHTML;
 			var html = juicer(tmpl,msg);
 			$('.btnslist').empty().append(html);
@@ -54,6 +62,10 @@ function page_list(){
 	$.ajax({
 		url : get_all_pages,
 		success : function(msg){
+			if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
+			}
 			var tmpl = document.getElementById('pagelist').innerHTML;
 			var html = juicer(tmpl,msg);
 			$('.pagelist').empty().append(html);
@@ -70,6 +82,10 @@ function get_unright_models(){
 			user_id : $('.userlist li.active').attr('u_id')
 		},
 		success : function(msg){
+			if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
+			}
 			var tmpl = document.getElementById('modellist').innerHTML;
 			var html = juicer(tmpl,msg);
 			$('.modellist').empty().append(html);
@@ -84,6 +100,7 @@ function rights_event(){
 	unright_model_event();
 	right_model_event();
 	btns_event();
+	generate_json_event();
 }
 
 function page_event(){
@@ -221,6 +238,9 @@ function add_btns_right(user_id,btn_id,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn();
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -236,6 +256,9 @@ function delete_btns_right(user_id,btn_id,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn();
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -250,6 +273,9 @@ function cancel_user(user_id,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn();
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -264,6 +290,9 @@ function register_user(user_id,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn();
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -280,6 +309,9 @@ function delete_page_model_right(user_id,p_id,m_id,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn();
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -296,6 +328,9 @@ function add_page_model_right(user_id,p_id,m_id,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn();
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -308,6 +343,10 @@ function get_user_has_page_model_rights(user_id){
 			user_id : user_id
 		},
 		success : function(msg){
+			if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
+			}
 			var tmpl = document.getElementById('hasmodellist').innerHTML;
 			var html = juicer(tmpl,msg);
 			$('.hasmodellist').empty().append(html);
@@ -377,6 +416,9 @@ function user_exist(user_name,fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn(msg.msg);
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
@@ -390,7 +432,53 @@ function save_user_fn(fn){
 		success : function(msg){
 			if(msg.reCode==1){
 				fn&&fn(msg.msg);
+			}else if(msg.reCode==99){//未登陆
+				location.href = '/login.html';
+				return;
 			}
 		}
 	});
+}
+
+//生成权限json
+function generate_json_event(){
+	$('.generate_right_json_btn').click(function(){
+		var json = {
+			base : {},
+			models : {
+				"delete_floor_btn" : false,
+				"chose_model_btn" : false,
+				"c_edit_btn" : false,
+				items : {}
+			}
+		};
+		var user_id = $('.userlist li.active').attr('u_id');
+		if(!user_id){
+			alert('请选择用户.');
+			return;
+		}
+		
+		$('.btnslist li').each(function(){
+			var $this = $(this);
+			var right_prop = $this.attr('right_prop');
+			if($this.hasClass('unright_li')){//未授权
+				json.base[right_prop] = false;
+			}else{
+				json.base[right_prop] = true;
+			}
+		});
+
+		$('.hasmodellist li').each(function(){
+			var $this = $(this);
+			var mid = $this.attr('m_id');
+			json.models.items[mid] = {
+				"delete_floor_btn" : true,
+				"chose_model_btn" : true,
+				"c_edit_btn" : true
+			};
+		});
+
+		$('#right_json_prev').text(JSON.stringify(json));
+	});
+		
 }

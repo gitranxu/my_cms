@@ -12,16 +12,23 @@ function CMS(){
 		new_move_time : 1000,
 		new_move_tuila_time : 700
 	},
-	this.sys_btns = {
-		chose_or_edit_page_show : true,
-		edit_layout_show : true,
-		create_floor_show : true,
-		prev_view_show : true,
-		make_html_show : true,
-		blockGroups_move_show : true,
-		blockGroup_move_show : true,
-		floor_move_show : true,
-		edit_model_show : true
+	this.right_json = {
+		base : {
+			edit_layout_btn : true, //编辑布局按钮
+			create_floor_btn : true,//增加楼层按钮
+			prev_view_btn : true,//预览按钮
+			make_html_btn : true,//生成静态页面按钮
+			blockGroups_move_btn : true,//块组之间上下移动按钮
+			blockGroup_move_btn : true,//块组内部左右移动按钮
+			floor_move_btn : true,//块内楼层上下移动按钮
+			edit_model_btn : true//编辑模板按钮
+		},
+		models : {
+			delete_floor_btn : false,//所有模板的删除楼层按钮都不显示
+			chose_model_btn : false,//所有模板的选择模板按钮都不显示
+			c_edit_btn:false,//所有模板的编辑按钮都不显示
+			items:{}
+		}
 	},
 	this.urls = {//预计接口30个左右
 		layout_query : '/layout/query',//改过
@@ -225,8 +232,51 @@ CMS.prototype = {
 		getEditFloorBtns : function(){
 			return this.getTypeFourBtn({mask:"edit_floor_mask",bg:"edit_floor_bg",c_x_btn_group:"",items:[{class_name:"edit",text:"编辑楼层"}]});
 		},
-		getAddFloorBtns : function(){
-			return this.getTypeOneBtn({mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[{class_name:"chose_model",text:"选择模板"},{class_name:"delete_model",text:"删除楼层"},{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}]});
+		getAddFloorBtns : function($c_floor,right_json){
+			//根据权限进行控制，通过传进来的floor与权限json进行比较
+			//得到model_id,进行判断
+			//{class_name:"config_model",text:"配置楼层",hid_rx:"hid_rx"}
+			var json = {mask:"no_mask",bg:"no_bg",c_x_btn_group:"c_floor_btn_group",items:[]};
+			var m_id = $c_floor.find('.c_model').attr('mid');
+
+			var delete_floor_btn = right_json.models.delete_floor_btn;
+
+			var delete_floor_btn_show = false;//{class_name:"delete_floor",text:"删除楼层"};
+			var chose_model_btn_show = false;//{class_name:"chose_model",text:"选择模板"};
+
+			if(delete_floor_btn){//显示删除楼层按钮
+				delete_floor_btn_show = true;
+			}
+			var chose_model_btn = right_json.models.chose_model_btn;
+			if(chose_model_btn){//显示选择模板按钮
+				chose_model_btn_show = true;
+			}
+
+			for(var i in right_json.models.items){
+				if(i == m_id){
+					var delete_floor_btn = right_json.models.items[i].delete_floor_btn;
+					if(delete_floor_btn){//显示删除楼层按钮
+						delete_floor_btn_show = true;
+					}else{
+						delete_floor_btn_show = false;
+					}
+					var chose_model_btn = right_json.models.items[i].chose_model_btn;
+					if(chose_model_btn){//显示选择模板按钮
+						chose_model_btn_show = true;
+					}else{
+						chose_model_btn_show = false;
+					}
+				}
+			}
+			
+			if(delete_floor_btn_show){
+				json.items.push({class_name:"delete_floor",text:"删除楼层"});
+			}
+			if(chose_model_btn_show){
+				json.items.push({class_name:"chose_model",text:"选择模板"});
+			}
+
+			return this.getTypeOneBtn(json);
 		},
 		getChoseOrEditPageFixBtn : function(){
 			return this.getTypeTwoBtn({btn_id:"chose_or_edit_page_btn",btn_name:"选择或编辑页面"});
@@ -398,22 +448,21 @@ CMS.prototype = {
 
 				//_this.sys_btns.chose_or_edit_page_show && $main_btns.append(_this.html.getChoseOrEditPageFixBtn());//加入选择或编辑页面按钮
 
-				_this.sys_btns.edit_layout_show && $main_btns.append(_this.html.getEditLayoutFixBtn()) && _this.extra_event.edit_layout_btn_event();//加入编辑布局按钮
+				_this.right_json.base.edit_layout_btn && $main_btns.append(_this.html.getEditLayoutFixBtn()) && _this.extra_event.edit_layout_btn_event();//加入编辑布局按钮
+
+				_this.right_json.base.create_floor_btn && $main_btns.append(_this.html.getCreateFloorFixBtn());//加入选择布局按钮
 				
+				_this.right_json.base.blockGroups_move_btn && $main_btns.append(_this.html.getBlockGroupsMoveFixBtn());//加入块组之间上下移动按钮
 
-				_this.sys_btns.create_floor_show && $main_btns.append(_this.html.getCreateFloorFixBtn());//加入选择布局按钮
-				
-				_this.sys_btns.blockGroups_move_show && $main_btns.append(_this.html.getBlockGroupsMoveFixBtn());//加入块组之间上下移动按钮
+				_this.right_json.base.blockGroup_move_btn && $main_btns.append(_this.html.getBlockGroupMoveFixBtn());//加入块组内部左右移动按钮
 
-				_this.sys_btns.blockGroup_move_show && $main_btns.append(_this.html.getBlockGroupMoveFixBtn());//加入块组内部左右移动按钮
+				_this.right_json.base.floor_move_btn && $main_btns.append(_this.html.getBlockMoveFixBtn());//加入块内楼层上下移动按钮
 
-				_this.sys_btns.floor_move_show && $main_btns.append(_this.html.getBlockMoveFixBtn());//加入块内楼层上下移动按钮
+				_this.right_json.base.make_html_btn && $main_btns.append(_this.html.getGenerateFixBtn());//加入生成静态页按钮
 
-				_this.sys_btns.make_html_show && $main_btns.append(_this.html.getGenerateFixBtn());//加入生成静态页按钮
+				_this.right_json.base.prev_view_btn && $main_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
 
-				_this.sys_btns.prev_view_show && $main_btns.append(_this.html.getPrevViewFixBtn());//加入预览按钮
-
-				_this.sys_btns.edit_model_show && $main_btns.append(_this.html.getEditModelFixBtn());//加入编辑模板按钮
+				_this.right_json.base.edit_model_btn && $main_btns.append(_this.html.getEditModelFixBtn());//加入编辑模板按钮
 			},
 			add_chose_model_win : function(){
 				var chose_win_str = _this.html.getChoseXWin('chose_models_cntr','模板');
@@ -581,6 +630,7 @@ CMS.prototype = {
 					dataType : opt.dataType || 'json',
 					success : function(msg){
 						opt.successFn&&opt.successFn(msg);
+						
 					},
 					error : function(msg){
 						_this.log(msg)
@@ -716,6 +766,7 @@ CMS.prototype = {
 						var html = _this.juicer.msg_to_findmodels_html(msg);
 						$('#chose_models_cntr').find('.piece_ul').empty().append(html);
 					}else{
+						$('#chose_models_cntr').find('.piece_ul').empty();
 						alert(msg.msg);
 					}
 				},
@@ -787,7 +838,7 @@ CMS.prototype = {
 
 
 		//删除楼层时
-		this.o.$root.delegate('.c_floor_btn_group .delete_model','click',function(){
+		this.o.$root.delegate('.c_floor_btn_group .delete_floor','click',function(){
 			if(!window.confirm('你确定要删除楼层吗？')){
                 return;
             }
@@ -1592,7 +1643,7 @@ CMS.prototype = {
 				}
 
 				if($c_floor.find('.c_floor_btn_group').length==0){
-					var add_btn_html = _this.html.getAddFloorBtns();
+					var add_btn_html = _this.html.getAddFloorBtns($c_floor,_this.right_json);
 					$c_floor.append(add_btn_html);//给块元素加上增加楼层按钮
 				}
 				this.parse_c_edit($c_floor);
@@ -1607,11 +1658,34 @@ CMS.prototype = {
 				}
 				
 			},
-			parse_c_edit : function($scope){
+			parse_c_edit : function($c_floor){
 				//对c_edit类的元素进行处理
-				var c_edit_zone_html = _this.html.getEditZone();
-				$scope.find('.c_edit_zone').remove();
-				$scope.find('.c_edit').append(c_edit_zone_html);
+				var m_id = $c_floor.find('.c_model').attr('mid');
+				var c_edit_btn = _this.right_json.models.c_edit_btn;
+
+				var c_edit_btn_show = false;//{class_name:"delete_floor",text:"删除楼层"};
+
+				if(c_edit_btn){//显示删除楼层按钮
+					c_edit_btn_show = true;
+				}
+
+				for(var i in _this.right_json.models.items){
+					if(i == m_id){
+						var c_edit_btn_btn = _this.right_json.models.items[i].c_edit_btn;
+						if(c_edit_btn_btn){//显示删除楼层按钮
+							c_edit_btn_show = true;
+						}else{
+							c_edit_btn_show = false;
+						}
+					}
+				}
+			
+				if(c_edit_btn_show){
+					var c_edit_zone_html = _this.html.getEditZone();
+					$c_floor.find('.c_edit_zone').remove();
+					$c_floor.find('.c_edit').append(c_edit_zone_html);
+				}
+					
 			},
 			parse_c_model : function(json){
 				//console.log(JSON.stringify(json));
@@ -1688,6 +1762,9 @@ CMS.prototype = {
 
 		this.bind();
 		this.model_config_unit.bind();
+	},
+	init_right_json : function(right_json){
+		$.extend(true,this.right_json,right_json);
 	},
 	init_o : function(){
 		this.o.$root = $('#back');
@@ -3014,8 +3091,30 @@ CMS.prototype = {
 
 $().ready(function(){
 	var cms = new CMS();
+	var right_json = get_right_json();
+	cms.init_right_json(right_json);
 	cms.init();
 });
+
+function get_right_json(){
+	var s = {
+		base : {
+		},
+		models : {
+			"delete_floor_btn" : true,
+			"c_edit_btn":true,
+			items : {
+				"d7798623-debf-11e5-8716-68f728f3bf19":{
+					"delete_floor_btn" : false,
+					"chose_model_btn" : true,
+					"c_edit_btn":false
+				}
+			}
+		}
+		
+	};
+	return s;
+}
 
 function my_ajaxFile2Upload(fileObj,width,height,size){
 	console.log(fileObj);

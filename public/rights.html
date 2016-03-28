@@ -31,6 +31,7 @@
                         <button class="btn btn-success btn-block user_save" type="submit">保存</button>
                     </div>
                 </form>
+                <button class="btn btn-success btn-block generate_right_json_btn">生成json</button>
 			</div>
 			<div class="col-sm-2">
 				<div>用户列表</div>
@@ -55,6 +56,11 @@
 				</div>
 			</div>
 		</div>
+		<div class="row">
+			<pre id="right_json_prev" style="margin:10px;">
+				{a:123,b:456}
+			</pre>
+		</div>
 	</div>
 	<script src="/javascripts/other/jquery-1.9.1.min.js"></script>
 	<script src="/javascripts/other/jquery.validate.min.js"></script>
@@ -75,9 +81,9 @@
 	<script type="text/template" id="btnslist">
 		{@each msg as it}
 			{@if it.flag==0}
-				<li class="unright_li" btn_id="${it.id}"><span class="glyphicon glyphicon-remove"></span><span>${it.name}</span><span class="glyphicon glyphicon-ok add" title="授权"></span></li>
+				<li class="unright_li" btn_id="${it.id}" right_prop="${it.right_prop_name}"><span class="glyphicon glyphicon-remove"></span><span>${it.name}</span><span class="glyphicon glyphicon-ok add" title="授权"></span></li>
 			{@else}
-				<li class="right_li" btn_id="${it.id}"><span class="glyphicon glyphicon-ok"></span><span>${it.name}</span><span class="glyphicon glyphicon-remove remove" title="收回"></span></li>
+				<li class="right_li" btn_id="${it.id}" right_prop="${it.right_prop_name}"><span class="glyphicon glyphicon-ok"></span><span>${it.name}</span><span class="glyphicon glyphicon-remove remove" title="收回"></span></li>
 			{@/if}
 			
 		{@/each}
