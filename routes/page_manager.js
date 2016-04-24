@@ -261,7 +261,7 @@ function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layo
 	howdo
 		.task(function(done){
 			if(!b_page_id){ //如果新增页面，该id为空，如果是更新（可能是页面已有，但选择了另外的布局，这时候也是新增，但该id有值）
-				page_id = uuid.v1();
+				b_page_id = page_id = uuid.v1();
 				page_id = _pool.escape(page_id);
 				var insert_to_page_sql = "INSERT INTO c_page(id,name,create_time) VALUES("+page_id+","+name+",NOW())";
 				console.log(insert_to_page_sql+'-----------------insert_to_page_sql');
@@ -271,7 +271,7 @@ function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layo
 					done(null,'c_page插入成功！');
 				});
 			}else{
-				page_id = _pool.escape(page_id);
+				b_page_id = page_id = _pool.escape(page_id);
 			}
 		})
 		.task(function(done){
@@ -418,6 +418,7 @@ function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layo
 		})
 		.together()
 		.try(function(m1,m2,m3,m4){
+			console.log("=========----------=========--------======-----")
 			res.json({reCode:1,msg:'插入成功',pid:b_page_id});
 		})
 		.catch(function(err){

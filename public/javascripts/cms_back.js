@@ -1452,12 +1452,16 @@ CMS.prototype = {
 							edit_page_url : edit_url
 						},
 						successFn : function(msg){
+							console.log(msg);
+							//console.log("------------------------")
 							if(msg.reCode==1){
 								_this.ajax.common({
 									url : _this.urls.generate_edit_html,
 									method : 'POST',
 									data : {pid : msg.pid.replace(/\'/g,""),lid : layout_id,edit_url:edit_url},
 									successFn : function(msg){
+										//console.log("---------------------------------")
+										console.log(msg)
 										if(msg.reCode==1){
 											window.open(msg.the_url);
 											window.location.reload(true);
@@ -3097,22 +3101,7 @@ $().ready(function(){
 });
 
 function get_right_json(){
-	var s = {
-		base : {
-		},
-		models : {
-			"delete_floor_btn" : true,
-			"c_edit_btn":true,
-			items : {
-				"d7798623-debf-11e5-8716-68f728f3bf19":{
-					"delete_floor_btn" : false,
-					"chose_model_btn" : true,
-					"c_edit_btn":false
-				}
-			}
-		}
-		
-	};
+	var s = {"base":{"edit_layout_btn":true,"create_floor_btn":true,"blockGroups_move_btn":true,"edit_model_btn":true,"prev_view_btn":true,"make_html_btn":true,"blockGroup_move_btn":true,"floor_move_btn":true},"models":{"delete_floor_btn":true,"chose_model_btn":true,"c_edit_btn":true,"items":{"9be916d1-dec6-11e5-8716-68f728f3bf19":{"delete_floor_btn":false,"chose_model_btn":true,"c_edit_btn":true},"261ed9bd-deb5-11e5-8716-68f728f3bf19":{"delete_floor_btn":true,"chose_model_btn":false,"c_edit_btn":true}}}};
 	return s;
 }
 
