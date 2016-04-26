@@ -272,6 +272,7 @@ function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layo
 				});
 			}else{
 				b_page_id = page_id = _pool.escape(page_id);
+				done(null,'c_page不用插入');
 			}
 		})
 		.task(function(done){
@@ -418,7 +419,6 @@ function add_page(page_id,page_url,prev_view_url,edit_page_url,project_name,layo
 		})
 		.together()
 		.try(function(m1,m2,m3,m4){
-			console.log("=========----------=========--------======-----")
 			res.json({reCode:1,msg:'插入成功',pid:b_page_id});
 		})
 		.catch(function(err){
