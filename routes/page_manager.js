@@ -136,7 +136,7 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 	var fid = req.query.fid;
 	var pid = req.query.pid;
 
-	var get_f_css_by_fid_sql = " SELECT f.c_floor_id id,f.style fstyle,f.model_type,f.term_type,f.query_height FROM c_page_floor f WHERE f.`c_floor_id` = "+_pool.escape(fid)+" AND f.`c_page_id` = "+_pool.escape(pid);
+	var get_f_css_by_fid_sql = " SELECT f.c_floor_id id,f.style fstyle,f.model_type,f.term_type,f.query_height,f.query_width FROM c_page_floor f WHERE f.`c_floor_id` = "+_pool.escape(fid)+" AND f.`c_page_id` = "+_pool.escape(pid);
 	console.log(get_f_css_by_fid_sql+'-----------------get_f_css_by_fid');
 	var result = {};
 	//sqlclient.init();
@@ -150,7 +150,7 @@ router.get('/get_f_css_by_fid', function(req, res, next) {
 			add_attr(result,rows[0].model_type,"model_type");
 			add_attr(result,rows[0].term_type,"term_type");
 			result["query_height"] = rows[0].query_height;
-
+			result["query_width"] = rows[0].query_width;
 			res.json({reCode:1,msg:result});
 		}else{
 			res.json({reCode:10000,msg:"没有数据"});
@@ -166,10 +166,11 @@ router.post('/set_f_css_by_fid', function(req, res, next) {
 	var model_type = _pool.escape(req.body.model_type);
 	var term_type = _pool.escape(req.body.term_type);
 	var query_height = _pool.escape(req.body.query_height);
+	var query_width = _pool.escape(req.body.query_width);
 
 	var update_val = _pool.escape(req.body.update_val);
 
-	var sql = "UPDATE c_page_floor pf SET pf.style = "+update_val+",last_edit_time = NOW(),pf.model_type="+model_type+",pf.term_type="+term_type+",query_height="+query_height+" WHERE pf.`c_floor_id` = "+fid+" AND pf.`c_page_id` = "+pid;
+	var sql = "UPDATE c_page_floor pf SET pf.style = "+update_val+",last_edit_time = NOW(),pf.model_type="+model_type+",pf.term_type="+term_type+",query_height="+query_height+",query_width="+query_width+" WHERE pf.`c_floor_id` = "+fid+" AND pf.`c_page_id` = "+pid;
 	console.log(sql+'--------------------set_f_css_by_fid');
 	//sqlclient.init();
 	sqlclient.query(sql,function(err,rows,fields){

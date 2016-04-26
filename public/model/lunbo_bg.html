@@ -27,20 +27,6 @@
                 </div>
             </div>
         </div>
-            
-        <div>
-        {@each test.zNodes as node}
-            {@if node.pId==0}
-                <span>一级菜单${node.name}</span>
-                {@each test.zNodes as node2}
-                    {@if node2.pId==node.id}
-                        <span>二级菜单${node2.name}</span>
-                    {@/if}
-                {@/each}
-            {@/if}
-            
-        {@/each}
-        </div>
     </script>
 
     <div class="translated"></div>

@@ -9,9 +9,8 @@ router.get('/query', function(req, res, next) {
 	var _pool = sqlclient.init()._pool;
 	var fid = _pool.escape(req.query.fid);
 	var pid = _pool.escape(req.query.pid);
-	var f_width = _pool.escape(req.query.f_width);
 
-	var filter_model_sql = "SELECT model_type,term_type,query_height FROM c_page_floor WHERE c_floor_id = "+fid+" AND c_page_id = "+pid;
+	var filter_model_sql = "SELECT model_type,term_type,query_height,query_width FROM c_page_floor WHERE c_floor_id = "+fid+" AND c_page_id = "+pid;
 	console.log(filter_model_sql+'------------filter_model_sql');
 	//sqlclient.init();
 	sqlclient.query(filter_model_sql,function(err,rows,fields){
@@ -20,11 +19,13 @@ router.get('/query', function(req, res, next) {
 			var model_type = rows[0].model_type;//如果为综合，则查找全部，否则直等
 			var term_type = rows[0].term_type;
 			var query_height = rows[0].query_height; //如果为0，则查找全部，否则直等
+			var query_width = rows[0].query_width; //如果为0，则查找宽度大于等于1200的模板，否则直等
+
 			var model_width_s = "";
-			if(f_width > 1200){
+			if(query_width == 0){
 				model_width_s = " model_width >= 1200 ";
 			}else{
-				model_width_s = " model_width = " + f_width;
+				model_width_s = " model_width = " + query_width;
 			}
 			var query_model_sql = "SELECT id,name,img_url FROM c_model WHERE term_type ="+term_type+" AND " + model_width_s;
 

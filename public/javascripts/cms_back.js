@@ -200,6 +200,9 @@ CMS.prototype = {
 			                            '<ul class="chose_ul hid_rx"><li val=1>PC</li><li val=2>WAP</li></ul>'+
 			                        '</div>'+
 			                        '<div class="edit_item">'+
+			                            '<span title="过滤模板时用，0代表查询宽度大于等于1200的模板" class="hastitle">楼层宽度 :</span><input type="text" value="0" class="query_width edit_input">'+
+			                        '</div>'+
+			                        '<div class="edit_item">'+
 			                            '<span title="过滤模板时用，0代表不限高度" class="hastitle">楼层高度 :</span><input type="text" value="0" class="query_height edit_input">'+
 			                        '</div>'+
 			                    '</div>'+
@@ -771,7 +774,7 @@ CMS.prototype = {
 					}
 				},
 				data : {
-					f_width : $floor.width(),
+					//f_width : $floor.width(),
 					fid : fid,
 					pid : pid
 				}
@@ -1225,6 +1228,7 @@ CMS.prototype = {
 									}
 									$edit_group.find('.term_type').val(term_type_name);
 
+									$edit_group.find('.query_width').val(msg.msg.query_width);
 									$edit_group.find('.query_height').val(msg.msg.query_height);
 
 									$edit_group.show();
@@ -1259,11 +1263,12 @@ CMS.prototype = {
 						var model_type = $this.parents('.edit_group').find('.model_type_info').attr('val');
 						var term_type = $this.parents('.edit_group').find('.term_type_info').attr('val');
 						var query_height = $this.parents('.edit_group').find('.query_height').val();
+						var query_width = $this.parents('.edit_group').find('.query_width').val();
 						//console.log(model_type+'----------model_type,'+term_type+'----------term_type,'+query_height+'----------query_height');
 						_this.ajax.common({
 							url : _this.urls.set_f_css_by_fid,
 							method : 'POST',
-							data : {fid:fid,update_val:f_css_s , pid : pid ,model_type:model_type,term_type:term_type,query_height:query_height},
+							data : {fid:fid,update_val:f_css_s , pid : pid ,model_type:model_type,term_type:term_type,query_height:query_height,query_width:query_width},
 							successFn : function(msg){
 								if(msg.reCode==1){
 									//对于新增的楼层来说，这里需要先把楼层的样式放到style中去
