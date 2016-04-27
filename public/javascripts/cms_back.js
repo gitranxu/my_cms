@@ -2521,9 +2521,6 @@ CMS.prototype = {
 												'{@if it.type=="list"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="list_group">'+
-															'{@if it.has_img}'+
-																'<img class="maxh200 list_prev_img" src="">'+
-															'{@/if}'+
 															'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
 																'<thead>'+
 																	'<tr>{@each it.thead_ths as th_it}'+
@@ -2542,6 +2539,11 @@ CMS.prototype = {
 																'{@/each}'+
 																'</tbody>'+
 															'</table>'+
+															'{@if it.has_img}'+
+																'<div style="width:760px;overflow:hidden;">'+
+																	'<img class="maxh200 list_prev_img" src="">'+
+																'</div>'+
+															'{@/if}'+
 														'</div>'+
 													'{@/if}'+
 												'{@/if}'+
@@ -2600,9 +2602,6 @@ CMS.prototype = {
 												'{@if it.type=="list"}'+
 													'{@if !it.edit_can_not_see}'+
 														'<div class="list_group">'+
-															'{@if it.has_img}'+
-																'<img class="maxh200 list_prev_img" src="">'+
-															'{@/if}'+
 															'<table class="edit_item edit_list_table" key="${it.key}" type="list">'+
 																'<thead>'+
 																	'<tr>{@each it.thead_ths as th_it}'+
@@ -2621,6 +2620,11 @@ CMS.prototype = {
 																'{@/each}'+
 																'</tbody>'+
 															'</table>'+
+															'{@if it.has_img}'+
+																'<div style="width:760px;overflow:hidden;">'+
+																	'<img class="maxh200 list_prev_img" src="">'+
+																'</div>'+
+															'{@/if}'+
 														'</div>'+
 													'{@/if}'+
 												'{@/if}'+

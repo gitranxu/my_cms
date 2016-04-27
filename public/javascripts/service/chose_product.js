@@ -106,10 +106,10 @@ function get_product_service_html(){
 	return '<div id="product_service_id">'+
 				'<style>'+
 					'#product_service_id .ajax_win{}'+
-					'#product_service_id .ajax_win .bg{position: absolute;top: 0;left: 0;background: orange;z-index: 10005;}'+
-					'#product_service_id .ajax_win .content{width: 800px;background: #257934;position: fixed;top: 15%;left: 50%;margin-left: -400px;z-index: 10006;padding: 10px;}'+
+					'#product_service_id .ajax_win .bg{position: absolute;top: 0;left: 0;background: #0C4314;z-index: 10005;}'+
+					'#product_service_id .ajax_win .content{width: 800px;background: #fff;position: fixed;top: 15%;left: 50%;margin-left: -400px;z-index: 10006;padding: 10px;}'+
 					'#product_service_id .ajax_win .product_one_page_info{}'+
-					'#product_service_id .form-inline{color: #fff;}'+
+					'#product_service_id .form-inline{color: #000;}'+
 					'#product_service_id .form-inline .form-control {width: 124px;}'+
 				'</style>'+
 				'<div class="ajax_win" class="need_remove">'+

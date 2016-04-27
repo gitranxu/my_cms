@@ -250,19 +250,20 @@ html,body{height: 100%;font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Ya
 .edit_tree_save:hover{background: #38CB8B;}
 
 .model_config_win .content .edit_group .edit_item .title{width: 180px;text-align: right;font-size: 12px;color: #d4dad4;display: inline-block;margin-right: 10px;}
-.model_config_win .content .edit_group .edit_item input{width: 420px;color: #2dee2d;font-size: 14px;background: #696262;border: none;padding: 2px;display: inline-block;}
+.model_config_win .content .edit_group .edit_item input{width: 420px;color: #2dee2d;font-size: 14px;background: #3F408C;border: none;padding: 2px;display: inline-block;}
 .sel_input{width: 424px;}
 .sel_td_input{width: 100%;}
-.img_upload_div{display: inline-block;width: 420px;position: relative;}
+.img_upload_div{display: inline-block;width: 420px;position: relative;overflow: hidden;}
 .img_upload_div img{display: block;max-height: 200px;width: auto;}
 img.maxh200{display: block;max-height: 200px;width: auto;}
 img.tdimg{display: inline-block;max-height: 30px;width: auto;}
 
 .edit_list_table{width: 100%;margin: 4px 0;}
 .edit_list_table thead tr{}
-.edit_list_table thead th{background: #7189CB;color: #fff;padding: 2px 0;}
-.edit_list_table tbody tr{background: #14505B;}
-.edit_list_table tbody tr:hover{background: #c1505B;}
+.edit_list_table thead th{background: #7189CB;color: #fff;padding: 2px 0;text-align: center;}
+.edit_list_table thead th:hover{background: #7865f3;}
+.edit_list_table tbody tr{background: #55678F;}
+.edit_list_table tbody tr:hover{background: #6E8DE2;}
 .edit_list_table tbody td{position: relative;padding: 4px 2px;}
 #cms_model_config_win .edit_list_table input{width:40px;border: none;width: 100%;padding: 4px 0px;}
 .edit_list_table_tr_del{position: absolute;top: 4px;right: 4px;width: 54px;height: 23px;text-align: center;color: #fff;background: #aabb44;line-height: 23px;cursor: pointer;}
@@ -272,7 +273,7 @@ img.tdimg{display: inline-block;max-height: 30px;width: auto;}
 .edit_list_table .innerhtml{width:90px;}
 .edit_list_table .title{width:180px;}
 .edit_list_table .del{width:56px;}
-.edit_list_table .add:hover{background: #7865f3;cursor: pointer;}
+.edit_list_table .add:hover{cursor: pointer;}
 #cms_model_config_win .save{height: 30px;background: #909044;text-align: center;line-height: 30px;color: #fff;cursor: pointer;}
 #cms_model_config_win .save:hover{background: #148C21;}
 
